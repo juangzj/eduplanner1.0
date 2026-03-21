@@ -1,0 +1,176 @@
+<!-- ===== SIDEBAR DESKTOP ===== -->
+<div id="sidebar"
+     class="d-none d-lg-flex flex-column bg-dark text-white position-fixed vh-100 shadow"
+     style="width: 260px; z-index: 1030;">
+
+    <!-- Logo / Branding -->
+    <div class="p-3 text-center border-bottom border-secondary">
+        <h4 class="mb-0 text-primary fw-bold">Eduplanner</h4>
+        <small class="text-secondary">Plataforma Docente</small>
+    </div>
+
+    <!-- Navegación -->
+    <div class="flex-grow-1 p-3">
+        <nav class="nav flex-column gap-1">
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-house-door"></i>
+                <span>Inicio</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-robot"></i>
+                <span>Asistente pedagógico</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-chat-dots"></i>
+                <span>Foro de recursos</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-bookmarks"></i>
+                <span>Mi biblioteca</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-gear"></i>
+                <span>Configuración</span>
+            </a>
+
+        </nav>
+    </div>
+
+    <!-- Footer + Logout -->
+    <div class="p-3 border-top border-secondary">
+
+        <a href="#" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 logout-btn">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Cerrar sesión</span>
+        </a>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">© 2026 Eduplanner</small>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ===== BOTÓN MÓVIL ===== -->
+<button class="btn btn-primary d-lg-none position-fixed top-0 start-0 m-3 rounded-circle shadow"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasSidebar"
+        style="z-index: 2000; width: 45px; height: 45px;">
+    <i class="bi bi-list"></i>
+</button>
+
+
+<!-- ===== SIDEBAR MÓVIL ===== -->
+<div class="offcanvas offcanvas-start bg-dark text-white"
+     tabindex="-1"
+     id="offcanvasSidebar"
+     style="width: 260px;">
+
+    <!-- Header -->
+    <div class="offcanvas-header border-bottom border-secondary">
+        <div>
+            <h5 class="mb-0 text-primary fw-bold">Eduplanner</h5>
+            <small class="text-secondary">Plataforma Docente</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+
+    <!-- Body -->
+    <div class="offcanvas-body d-flex flex-column">
+
+        <nav class="nav flex-column gap-2">
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-house-door"></i>
+                <span>Inicio</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-robot"></i>
+                <span>Asistente pedagógico</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-chat-dots"></i>
+                <span>Foro de recursos</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-bookmarks"></i>
+                <span>Mi biblioteca</span>
+            </a>
+
+            <a href="#" class="nav-link text-white">
+                <i class="bi bi-gear"></i>
+                <span>Configuración</span>
+            </a>
+
+        </nav>
+
+        <!-- Logout abajo -->
+        <div class="mt-auto pt-3 border-top border-secondary">
+
+            <a href="#" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Cerrar sesión</span>
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ===== ESTILOS ===== -->
+<style>
+
+    /* Sidebar links */
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .nav-link i {
+        font-size: 1.2rem;
+        min-width: 20px;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #0d6efd !important;
+        transform: translateX(3px);
+    }
+
+    /* Botón logout (más importante visualmente) */
+    .logout-btn {
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+        background-color: #dc3545;
+        color: #fff !important;
+        transform: scale(1.02);
+    }
+
+    /* Ajuste cuando uses sidebar */
+    @media (min-width: 992px) {
+        main {
+            margin-left: 260px;
+        }
+    }
+
+</style>

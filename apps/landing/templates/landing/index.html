@@ -1,0 +1,226 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Eduplanner{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .btn-pill {
+        border-radius: 50px;
+        padding: 12px 28px;
+        font-weight: 600;
+    }
+
+    .hero {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .card-hover {
+        transition: all 0.25s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4 text-primary" href="#">
+            <i class="bi bi-journal-bookmark-fill me-2"></i>Eduplanner
+        </a>
+
+        <div class="ms-auto">
+            <a href="#" class="btn btn-outline-primary btn-pill me-2">
+                Iniciar sesión
+            </a>
+            <a href="#" class="btn btn-primary btn-pill">
+                Registrarse
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero bg-white">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">
+                    Planificación pedagógica con <span class="text-primary">IA</span>
+                </h1>
+
+                <p class="lead text-muted mb-4">
+                    Diseña niveles de desempeño, secuencias didácticas y rúbricas de evaluación en minutos, alineadas con estándares educativos y la taxonomía de Bloom.
+                </p>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#" class="btn btn-primary btn-lg btn-pill shadow">
+                        <i class="bi bi-magic me-2"></i>Comenzar
+                    </a>
+                    <a href="#modulos" class="btn btn-outline-secondary btn-lg btn-pill">
+                        Ver funcionalidades
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center">
+                <i class="bi bi-cpu display-1 text-primary opacity-75"></i>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== MODULOS ===== -->
+<section id="modulos" class="py-5 bg-light">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Modulos principales</h2>
+            <p class="text-muted">
+                Herramientas diseñadas para transformar la enseñanza en educación media
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            {% for modulo in modulos %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-hover border-0 p-4 h-100">
+
+                    <div class="feature-icon bg-{{ modulo.color }} text-white">
+                        <i class="bi {{ modulo.icono }}"></i>
+                    </div>
+
+                    <h5 class="fw-bold">{{ modulo.titulo }}</h5>
+
+                    <p class="text-muted small">
+                        {{ modulo.descripcion }}
+                    </p>
+
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+</section>
+<!-- ===== PROCESO ===== -->
+<section class="py-5">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Cómo funciona</h2>
+        </div>
+
+        <div class="row g-4 text-center">
+
+            <div class="col-md-4">
+                <i class="bi bi-ui-checks fs-1 text-primary"></i>
+                <h5 class="fw-bold mt-3">Seleccion curricular</h5>
+                <p class="text-muted small">
+                    Define área, grado, asignatura y periodo académico.
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <i class="bi bi-pencil-square fs-1 text-success"></i>
+                <h5 class="fw-bold mt-3">Definicion del estándar</h5>
+                <p class="text-muted small">
+                    Ingresa competencia, afirmación y evidencias de aprendizaje.
+                </p>
+            </div>
+
+            <div class="col-md-4">
+                <i class="bi bi-robot fs-1 text-warning"></i>
+                <h5 class="fw-bold mt-3">Generacion con IA</h5>
+                <p class="text-muted small">
+                    La IA crea niveles, secuencias y rúbricas editables.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== ETICA ===== -->
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Uso responsable de la IA</h2>
+        </div>
+
+        <div class="row g-4 text-center">
+
+            <div class="col-md-3">
+                <h6 class="fw-bold">Etica</h6>
+                <p class="small text-muted">Evita plagio y sesgos</p>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="fw-bold">Pedagogia</h6>
+                <p class="small text-muted">Promueve aprendizaje real</p>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="fw-bold">Formacion</h6>
+                <p class="small text-muted">Fomenta autonomia</p>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="fw-bold">Tecnologia</h6>
+                <p class="small text-muted">Accesibilidad para todos</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="py-5">
+    <div class="container">
+        <div class="bg-dark text-white p-5 rounded-4 text-center shadow">
+
+            <h2 class="fw-bold mb-3">
+                Transforma tu forma de enseñar
+            </h2>
+
+            <p class="mb-4">
+                Utiliza inteligencia artificial de manera ética y pedagógica
+            </p>
+
+            <a href="#" class="btn btn-light btn-lg btn-pill">
+                Empezar ahora
+            </a>
+
+        </div>
+    </div>
+</section>
+
+
+
+{% endblock %}

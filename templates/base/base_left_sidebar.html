@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+<!-- ===== Layout con Sidebar ===== -->
+{% block content %}
+
+<div class="d-flex">
+
+    <!-- Sidebar -->
+    {% include 'components/left_sidebar.html' %}
+
+    <!-- Contenido dinámico -->
+    <div class="flex-grow-1">
+
+        <div class="container-fluid py-4">
+            {% block sidebar_content %}
+            {% endblock %}
+        </div>
+
+    </div>
+
+</div>
+
+        <!-- FOOTER -->
+        {% include 'components/footer.html' %}
+
+{% endblock %}

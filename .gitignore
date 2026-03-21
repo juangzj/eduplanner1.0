@@ -213,3 +213,9 @@ yarn-error.log*
 # Archivos de migración compilados
 # =========================
 **/migrations/*.pyc
+
+
+# =========================
+# Archivos de migración compilados
+# =========================
+postgres_data/

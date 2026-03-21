@@ -1,0 +1,1 @@
+from .landing_services import  get_landing_data
