@@ -3,7 +3,7 @@ from django.contrib import messages
 from ..forms import TeacherRegisterForm
 from ..services import register_teacher_service
 
-def register_view(request):
+def register_teacher_view(request):
     if request.method == 'POST':
         form = TeacherRegisterForm(request.POST)
         if form.is_valid():
@@ -13,4 +13,4 @@ def register_view(request):
     else:
         form = TeacherRegisterForm()
     
-    return render(request, 'auth/register.html', {'form': form})
+    return render(request, 'users/register_user_teacher.html', {'form': form})

@@ -1,0 +1,109 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9 col-xl-8">
+            
+            <div class="card shadow border-0 p-4 p-md-5">
+                <div class="mb-4">
+                    <h2 class="fw-bold text-dark text-center text-md-start">Registro de Profesor</h2>
+                    <p class="text-muted text-center text-md-start">Cree su cuenta de Eduplanner para comenzar.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <h6 class="text-uppercase text-primary fw-bold small">1. Datos Personales</h6>
+                            <hr class="mt-1 opacity-25">
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.middle_name.label }}</label>
+                            {{ form.middle_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.second_last_name.label }}</label>
+                            {{ form.second_last_name }}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.birth_date.label }}</label>
+                            {{ form.birth_date }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 mb-3 mt-2">
+                            <h6 class="text-uppercase text-primary fw-bold small">2. Identidad y Acceso</h6>
+                            <hr class="mt-1 opacity-25">
+                        </div>
+
+                        <div class="col-md-7 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.gmail.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                                {{ form.gmail }}
+                            </div>
+                        </div>
+                        <div class="col-md-5 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.nickname.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-at"></i></span>
+                                {{ form.nickname }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.password.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-shield-lock"></i></span>
+                                {{ form.password }}
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.confirm_password.label }}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-shield-check"></i></span>
+                                {{ form.confirm_password }}
+                            </div>
+                            {% if form.confirm_password.errors %}
+                                <div class="text-danger small mt-1">{{ form.confirm_password.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6 mx-auto">
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg shadow-sm py-2">
+                                    Crear cuenta de profesor
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center border-top pt-4 mt-5">
+                        <p class="text-muted mb-0 small">¿Ya tienes una cuenta registrada?</p>
+                        <a href="#" class="btn btn-link link-primary fw-bold text-decoration-none">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión aquí
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,2 @@
+from .auth_user_teacher_views import login_view
+from .user_teacher_views import register_teacher_view

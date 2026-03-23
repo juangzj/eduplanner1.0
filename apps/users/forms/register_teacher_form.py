@@ -2,14 +2,14 @@ from django import forms
 from ..models import TeacherUser
 
 class TeacherRegisterForm(forms.ModelForm):
-    # Campos que no están en el modelo pero necesitamos para la validación
+    # Definimos campos extra que no están en el modelo
     password = forms.CharField(
         label="Contraseña",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '********'})
+        widget=forms.PasswordInput(attrs={'placeholder': '********'})
     )
     confirm_password = forms.CharField(
         label="Confirmar Contraseña",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '********'})
+        widget=forms.PasswordInput(attrs={'placeholder': '********'})
     )
 
     class Meta:
@@ -18,8 +18,6 @@ class TeacherRegisterForm(forms.ModelForm):
             'gmail', 'first_name', 'middle_name', 'last_name', 
             'second_last_name', 'birth_date', 'nickname'
         ]
-        
-        # Etiquetas en ESPAÑOL para el usuario
         labels = {
             'gmail': 'Correo Electrónico (Gmail)',
             'first_name': 'Primer Nombre',
@@ -29,17 +27,18 @@ class TeacherRegisterForm(forms.ModelForm):
             'birth_date': 'Fecha de Nacimiento',
             'nickname': 'Apodo o Alias',
         }
-
-        # Widgets para el diseño y control de entrada
         widgets = {
-            'birth_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            'gmail': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'ejemplo@gmail.com'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'middle_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'second_last_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'nickname': forms.TextInput(attrs={'class': 'form-control'}),
+            # HTML5 date input para que aparezca el calendario nativo
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # ESTO ES LO PROFESIONAL: 
+        # Itera sobre todos los campos (incluyendo los definidos arriba) 
+        # y les inyecta la clase de Bootstrap.
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
 
     def clean(self):
         cleaned_data = super().clean()

@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+            
+            <div class="card shadow border-0 p-4">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-dark">Eduplanner</h3>
+                    <p class="text-muted small">Inicie sesión para continuar</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-secondary">{{ form.gmail.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-envelope"></i></span>
+                            {{ form.gmail }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between">
+                            <label class="form-label fw-semibold small text-secondary">{{ form.password.label }}</label>
+                            <a href="#" class="small text-decoration-none">¿Olvidó su clave?</a>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-shield-lock"></i></span>
+                            {{ form.password }}
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg shadow-sm py-2">
+                            Entrar
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <p class="mb-0 small text-muted">¿No tienes cuenta aún?</p>
+                        <a href="{% url 'users:register_teacher' %}" class="fw-bold text-decoration-none">Regístrate aquí</a>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
