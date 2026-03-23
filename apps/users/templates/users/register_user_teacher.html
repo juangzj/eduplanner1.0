@@ -11,6 +11,14 @@
                     <p class="text-muted text-center text-md-start">Cree su cuenta de Eduplanner para comenzar.</p>
                 </div>
 
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
                 <form method="post">
                     {% csrf_token %}
 
@@ -23,22 +31,31 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold small text-secondary">{{ form.first_name.label }}</label>
                             {{ form.first_name }}
+                            {% if form.first_name.errors %}<div class="text-danger small">{{ form.first_name.errors.0 }}</div>{% endif %}
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold small text-secondary">{{ form.middle_name.label }}</label>
                             {{ form.middle_name }}
+                            {% if form.middle_name.errors %}<div class="text-danger small">{{ form.middle_name.errors.0 }}</div>{% endif %}
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold small text-secondary">{{ form.last_name.label }}</label>
                             {{ form.last_name }}
+                            {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors.0 }}</div>{% endif %}
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold small text-secondary">{{ form.second_last_name.label }}</label>
                             {{ form.second_last_name }}
+                            {% if form.second_last_name.errors %}<div class="text-danger small">{{ form.second_last_name.errors.0 }}</div>{% endif %}
                         </div>
+
                         <div class="col-md-6 mb-4">
                             <label class="form-label fw-semibold small text-secondary">{{ form.birth_date.label }}</label>
                             {{ form.birth_date }}
+                            {% if form.birth_date.errors %}<div class="text-danger small">{{ form.birth_date.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 
@@ -54,13 +71,20 @@
                                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
                                 {{ form.gmail }}
                             </div>
+                            {% if form.gmail.errors %}
+                                {% for error in form.gmail.errors %}
+                                    <div class="text-danger small mt-1">{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
                         </div>
+
                         <div class="col-md-5 mb-3">
                             <label class="form-label fw-semibold small text-secondary">{{ form.nickname.label }}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-at"></i></span>
                                 {{ form.nickname }}
                             </div>
+                            {% if form.nickname.errors %}<div class="text-danger small mt-1">{{ form.nickname.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 
@@ -71,7 +95,9 @@
                                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-shield-lock"></i></span>
                                 {{ form.password }}
                             </div>
+                            {% if form.password.errors %}<div class="text-danger small mt-1">{{ form.password.errors.0 }}</div>{% endif %}
                         </div>
+
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-semibold small text-secondary">{{ form.confirm_password.label }}</label>
                             <div class="input-group">
@@ -79,24 +105,22 @@
                                 {{ form.confirm_password }}
                             </div>
                             {% if form.confirm_password.errors %}
-                                <div class="text-danger small mt-1">{{ form.confirm_password.errors }}</div>
+                                <div class="text-danger small mt-1">{{ form.confirm_password.errors.0 }}</div>
                             {% endif %}
                         </div>
                     </div>
 
                     <div class="row mt-4">
-                        <div class="col-md-6 mx-auto">
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg shadow-sm py-2">
-                                    Crear cuenta de profesor
-                                </button>
-                            </div>
+                        <div class="col-md-6 mx-auto text-center">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm py-2 px-5">
+                                Registrarse
+                            </button>
                         </div>
                     </div>
 
                     <div class="text-center border-top pt-4 mt-5">
                         <p class="text-muted mb-0 small">¿Ya tienes una cuenta registrada?</p>
-                        <a href="#" class="btn btn-link link-primary fw-bold text-decoration-none">
+                        <a href="{% url 'users:login' %}" class="btn btn-link link-primary fw-bold text-decoration-none">
                             <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión aquí
                         </a>
                     </div>

@@ -34,12 +34,16 @@ class TeacherRegisterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # ESTO ES LO PROFESIONAL: 
-        # Itera sobre todos los campos (incluyendo los definidos arriba) 
-        # y les inyecta la clase de Bootstrap.
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
-
+        
+        # Si el formulario ya fue enviado y tiene errores, añadimos clases visuales
+        if self.is_bound:
+            for name, field in self.fields.items():
+                if self.errors.get(name):
+                    current_class = field.widget.attrs.get('class', '')
+                    field.widget.attrs.update({'class': f'{current_class} is-invalid'})
+    
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
