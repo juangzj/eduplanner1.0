@@ -1,26 +1,21 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
+{% load static %}
 
-<!-- ===== Layout con Sidebar ===== -->
-{% block content %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/base_left_sidebar.css' %}">
+{% endblock %}
 
-<div class="d-flex">
+{% block layout %}
 
-    <!-- Sidebar -->
-    {% include 'components/left_sidebar.html' %}
+{% include 'components/left_sidebar.html' %}
 
-    <!-- Contenido dinámico -->
-    <div class="flex-grow-1">
+<div class="contenido-principal">
 
-        <div class="container-fluid py-4">
-            {% block sidebar_content %}
-            {% endblock %}
-        </div>
-
+    <div class="container-fluid py-4 px-3 px-lg-4">
+        {% block sidebar_content %}
+        {% endblock %}
     </div>
 
 </div>
-
-        <!-- FOOTER -->
-        {% include 'components/footer.html' %}
 
 {% endblock %}

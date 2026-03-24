@@ -219,3 +219,5 @@ yarn-error.log*
 # Archivos de migración compilados
 # =========================
 postgres_data/
+
+estructure.md/ 

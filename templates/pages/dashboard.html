@@ -1,0 +1,150 @@
+{% extends 'base/base_left_sidebar.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Eduplanner{% endblock %}
+
+{% block sidebar_content %}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold mb-1">Bienvenido, Docente</h2>
+        <p class="text-secondary">Este es el resumen de tu actividad en Eduplanner.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <a href="#" class="text-decoration-none h-100 d-block">
+            <div class="card shadow-sm border-0 h-100 transition-hover">
+                <div class="card-body p-4 text-center text-sm-start">
+                    <div class="bg-primary bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
+                        <i class="bi bi-robot text-primary fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2 text-dark">Asistente IA</h6>
+                    <p class="text-muted small mb-0">Genera contenido pedagógico inteligente.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <a href="#" class="text-decoration-none h-100 d-block">
+            <div class="card shadow-sm border-0 h-100 transition-hover">
+                <div class="card-body p-4 text-center text-sm-start">
+                    <div class="bg-success bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
+                        <i class="bi bi-journal-text text-success fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2 text-dark">Planeaciones</h6>
+                    <p class="text-muted small mb-0">Organiza tus unidades y clases.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <a href="#" class="text-decoration-none h-100 d-block">
+            <div class="card shadow-sm border-0 h-100 transition-hover">
+                <div class="card-body p-4 text-center text-sm-start">
+                    <div class="bg-warning bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
+                        <i class="bi bi-check2-square text-warning fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2 text-dark">Rúbricas</h6>
+                    <p class="text-muted small mb-0">Evalúa con criterios claros.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-sm-6 col-xl-3">
+        <a href="#" class="text-decoration-none h-100 d-block">
+            <div class="card shadow-sm border-0 h-100 transition-hover">
+                <div class="card-body p-4 text-center text-sm-start">
+                    <div class="bg-info bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
+                        <i class="bi bi-bookmarks text-info fs-3"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2 text-dark">Biblioteca</h6>
+                    <p class="text-muted small mb-0">Tus recursos guardados.</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 p-4 pb-0">
+                <h5 class="fw-bold mb-0 text-dark">Actividad reciente</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item px-0 py-3 border-0 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
+                                <i class="bi bi-file-earmark-plus text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0 fw-medium">Planeación: Ciencias Naturales</p>
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Creado hace 10m</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-group-item px-0 py-3 border-0 border-bottom">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
+                                <i class="bi bi-robot text-info"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0 fw-medium">Rúbrica generada con IA</p>
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Ayer 4:30 PM</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="list-group-item px-0 py-3 border-0">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
+                                <i class="bi bi-gear text-success"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-0 fw-medium">Perfil de docente actualizado</p>
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Lunes, 23 Mar</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100 bg-dark text-white overflow-hidden" style="min-height: 300px;">
+            <div class="position-absolute top-0 end-0 p-3 opacity-10">
+                <i class="bi bi-lightning-fill display-1"></i>
+            </div>
+
+            <div class="card-body p-4 d-flex flex-column position-relative">
+                <h5 class="fw-bold mb-4">Acciones rápidas</h5>
+
+                <div class="d-grid gap-3 mt-auto">
+                    <a href="#" class="btn btn-primary fw-semibold py-2">
+                        <i class="bi bi-plus-lg me-2"></i> Nueva planeación
+                    </a>
+
+                    <a href="#" class="btn btn-outline-light py-2">
+                        <i class="bi bi-check2-square me-2"></i> Nueva rúbrica
+                    </a>
+
+                    <hr class="my-3 opacity-25">
+
+                    <a href="#" class="btn btn-link text-white-50 text-decoration-none text-center small">
+                        Ver tutoriales de uso
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
