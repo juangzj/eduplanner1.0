@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from ..forms import TeacherLoginForm
 from ..services.auth_user_teacher_services import login_teacher_service, process_logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 
 def login_view(request):
@@ -23,15 +24,12 @@ def login_view(request):
 
 
 def logout_view(request):
-    # Solo cerramos sesión si viene del formulario (POST)
     if request.method == 'POST':
         process_logout(request)
-        return redirect('landing:landing') # Cambia 'landing:index' por tu ruta real
-    
-    # Si alguien intenta entrar por URL (GET), lo mandamos al inicio
+        return redirect('landing:landing') 
     return redirect('landing:landing')
 
-
+@never_cache
 @login_required()
 def dashboard_view(request):
     return render (request, 'pages/dashboard.html')
