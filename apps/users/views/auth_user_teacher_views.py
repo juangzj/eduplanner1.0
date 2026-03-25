@@ -21,6 +21,14 @@ def login_view(request):
 
     return render(request, 'users/login.html', {'form': form})
 
+
+def logout(request):
+    return render(request, 'landing/index.html')
+
+
 @login_required()
 def dashboard_view(request):
     return render (request, 'pages/dashboard.html')
+
+
+
