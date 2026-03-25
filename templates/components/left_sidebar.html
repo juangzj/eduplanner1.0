@@ -51,18 +51,24 @@
 
 
     <!-- ===== LOGOUT ===== -->
-    <div class="p-3 border-top border-secondary">
+ <div class="p-3 border-top border-secondary">
 
-        <a href="{% url 'users:logout' %}" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
-            <i class="bi bi-box-arrow-right"></i>
-            Cerrar sesión
-        </a>
-    
-        <div class="text-center mt-3">
-            <small class="text-secondary">© 2026 Eduplanner</small>
-        </div>
+    <form id="logout-form-sidebar" action="{% url 'users:logout' %}" method="POST" style="display: none;">
+        {% csrf_token %}
+    </form>
 
+    <button type="button" 
+            onclick="openConfirmModal('¿Cerrar sesión?', '¿Estás seguro de que deseas cerrar sesion?', 'logout-form-sidebar', 'btn-danger')"
+            class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
+        <i class="bi bi-box-arrow-right"></i>
+        Cerrar sesión
+    </button>
+
+    <div class="text-center mt-3">
+        <small class="text-secondary">© 2026 Eduplanner</small>
     </div>
+
+</div>
 
 </div>
 

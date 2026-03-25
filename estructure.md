@@ -22,6 +22,18 @@ En móvil el contenido ocupa el 100% porque el sidebar es offcanvas
 A partir de este contexto quiero que cualquier mejora o cambio que me sugieras respete esta estructura y solo modifique lo necesario sin romper el layout base
 ```
 
+## Eliminación de un recurso con modal
+Cuando se vaya a eliminar un recurso, se debe hacer uso de este modal para confirmar  
+```HTML
+<form id="delete-resource-1" action="/eliminar/recurso/1" method="POST" style="display:none;">
+    {% csrf_token %}
+</form>
+
+<button type="button" class="btn btn-sm btn-danger" 
+        onclick="openConfirmModal('¿Eliminar Recurso?', 'Esta acción no se puede deshacer.', 'delete-resource-1')">
+    Eliminar
+</button>
+```
 
 
 

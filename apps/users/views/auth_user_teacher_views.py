@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from ..forms import TeacherLoginForm
-from ..services.auth_user_teacher_services import login_teacher_service
+from ..services.auth_user_teacher_services import login_teacher_service, process_logout
 from django.contrib.auth.decorators import login_required
 
 
@@ -22,8 +22,14 @@ def login_view(request):
     return render(request, 'users/login.html', {'form': form})
 
 
-def logout(request):
-    return render(request, 'landing/index.html')
+def logout_view(request):
+    # Solo cerramos sesión si viene del formulario (POST)
+    if request.method == 'POST':
+        process_logout(request)
+        return redirect('landing:landing') # Cambia 'landing:index' por tu ruta real
+    
+    # Si alguien intenta entrar por URL (GET), lo mandamos al inicio
+    return redirect('landing:landing')
 
 
 @login_required()
