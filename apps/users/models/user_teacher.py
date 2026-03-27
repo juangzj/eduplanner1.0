@@ -4,11 +4,13 @@ from django.contrib.auth.models import (
     PermissionsMixin,
     BaseUserManager,
 )
+import uuid
+
 
 # ------------------- MANAGER -------------------
 class TeacherUserManager(BaseUserManager):
     """
-    Manager que define cómo se crean los docentes (usuarios normales) 
+    Manager que define cómo se crean los docentes (usuarios normales)
     y superusuarios usando el gmail como identificador.
     """
 
@@ -41,7 +43,12 @@ class TeacherUser(AbstractBaseUser, PermissionsMixin):
     Usa 'gmail' como identificador único de inicio de sesión.
     """
 
-    
+    # ID único automático (UUID)
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
 
     # Campos personales
     first_name = models.CharField(max_length=100, verbose_name="Primer Nombre")
@@ -51,19 +58,19 @@ class TeacherUser(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(max_length=50, blank=True, null=True, verbose_name="Apodo")
     birth_date = models.DateField(verbose_name="Fecha de Nacimiento")
 
-    #correo electronico 
+    # Correo electrónico (único)
     gmail = models.EmailField(unique=True, verbose_name="Correo Electrónico (Gmail)")
 
     # Campos de estado y permisos
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
-    # Vinculamos con el nuevo manager
+    # Manager personalizado
     objects = TeacherUserManager()
 
     # Configuración de Login
     USERNAME_FIELD = "gmail"
-    
+
     # Campos obligatorios al crear por consola (createsuperuser)
     REQUIRED_FIELDS = ["first_name", "last_name", "birth_date"]
 

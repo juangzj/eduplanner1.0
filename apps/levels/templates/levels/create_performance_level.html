@@ -1,0 +1,155 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/base_left_sidebar.css' %}">
+{% endblock %}
+
+{% block layout %}
+
+{% include 'components/left_sidebar.html' %}
+
+<div class="contenido-principal">
+
+    <div class="container-fluid py-4 px-3 px-lg-4">
+
+        <!-- Título -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="fw-bold">Crear Nivel de Desempeño</h3>
+                <p class="text-muted mb-0">Complete la información académica para registrar un nuevo nivel.</p>
+            </div>
+        </div>
+
+        <!-- Tarjeta principal -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    
+                    <div class="card-body">
+
+                        <form method="POST">
+                            {% csrf_token %}
+
+                            <!-- ERRORES GENERALES -->
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {{ form.non_field_errors }}
+                                </div>
+                            {% endif %}
+
+                            <!-- ================= ÁREA ================= -->
+                            <div class="row mb-3">
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Área</label>
+                                    {{ form.area }}
+                                    <small class="text-muted">{{ form.area.help_text }}</small>
+                                    {{ form.area.errors }}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Grado</label>
+                                    {{ form.grade }}
+                                    <small class="text-muted">{{ form.grade.help_text }}</small>
+                                    {{ form.grade.errors }}
+                                </div>
+
+                            </div>
+
+                            <!-- ================= TITULO ================= -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Título del Nivel</label>
+                                    {{ form.level_title }}
+                                    <small class="text-muted">{{ form.level_title.help_text }}</small>
+                                    {{ form.level_title.errors }}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Asignatura</label>
+                                    {{ form.subject }}
+                                    <small class="text-muted">{{ form.subject.help_text }}</small>
+                                    {{ form.subject.errors }}
+                                </div>
+                            </div>
+
+                            <!-- ================= DESCRIPCIÓN ================= -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Descripción del Nivel</label>
+                                    {{ form.level_description }}
+                                    <small class="text-muted">{{ form.level_description.help_text }}</small>
+                                    {{ form.level_description.errors }}
+                                </div>
+                            </div>
+
+                            <!-- ================= COMPETENCIA ================= -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Competencia</label>
+                                    {{ form.competency }}
+                                    <small class="text-muted">{{ form.competency.help_text }}</small>
+                                    {{ form.competency.errors }}
+                                </div>
+                            </div>
+
+                            <!-- ================= AFIRMACIÓN ================= -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Afirmación</label>
+                                    {{ form.statement }}
+                                    <small class="text-muted">{{ form.statement.help_text }}</small>
+                                    {{ form.statement.errors }}
+                                </div>
+                            </div>
+
+                            <!-- ================= EVIDENCIA ================= -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Evidencia de Aprendizaje</label>
+                                    {{ form.learning_evidence }}
+                                    <small class="text-muted">{{ form.learning_evidence.help_text }}</small>
+                                    {{ form.learning_evidence.errors }}
+                                </div>
+                            </div>
+
+                            <!-- ================= PERIODO ACADÉMICO ================= -->
+                            <div class="row mb-4">
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Periodo Académico</label>
+
+                                    <div class="form-group">
+                                        {{ form.academic_period }}
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Seleccione el periodo en el que se aplicará el nivel de desempeño.
+                                    </small>
+
+                                    {{ form.academic_period.errors }}
+                                </div>
+
+                            </div>
+
+                            <!-- ================= BOTONES ================= -->
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="#" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar Nivel de Desempeño
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

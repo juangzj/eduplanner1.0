@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # apps
     'apps.users.apps.UsersConfig',
     'apps.landing.apps.LandingConfig',
+    'apps.levels.apps.LevelsConfig',
     
 ]
 
