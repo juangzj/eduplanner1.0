@@ -1,1 +1,2 @@
 from .performance_level_template_form import PerformanceLevelTemplateCreateForm
+from .generated_levels_form import GeneratedLevelsCreateForm
