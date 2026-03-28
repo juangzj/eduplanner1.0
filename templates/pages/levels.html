@@ -9,27 +9,31 @@
 
     <!-- ================= TÍTULO GENERAL ================= -->
     <div class="row mb-4">
-        <div class="col-12">
+        <div class="col-lg-8">
             <h3 class="fw-bold">Gestión de niveles de desempeño</h3>
             <p class="text-muted mb-0">
                 Cree plantillas y genere automáticamente los niveles bajo, básico, alto y superior con IA.
             </p>
         </div>
+
+        <!-- BOTÓN PARA ABRIR FORMULARIO -->
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <button class="btn btn-primary shadow-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalCrearPlantilla">
+                <i class="bi bi-plus-circle"></i>
+                Nueva plantilla
+            </button>
+        </div>
     </div>
 
+
+    <!-- ================= LISTADO PRINCIPAL ================= -->
     <div class="row">
-
-        <!-- ================= FORMULARIO ================= -->
-        <div class="col-lg-5 mb-4">
-            {% include "levels/create_performance_level.html" %}
-        </div>
-
-
-        <!-- ================= LISTADO ================= -->
-        <div class="col-lg-7">
+        <div class="col-12">
 
             <div class="card shadow-sm border-0">
-                
+
                 <div class="card-header bg-white border-bottom">
                     <h5 class="mb-0">
                         <i class="bi bi-list-check"></i>
@@ -44,7 +48,7 @@
                         {% for performance in performance_levels %}
 
                         <div id="template-{{ performance.id }}" class="card border-0 shadow-sm mb-4">
-                            
+
                             <div class="card-body">
 
                                 <!-- ================= DATOS PRINCIPALES ================= -->
@@ -56,7 +60,9 @@
                                         </h6>
 
                                         <small class="text-muted">
-                                            {{ performance.area }} | {{ performance.get_grade_display }} | {{ performance.subject }}
+                                            {{ performance.area }} |
+                                            {{ performance.get_grade_display }} |
+                                            {{ performance.subject }}
                                         </small>
                                     </div>
 
@@ -88,13 +94,52 @@
 
                                 </div>
 
+                                <!-- ================= INFORMACIÓN COMPLETA ================= -->
+                                <div class="row mb-3">
+
+                                    <div class="col-md-6">
+                                        <small class="text-muted d-block">Área</small>
+                                        <span class="fw-semibold">{{ performance.area }}</span>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <small class="text-muted d-block">Asignatura</small>
+                                        <span class="fw-semibold">{{ performance.subject }}</span>
+                                    </div>
+
+                                    <div class="col-md-6 mt-2">
+                                        <small class="text-muted d-block">Grado</small>
+                                        <span class="fw-semibold">{{ performance.get_grade_display }}</span>
+                                    </div>
+
+                                    <div class="col-md-6 mt-2">
+                                        <small class="text-muted d-block">Fecha de creación</small>
+                                        <span class="fw-semibold">
+                                            {{ performance.created_at|date:"d/m/Y H:i" }}
+                                        </span>
+                                    </div>
+
+                                    <div class="col-md-6 mt-2">
+                                        <small class="text-muted d-block">Última actualización</small>
+                                        <span class="fw-semibold">
+                                            {{ performance.updated_at|date:"d/m/Y H:i" }}
+                                        </span>
+                                    </div>
+
+                                </div>
+
                                 <!-- ================= DESCRIPCIÓN ================= -->
-                                <p class="text-muted small mb-3">
-                                    {{ performance.level_description }}
-                                </p>
+                                <div class="mb-3">
+                                    <small class="text-muted d-block">Descripción del desempeño</small>
+                                    <p class="mb-0">
+                                        {{ performance.level_description }}
+                                    </p>
+                                </div>
 
                                 <!-- ================= MOSTRAR NIVELES SI EXISTEN ================= -->
                                 {% if performance.has_generated_levels %}
+
+                                <hr>
 
                                 <div class="row g-3 mt-2">
 
@@ -136,6 +181,13 @@
 
                                 </div>
 
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        Generados el:
+                                        {{ performance.generated_levels.created_at|date:"d/m/Y H:i" }}
+                                    </small>
+                                </div>
+
                                 {% else %}
 
                                 <div class="alert alert-warning mt-3 mb-0">
@@ -164,9 +216,33 @@
             </div>
 
         </div>
-
     </div>
 
+</div>
+
+
+<!-- ================= MODAL FORMULARIO ================= -->
+<div class="modal fade" id="modalCrearPlantilla" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle"></i>
+                    Crear nueva plantilla de desempeño
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                {% include "levels/create_performance_level.html" %}
+
+            </div>
+
+        </div>
+    </div>
 </div>
 
 {% endblock %}
