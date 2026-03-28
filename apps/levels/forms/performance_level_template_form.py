@@ -19,7 +19,7 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
 
         # ---------------- HELP TEXTS ----------------
         help_texts = {
-            "area": "Área académica (ej: Matemáticas, Lenguaje, Ciencias).",
+            "area": "Seleccione el área académica.",
             "level_title": "Título opcional del nivel de desempeño.",
             "level_description": "Descripción general del nivel.",
             "grade": "Seleccione el grado académico.",
@@ -33,7 +33,7 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
         # ---------------- ERROR MESSAGES ----------------
         error_messages = {
             "area": {
-                "required": "Debe ingresar el área académica.",
+                "required": "Debe seleccionar el área académica.",
             },
             "grade": {
                 "required": "Debe seleccionar el grado.",
@@ -58,9 +58,8 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
         # ---------------- WIDGETS ----------------
         widgets = {
 
-            "area": forms.TextInput(attrs={
-                "class": "form-control",
-                "placeholder": "Área académica"
+            "area": forms.Select(attrs={
+                "class": "form-select",
             }),
 
             "level_title": forms.TextInput(attrs={

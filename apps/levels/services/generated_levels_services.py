@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import ast
+import json
 from typing import Any
 
 from django.db import transaction
@@ -24,10 +26,10 @@ class GeneratedLevelsCreateService:
 
         generated_levels = GeneratedLevels.objects.create(
             performance_template=template,
-            low_level=ai_response["low_level"],
-            basic_level=ai_response["basic_level"],
-            high_level=ai_response["high_level"],
-            superior_level=ai_response["superior_level"],
+            low_level=GeneratedLevelsCreateService._normalize_level_text(ai_response["low_level"]),
+            basic_level=GeneratedLevelsCreateService._normalize_level_text(ai_response["basic_level"]),
+            high_level=GeneratedLevelsCreateService._normalize_level_text(ai_response["high_level"]),
+            superior_level=GeneratedLevelsCreateService._normalize_level_text(ai_response["superior_level"]),
         )
 
         template.generated_level_id = str(generated_levels.id)
@@ -48,3 +50,31 @@ class GeneratedLevelsCreateService:
             "level_title": template.level_title,
             "level_description": template.level_description,
         }
+
+    @staticmethod
+    def _normalize_level_text(value: Any) -> str:
+        if isinstance(value, dict):
+            return str(
+                value.get("level_description")
+                or value.get("description")
+                or value.get("content")
+                or ""
+            ).strip()
+
+        raw = str(value or "").strip()
+        if not raw:
+            return ""
+
+        parsed: Any = None
+        try:
+            parsed = json.loads(raw)
+        except (json.JSONDecodeError, TypeError):
+            try:
+                parsed = ast.literal_eval(raw)
+            except (ValueError, SyntaxError):
+                parsed = None
+
+        if isinstance(parsed, dict):
+            return GeneratedLevelsCreateService._normalize_level_text(parsed)
+
+        return raw

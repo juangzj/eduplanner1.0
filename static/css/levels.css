@@ -1,71 +1,62 @@
+/* Contenedor principal de nivel */
 .level-box {
     border-radius: 14px;
     border: 1px solid #dde3eb;
     background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    padding: 0.95rem;
-    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+    padding: 1.1rem;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    transition: all 0.3s ease;
 }
 
+.level-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+}
+
+/* Encabezado del nivel (Badge interno) */
 .level-box__header {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    border-radius: 999px;
-    padding: 0.2rem 0.6rem;
+    gap: 0.4rem;
+    border-radius: 8px;
+    padding: 0.3rem 0.7rem;
     font-size: 0.75rem;
-    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.03em;
 }
 
+/* Contenido del texto generado */
 .level-box__content {
-    color: #243447;
-    line-height: 1.5;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    color: #1e293b;
+    line-height: 1.6;
 }
 
-.level-low {
-    border-left: 5px solid #dc3545;
+.level-box__content h6 {
+    color: #0f172a;
+    font-size: 0.9rem;
 }
 
-.level-low .level-box__header {
-    background: #fbe4e6;
-    color: #922b37;
-}
+/* Colores por Nivel */
+.level-low { border-top: 4px solid #ef4444; }
+.level-low .level-box__header { background: #fee2e2; color: #b91c1c; }
 
-.level-basic {
-    border-left: 5px solid #fd7e14;
-}
+.level-basic { border-top: 4px solid #f97316; }
+.level-basic .level-box__header { background: #ffedd5; color: #c2410c; }
 
-.level-basic .level-box__header {
-    background: #fff1e3;
-    color: #9a5212;
-}
+.level-high { border-top: 4px solid #3b82f6; }
+.level-high .level-box__header { background: #dbeafe; color: #1d4ed8; }
 
-.level-high {
-    border-left: 5px solid #0d6efd;
-}
+.level-superior { border-top: 4px solid #10b981; }
+.level-superior .level-box__header { background: #d1fae5; color: #047857; }
 
-.level-high .level-box__header {
-    background: #e4efff;
-    color: #0a4bb8;
-}
-
-.level-superior {
-    border-left: 5px solid #198754;
-}
-
-.level-superior .level-box__header {
-    background: #e3f4ec;
-    color: #11623d;
+/* Estilos extra para la alerta de "Sin niveles" */
+.border-dashed {
+    border: 2px dashed #dee2e6 !important;
+    background-color: #fdfdfd;
 }
 
 @media (max-width: 767.98px) {
-    .level-box {
-        padding: 0.85rem;
-    }
-
-    .level-box__content {
-        font-size: 0.875rem;
-    }
+    .level-box { padding: 1rem; }
+    .level-box__content p { font-size: 0.85rem; }
 }

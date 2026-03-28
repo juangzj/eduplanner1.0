@@ -72,7 +72,11 @@ class PerformanceLevelTemplate(models.Model):
     )
 
     # Campos de contenido
-    area = models.CharField(max_length=255, verbose_name="Área")
+    area = models.CharField(
+        max_length=255,
+        choices=AREAS_OPCIONES,
+        verbose_name="Área"
+    )
 
     level_title = models.CharField(
         max_length=255,

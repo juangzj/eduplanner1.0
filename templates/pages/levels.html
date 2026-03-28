@@ -1,5 +1,6 @@
 {% extends 'base/base_left_sidebar.html' %}
 {% load static %}
+{% load levels_extras %}
 
 {% block title %}Gestión de niveles{% endblock %}
 
@@ -12,7 +13,6 @@
 
 <div class="container-fluid">
 
-    <!-- ================= TÍTULO GENERAL ================= -->
     <div class="row mb-4">
         <div class="col-lg-8">
             <h3 class="fw-bold">Gestión de niveles de desempeño</h3>
@@ -21,7 +21,6 @@
             </p>
         </div>
 
-        <!-- BOTÓN PARA ABRIR FORMULARIO -->
         <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
             <button class="btn btn-primary shadow-sm"
                     data-bs-toggle="modal"
@@ -33,7 +32,6 @@
     </div>
 
 
-    <!-- ================= LISTADO PRINCIPAL ================= -->
     <div class="row">
         <div class="col-12">
 
@@ -82,7 +80,6 @@
             </div>
 
             <div class="card shadow-sm border-0">
-
                 <div class="card-header bg-white border-bottom">
                     <h5 class="mb-0">
                         <i class="bi bi-list-check"></i>
@@ -91,213 +88,183 @@
                 </div>
 
                 <div class="card-body">
-
                     {% if performance_levels %}
-
                         {% for performance in performance_levels %}
-
-                        <div id="template-{{ performance.id }}" class="card border-0 shadow-sm mb-4">
-
+                        <div id="template-{{ performance.id }}" class="card border-0 shadow-sm mb-4 bg-light bg-opacity-10 border">
                             <div class="card-body">
 
-                                <!-- ================= DATOS PRINCIPALES ================= -->
                                 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
-
                                     <div>
-                                        <h6 class="fw-bold mb-1">
+                                        <h6 class="fw-bold mb-1 text-primary">
                                             {{ performance.level_title|default:"Sin título" }}
                                         </h6>
-
                                         <small class="text-muted">
-                                            {{ performance.area }} |
-                                            {{ performance.get_grade_display }} |
-                                            {{ performance.subject }}
+                                            <i class="bi bi-geo-alt"></i> {{ performance.area }} |
+                                            <i class="bi bi-mortarboard"></i> {{ performance.get_grade_display }} |
+                                            <i class="bi bi-book"></i> {{ performance.subject }}
                                         </small>
                                     </div>
 
-                                    <!-- ================= BOTONES DINÁMICOS ================= -->
                                     <div class="d-flex gap-2 flex-wrap">
-
                                         {% if performance.has_generated_levels %}
-
-                                            <a href="#template-{{ performance.id }}"
+                                            <a href="#generated-levels-{{ performance.id }}"
                                                class="btn btn-sm btn-outline-primary">
-                                               Ver niveles generados
+                                               <i class="bi bi-eye"></i> Ver niveles
                                             </a>
-
                                         {% else %}
-
                                             <a href="{% url 'levels:generated-levels-create' %}?template={{ performance.id }}"
-                                               class="btn btn-sm btn-success">
-                                               Generar niveles con IA
+                                               class="btn btn-sm btn-success shadow-sm">
+                                               <i class="bi bi-magic"></i> Generar con IA
                                             </a>
-
-                                            <a href="{% url 'levels:generated-levels-create' %}?template={{ performance.id }}"
-                                               class="btn btn-sm btn-outline-secondary">
-                                               Escribir niveles manualmente
-                                            </a>
-
                                         {% endif %}
-
                                     </div>
-
                                 </div>
 
-                                <!-- ================= INFORMACIÓN COMPLETA ================= -->
-                                <div class="row mb-3">
-
-                                    <div class="col-md-6">
-                                        <small class="text-muted d-block">Área</small>
-                                        <span class="fw-semibold">{{ performance.area }}</span>
+                                <div class="mb-3 p-3 bg-white rounded border border-light">
+                                    <small class="text-muted d-block fw-bold text-uppercase mb-2" style="font-size: 0.7rem;">Información del template</small>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <small class="text-muted d-block">Área</small>
+                                            <p class="mb-0 fw-semibold">{{ performance.area }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small class="text-muted d-block">Asignatura</small>
+                                            <p class="mb-0 fw-semibold">{{ performance.subject }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small class="text-muted d-block">Grado</small>
+                                            <p class="mb-0 fw-semibold">{{ performance.get_grade_display }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <small class="text-muted d-block">Periodo académico</small>
+                                            <p class="mb-0 fw-semibold">{{ performance.academic_period }}</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <small class="text-muted d-block">Competencia</small>
+                                            <p class="mb-0">{{ performance.competency|default:"-" }}</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <small class="text-muted d-block">Afirmación</small>
+                                            <p class="mb-0">{{ performance.statement|linebreaksbr }}</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <small class="text-muted d-block">Evidencia de aprendizaje</small>
+                                            <p class="mb-0">{{ performance.learning_evidence|linebreaksbr }}</p>
+                                        </div>
+                                        <div class="col-12">
+                                            <small class="text-muted d-block">Descripción del desempeño</small>
+                                            <p class="mb-0">{{ performance.level_description|default:"-"|linebreaksbr }}</p>
+                                        </div>
                                     </div>
-
-                                    <div class="col-md-6">
-                                        <small class="text-muted d-block">Asignatura</small>
-                                        <span class="fw-semibold">{{ performance.subject }}</span>
-                                    </div>
-
-                                    <div class="col-md-6 mt-2">
-                                        <small class="text-muted d-block">Grado</small>
-                                        <span class="fw-semibold">{{ performance.get_grade_display }}</span>
-                                    </div>
-
-                                    <div class="col-md-6 mt-2">
-                                        <small class="text-muted d-block">Fecha de creación</small>
-                                        <span class="fw-semibold">
-                                            {{ performance.created_at|date:"d/m/Y H:i" }}
-                                        </span>
-                                    </div>
-
-                                    <div class="col-md-6 mt-2">
-                                        <small class="text-muted d-block">Última actualización</small>
-                                        <span class="fw-semibold">
-                                            {{ performance.updated_at|date:"d/m/Y H:i" }}
-                                        </span>
-                                    </div>
-
                                 </div>
 
-                                <!-- ================= DESCRIPCIÓN ================= -->
-                                <div class="mb-3">
-                                    <small class="text-muted d-block">Descripción del desempeño</small>
-                                    <p class="mb-0">
-                                        {{ performance.level_description }}
-                                    </p>
-                                </div>
-
-                                <!-- ================= MOSTRAR NIVELES SI EXISTEN ================= -->
                                 {% if performance.has_generated_levels %}
-
-                                <hr>
-
-                                <div class="row g-3 mt-2">
-
-                                    <div class="col-md-6">
+                                <div id="generated-levels-{{ performance.id }}" class="row g-3">
+                                    <div class="col-md-6 col-xl-3">
                                         <div class="level-box level-low h-100">
                                             <div class="level-box__header">
-                                                <small class="fw-semibold">Nivel bajo</small>
+                                                <i class="bi bi-exclamation-triangle"></i>
+                                                <strong>Nivel Bajo</strong>
                                             </div>
-                                            <p class="small mb-0 mt-2 level-box__content">
-                                                {{ performance.generated_levels.low_level|linebreaksbr }}
-                                            </p>
+                                            <div class="mt-2 level-box__content">
+                                                {% with parsed_title=performance.generated_levels.low_level|level_title parsed_description=performance.generated_levels.low_level|level_description %}
+                                                {% if parsed_title %}
+                                                <h6 class="fw-bold small mb-1">{{ parsed_title }}</h6>
+                                                {% endif %}
+                                                <p class="small mb-0 opacity-75">{{ parsed_description|linebreaksbr }}</p>
+                                                {% endwith %}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xl-3">
                                         <div class="level-box level-basic h-100">
                                             <div class="level-box__header">
-                                                <small class="fw-semibold">Nivel básico</small>
+                                                <i class="bi bi-dash-circle"></i>
+                                                <strong>Nivel Básico</strong>
                                             </div>
-                                            <p class="small mb-0 mt-2 level-box__content">
-                                                {{ performance.generated_levels.basic_level|linebreaksbr }}
-                                            </p>
+                                            <div class="mt-2 level-box__content">
+                                                {% with parsed_title=performance.generated_levels.basic_level|level_title parsed_description=performance.generated_levels.basic_level|level_description %}
+                                                {% if parsed_title %}
+                                                <h6 class="fw-bold small mb-1">{{ parsed_title }}</h6>
+                                                {% endif %}
+                                                <p class="small mb-0 opacity-75">{{ parsed_description|linebreaksbr }}</p>
+                                                {% endwith %}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xl-3">
                                         <div class="level-box level-high h-100">
                                             <div class="level-box__header">
-                                                <small class="fw-semibold">Nivel alto</small>
+                                                <i class="bi bi-graph-up-arrow"></i>
+                                                <strong>Nivel Alto</strong>
                                             </div>
-                                            <p class="small mb-0 mt-2 level-box__content">
-                                                {{ performance.generated_levels.high_level|linebreaksbr }}
-                                            </p>
+                                            <div class="mt-2 level-box__content">
+                                                {% with parsed_title=performance.generated_levels.high_level|level_title parsed_description=performance.generated_levels.high_level|level_description %}
+                                                {% if parsed_title %}
+                                                <h6 class="fw-bold small mb-1">{{ parsed_title }}</h6>
+                                                {% endif %}
+                                                <p class="small mb-0 opacity-75">{{ parsed_description|linebreaksbr }}</p>
+                                                {% endwith %}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 col-xl-3">
                                         <div class="level-box level-superior h-100">
                                             <div class="level-box__header">
-                                                <small class="fw-semibold">Nivel superior</small>
+                                                <i class="bi bi-trophy"></i>
+                                                <strong>Nivel Superior</strong>
                                             </div>
-                                            <p class="small mb-0 mt-2 level-box__content">
-                                                {{ performance.generated_levels.superior_level|linebreaksbr }}
-                                            </p>
+                                            <div class="mt-2 level-box__content">
+                                                {% with parsed_title=performance.generated_levels.superior_level|level_title parsed_description=performance.generated_levels.superior_level|level_description %}
+                                                {% if parsed_title %}
+                                                <h6 class="fw-bold small mb-1">{{ parsed_title }}</h6>
+                                                {% endif %}
+                                                <p class="small mb-0 opacity-75">{{ parsed_description|linebreaksbr }}</p>
+                                                {% endwith %}
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
 
-                                <div class="mt-3">
-                                    <small class="text-muted">
-                                        Generados el:
-                                        {{ performance.generated_levels.created_at|date:"d/m/Y H:i" }}
+                                <div class="mt-3 text-end">
+                                    <small class="text-muted" style="font-size: 0.75rem;">
+                                        <i class="bi bi-calendar3"></i> Generado: {{ performance.generated_levels.created_at|date:"d/m/Y" }}
                                     </small>
                                 </div>
-
                                 {% else %}
-
-                                <div class="alert alert-warning mt-3 mb-0">
-                                    Esta plantilla aún no tiene niveles generados.
+                                <div class="alert alert-light border-dashed mt-3 mb-0 text-center py-3">
+                                    <i class="bi bi-info-circle"></i> Esta plantilla aún no tiene niveles detallados. Use el botón superior para generarlos.
                                 </div>
-
                                 {% endif %}
 
                             </div>
                         </div>
-
                         {% endfor %}
-
                     {% else %}
-
                         <div class="text-center py-5">
                             <i class="bi bi-folder-x display-6 text-muted"></i>
-                            <p class="text-muted mt-3 mb-0">
-                                No hay plantillas de desempeño registradas.
-                            </p>
+                            <p class="text-muted mt-3 mb-0">No hay plantillas registradas.</p>
                         </div>
-
                     {% endif %}
-
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
 
-
-<!-- ================= MODAL FORMULARIO ================= -->
 <div class="modal fade" id="modalCrearPlantilla" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-plus-circle"></i>
-                    Crear nueva plantilla de desempeño
-                </h5>
-
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-plus-circle"></i> Crear nueva plantilla</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
-
                 {% include "levels/create_performance_level.html" %}
-
             </div>
-
         </div>
     </div>
 </div>
