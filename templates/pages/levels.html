@@ -117,6 +117,17 @@
                                                <i class="bi bi-magic"></i> Generar con IA
                                             </a>
                                         {% endif %}
+
+                                        <form id="delete-template-form-{{ performance.id }}"
+                                              method="post"
+                                              action="{% url 'levels:delete_performance_level' performance.id %}">
+                                            {% csrf_token %}
+                                            <button type="button"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="openConfirmModal('Eliminar plantilla', 'Esta accion eliminara la plantilla de forma logica. ¿Deseas continuar?', 'delete-template-form-{{ performance.id }}', 'btn-danger')">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
 

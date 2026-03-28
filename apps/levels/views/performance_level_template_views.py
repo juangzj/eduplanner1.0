@@ -2,11 +2,13 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 
 from ..forms import PerformanceLevelFilterForm, PerformanceLevelTemplateCreateForm
 from ..models import PerformanceLevelTemplate
-from ..services import create_performance_level_service
+from ..services import create_performance_level_service, soft_delete_performance_level_service
 
 
 def performance_level_create_view(request):
@@ -108,3 +110,19 @@ def levels_view(request):
             "performance_levels": performance_levels,
         },
     )
+
+
+@login_required(login_url="/users/login/")
+@require_POST
+def performance_level_soft_delete_view(request: HttpRequest, performance_id: str) -> HttpResponse:
+    was_deleted = soft_delete_performance_level_service(
+        performance_id=performance_id,
+        user=request.user,
+    )
+
+    if was_deleted:
+        messages.success(request, "La plantilla fue eliminada correctamente.")
+    else:
+        messages.error(request, "No se pudo eliminar la plantilla seleccionada.")
+
+    return redirect("levels:levels")
