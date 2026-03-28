@@ -7,40 +7,17 @@ class GeneratedLevelsCreateForm(forms.ModelForm):
 
     class Meta:
         model = GeneratedLevels
-
-        # Campos que NO deben mostrarse en el formulario
-        exclude = [
-            "id",            # UUID automático
-            "created_at",
-            "updated_at",
-            "deleted_at",
-        ]
+        fields = ["performance_template"]
 
         # ---------------- HELP TEXTS ----------------
         help_texts = {
             "performance_template": "Seleccione la plantilla de desempeño a la que pertenecen estos niveles.",
-            "low_level": "Descripción del nivel bajo.",
-            "basic_level": "Descripción del nivel básico.",
-            "high_level": "Descripción del nivel alto.",
-            "superior_level": "Descripción del nivel superior.",
         }
 
         # ---------------- ERROR MESSAGES ----------------
         error_messages = {
             "performance_template": {
                 "required": "Debe seleccionar una plantilla de desempeño.",
-            },
-            "low_level": {
-                "required": "Debe escribir el nivel bajo.",
-            },
-            "basic_level": {
-                "required": "Debe escribir el nivel básico.",
-            },
-            "high_level": {
-                "required": "Debe escribir el nivel alto.",
-            },
-            "superior_level": {
-                "required": "Debe escribir el nivel superior.",
             },
         }
 
@@ -49,32 +26,7 @@ class GeneratedLevelsCreateForm(forms.ModelForm):
 
             # RELACIÓN (SELECT)
             "performance_template": forms.Select(attrs={
-                "class": "form-select"
-            }),
-
-            # NIVELES
-            "low_level": forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": 3,
-                "placeholder": "Nivel bajo"
-            }),
-
-            "basic_level": forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": 3,
-                "placeholder": "Nivel básico"
-            }),
-
-            "high_level": forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": 3,
-                "placeholder": "Nivel alto"
-            }),
-
-            "superior_level": forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": 3,
-                "placeholder": "Nivel superior"
+                "class": "form-select",
             }),
         }
 

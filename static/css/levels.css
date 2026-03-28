@@ -1,0 +1,71 @@
+.level-box {
+    border-radius: 14px;
+    border: 1px solid #dde3eb;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    padding: 0.95rem;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.06);
+}
+
+.level-box__header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+}
+
+.level-box__content {
+    color: #243447;
+    line-height: 1.5;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.level-low {
+    border-left: 5px solid #dc3545;
+}
+
+.level-low .level-box__header {
+    background: #fbe4e6;
+    color: #922b37;
+}
+
+.level-basic {
+    border-left: 5px solid #fd7e14;
+}
+
+.level-basic .level-box__header {
+    background: #fff1e3;
+    color: #9a5212;
+}
+
+.level-high {
+    border-left: 5px solid #0d6efd;
+}
+
+.level-high .level-box__header {
+    background: #e4efff;
+    color: #0a4bb8;
+}
+
+.level-superior {
+    border-left: 5px solid #198754;
+}
+
+.level-superior .level-box__header {
+    background: #e3f4ec;
+    color: #11623d;
+}
+
+@media (max-width: 767.98px) {
+    .level-box {
+        padding: 0.85rem;
+    }
+
+    .level-box__content {
+        font-size: 0.875rem;
+    }
+}

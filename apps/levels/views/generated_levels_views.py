@@ -27,11 +27,17 @@ class GeneratedLevelsCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def form_valid(self, form):
-        GeneratedLevelsCreateService.create_generated_levels_service(
-            form=form,
-            user=self.request.user,
-        )
-        messages.success(self.request, "Los niveles fueron guardados correctamente.")
+        try:
+            self.object = GeneratedLevelsCreateService.create_generated_levels_service(
+                form=form,
+                user=self.request.user,
+            )
+        except Exception as exc:
+            form.add_error(None, f"No fue posible generar los niveles con IA: {exc}")
+            messages.error(self.request, "Ocurrio un error al generar niveles con IA.")
+            return self.form_invalid(form)
+
+        messages.success(self.request, "Los niveles fueron generados y guardados correctamente.")
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form):

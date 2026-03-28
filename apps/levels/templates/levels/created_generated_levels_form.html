@@ -2,7 +2,7 @@
     
     <div class="card-header bg-white border-bottom py-2">
         <h6 class="mb-0 fw-semibold">
-            Completar niveles (manual o con IA)
+            Generar niveles con IA
         </h6>
     </div>
 
@@ -24,31 +24,14 @@
                 {{ form.performance_template.errors }}
             </div>
 
-            <hr class="my-3">
-
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Nivel bajo</label>
-                {{ form.low_level }}
-            </div>
-
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Nivel básico</label>
-                {{ form.basic_level }}
-            </div>
-
-            <div class="mb-2">
-                <label class="form-label small fw-semibold">Nivel alto</label>
-                {{ form.high_level }}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-semibold">Nivel superior</label>
-                {{ form.superior_level }}
+            <div class="alert alert-info py-2" role="alert">
+                Al hacer clic en el boton, se generaran automaticamente los niveles Bajo, Basico,
+                Alto y Superior a partir de la informacion de la plantilla.
             </div>
 
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-sm btn-primary">
-                    Guardar niveles
+                    Generar con IA
                 </button>
             </div>
 
