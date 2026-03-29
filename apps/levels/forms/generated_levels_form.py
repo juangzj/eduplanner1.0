@@ -53,3 +53,38 @@ class GeneratedLevelsCreateForm(forms.ModelForm):
         if GeneratedLevels.objects.filter(performance_template=template).exists():
             raise forms.ValidationError("Esta plantilla ya tiene niveles generados.")
         return template
+
+
+class GeneratedLevelsUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = GeneratedLevels
+        fields = ["low_level", "basic_level", "high_level", "superior_level"]
+        help_texts = {
+            "low_level": "Edite la descripción del nivel bajo.",
+            "basic_level": "Edite la descripción del nivel básico.",
+            "high_level": "Edite la descripción del nivel alto.",
+            "superior_level": "Edite la descripción del nivel superior.",
+        }
+        widgets = {
+            "low_level": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Nivel bajo",
+            }),
+            "basic_level": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Nivel básico",
+            }),
+            "high_level": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Nivel alto",
+            }),
+            "superior_level": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Nivel superior",
+            }),
+        }

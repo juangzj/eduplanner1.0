@@ -1,0 +1,62 @@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-2">
+        <h6 class="mb-0 fw-semibold">Editar niveles generados</h6>
+    </div>
+
+    <div class="card-body pt-3">
+        <div class="alert alert-info py-2" role="alert">
+            Puedes ajustar manualmente los niveles generados para mejorar su redaccion o adecuarlos a tu contexto.
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-semibold mb-1">Plantilla asociada</label>
+            <div class="border rounded px-3 py-2 bg-light">
+                <div class="small fw-semibold">{{ object.performance_template.level_title|default:"Sin titulo" }}</div>
+                <div class="small text-muted">
+                    {{ object.performance_template.area }} | {{ object.performance_template.get_grade_display }} | {{ object.performance_template.subject }}
+                </div>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger py-2">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Nivel bajo</label>
+                {{ form.low_level }}
+                {{ form.low_level.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Nivel basico</label>
+                {{ form.basic_level }}
+                {{ form.basic_level.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Nivel alto</label>
+                {{ form.high_level }}
+                {{ form.high_level.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Nivel superior</label>
+                {{ form.superior_level }}
+                {{ form.superior_level.errors }}
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'levels:levels' %}" class="btn btn-sm btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-sm btn-primary">
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

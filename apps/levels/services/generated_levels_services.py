@@ -78,3 +78,27 @@ class GeneratedLevelsCreateService:
             return GeneratedLevelsCreateService._normalize_level_text(parsed)
 
         return raw
+
+
+class GeneratedLevelsUpdateService:
+
+    @staticmethod
+    @transaction.atomic
+    def update_generated_levels_service(
+        *,
+        form,
+        generated_levels: GeneratedLevels,
+        user,
+    ) -> GeneratedLevels:
+        if generated_levels.performance_template.user_id != user.id:
+            raise PermissionError("User does not own this generated levels record.")
+
+        if generated_levels.deleted_at is not None:
+            raise ValueError("Generated levels are not available.")
+
+        if generated_levels.performance_template.deleted_at is not None:
+            raise ValueError("Related performance template is not available.")
+
+        updated_levels = form.save(commit=False)
+        updated_levels.save()
+        return updated_levels
