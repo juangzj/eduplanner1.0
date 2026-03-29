@@ -11,3 +11,9 @@ class AIProvider(ABC):
         Generate performance levels from prompt data and return a JSON-like dict.
         """
 
+    @abstractmethod
+    def generate_assessment_content(self, prompt_data: dict[str, Any]) -> dict[str, str]:
+        """
+        Generate assessment rubric content from generated levels and context.
+        """
+
