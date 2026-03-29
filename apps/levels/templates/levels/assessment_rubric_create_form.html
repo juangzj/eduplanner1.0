@@ -1,0 +1,33 @@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-2">
+        <h6 class="mb-0 fw-semibold">Generar rúbrica con IA</h6>
+    </div>
+
+    <div class="card-body pt-3">
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger py-2">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Niveles generados seleccionados</label>
+                {{ form.generated_levels }}
+                {{ form.generated_levels.errors }}
+            </div>
+
+            <div class="alert alert-info py-2" role="alert">
+                Al hacer clic en el botón, se generará automáticamente una rúbrica de evaluación alineada con los niveles de desempeño.
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-sm btn-primary">
+                    Generar rúbrica con IA
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

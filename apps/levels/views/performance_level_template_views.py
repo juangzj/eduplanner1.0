@@ -92,14 +92,23 @@ def levels_view(request):
                 | Q(statement__icontains=search)
             )
 
-    performance_levels = performance_levels.prefetch_related("generated_levels").order_by("-created_at")
+    performance_levels = performance_levels.select_related(
+        "generated_levels",
+        "generated_levels__assessment_rubric",
+    ).order_by("-created_at")
 
     for performance in performance_levels:
         try:
             gen = performance.generated_levels
             performance.has_generated_levels = gen.deleted_at is None
+            performance.has_assessment_rubric = (
+                performance.has_generated_levels
+                and hasattr(gen, "assessment_rubric")
+                and gen.assessment_rubric.deleted_at is None
+            )
         except ObjectDoesNotExist:
             performance.has_generated_levels = False
+            performance.has_assessment_rubric = False
 
     return render(
         request,
