@@ -19,7 +19,7 @@ GRADOS_OPCIONES = [
 ]
 
 
-# ------------------- OPCIONES ASIGNATURA -------------------
+# ------------------- OPCIONES AREA -------------------
 AREAS_OPCIONES = [
     ('Español / Castellano', 'Español / Castellano'),
     ('Matemáticas', 'Matemáticas'),
@@ -98,13 +98,6 @@ class PerformanceLevelTemplate(models.Model):
         verbose_name="Grado"
     )
 
-    # ASIGNATURA COMO CAMPO DESPLEGABLE
-    subject = models.CharField(
-        max_length=255,
-        choices=AREAS_OPCIONES,
-        verbose_name="Asignatura"
-    )
-
     competency = models.CharField(max_length=255, verbose_name="Competencia")
     statement = models.TextField(verbose_name="Afirmación")
     learning_evidence = models.TextField(verbose_name="Evidencia de Aprendizaje")
@@ -127,4 +120,4 @@ class PerformanceLevelTemplate(models.Model):
         db_table = "performance_levels"
 
     def __str__(self):
-        return f"{self.level_title} - {self.subject} ({self.grade})"
+        return f"{self.level_title} - {self.area} ({self.grade})"

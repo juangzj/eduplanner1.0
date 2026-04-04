@@ -46,7 +46,6 @@ class LevelPrompt:
     Context:
 
     Area: {prompt_data.get('area', '')}
-    Subject: {prompt_data.get('subject', '')}
     Grade: {prompt_data.get('grade', '')}
     Academic Period: {prompt_data.get('academic_period', '')}
     Competency: {prompt_data.get('competency', '')}
@@ -85,7 +84,6 @@ You are an expert educational pedagogue specialized in competency-based assessme
 Your task is to generate a high-quality assessment rubric based on the following information:
 
 Area: {prompt_data.get('area')}
-Subject: {prompt_data.get('subject')}
 Grade: {prompt_data.get('grade')}
 Academic period: {prompt_data.get('academic_period')}
 Competence: {prompt_data.get('competence') or prompt_data.get('competency')}

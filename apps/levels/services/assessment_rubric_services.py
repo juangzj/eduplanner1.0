@@ -34,7 +34,6 @@ class AssessmentRubricCreateService:
         template = generated_levels.performance_template
         return {
             "area": template.area,
-            "subject": template.subject,
             "grade": template.get_grade_display(),
             "academic_period": template.academic_period,
             "competency": template.competency,

@@ -48,11 +48,6 @@
                             {{ filter_form.grade }}
                         </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold" for="id_subject">Asignatura</label>
-                            {{ filter_form.subject }}
-                        </div>
-
                         <div class="col-md-2">
                             <label class="form-label fw-semibold" for="id_academic_period">Periodo</label>
                             {{ filter_form.academic_period }}
@@ -100,8 +95,7 @@
                                         </h6>
                                         <small class="text-muted">
                                             <i class="bi bi-geo-alt"></i> {{ performance.area }} |
-                                            <i class="bi bi-mortarboard"></i> {{ performance.get_grade_display }} |
-                                            <i class="bi bi-book"></i> {{ performance.subject }}
+                                            <i class="bi bi-mortarboard"></i> {{ performance.get_grade_display }}
                                         </small>
                                     </div>
 
@@ -135,10 +129,6 @@
                                             <div class="col-md-6">
                                                 <small class="text-muted d-block">Área</small>
                                                 <p class="mb-0 fw-semibold">{{ performance.area }}</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <small class="text-muted d-block">Asignatura</small>
-                                                <p class="mb-0 fw-semibold">{{ performance.subject }}</p>
                                             </div>
                                             <div class="col-md-6">
                                                 <small class="text-muted d-block">Grado</small>

@@ -18,13 +18,6 @@ class PerformanceLevelFilterForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-select'})
     )
 
-    subject = forms.ChoiceField(
-        choices=[('', 'Todas las asignaturas')] + AREAS_OPCIONES,
-        required=False,
-        label="Asignatura",
-        widget=forms.Select(attrs={'class': 'form-select'})
-    )
-
     academic_period = forms.ChoiceField(
         choices=[('', 'Todos los periodos')] + PERIODO_ACADEMICO_OPCIONES,
         required=False,

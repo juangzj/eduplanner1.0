@@ -68,7 +68,6 @@ def levels_view(request):
     if filter_form.is_valid():
         area = filter_form.cleaned_data.get("area")
         grade = filter_form.cleaned_data.get("grade")
-        subject = filter_form.cleaned_data.get("subject")
         academic_period = filter_form.cleaned_data.get("academic_period")
         search = filter_form.cleaned_data.get("search")
 
@@ -77,9 +76,6 @@ def levels_view(request):
 
         if grade:
             performance_levels = performance_levels.filter(grade=grade)
-
-        if subject:
-            performance_levels = performance_levels.filter(subject=subject)
 
         if academic_period:
             performance_levels = performance_levels.filter(academic_period=academic_period)

@@ -23,7 +23,6 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
             "level_title": "Título opcional del nivel de desempeño.",
             "level_description": "Descripción general del nivel.",
             "grade": "Seleccione el grado académico.",
-            "subject": "Seleccione la asignatura correspondiente.",
             "competency": "Competencia que se desea evaluar.",
             "statement": "Afirmación de desempeño.",
             "learning_evidence": "Evidencia de aprendizaje esperada.",
@@ -37,9 +36,6 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
             },
             "grade": {
                 "required": "Debe seleccionar el grado.",
-            },
-            "subject": {
-                "required": "Debe seleccionar la asignatura.",
             },
             "competency": {
                 "required": "Debe ingresar la competencia.",
@@ -75,11 +71,6 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
 
             # GRADO COMO SELECT
             "grade": forms.Select(attrs={
-                "class": "form-select"
-            }),
-
-            # ASIGNATURA COMO SELECT
-            "subject": forms.Select(attrs={
                 "class": "form-select"
             }),
 

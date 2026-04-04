@@ -41,7 +41,6 @@ class GeneratedLevelsCreateService:
     def _build_prompt_data(template: PerformanceLevelTemplate) -> dict[str, Any]:
         return {
             "area": template.area,
-            "subject": template.subject,
             "grade": template.get_grade_display(),
             "academic_period": template.academic_period,
             "competency": template.competency,
