@@ -78,8 +78,8 @@ class AssessmentRubricUpdateForm(forms.ModelForm):
                 "placeholder": "Descripción de la rúbrica",
             }),
             "rubric_content": forms.Textarea(attrs={
-                "class": "form-control",
-                "rows": 12,
-                "placeholder": "Contenido de la rúbrica",
+                "class": "form-control font-monospace",
+                "rows": 14,
+                "placeholder": "| Criterio | Nivel Bajo | Nivel Basico | Nivel Alto | Nivel Superior |\n|---|---|---|---|---|\n| ... | ... | ... | ... | ... |",
             }),
         }

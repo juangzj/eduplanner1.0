@@ -106,37 +106,14 @@
                                     </div>
 
                                     <div class="d-flex gap-2 flex-wrap">
-                                        {% if performance.has_generated_levels %}
-                                            <a href="#generated-levels-{{ performance.id }}"
-                                               class="btn btn-sm btn-outline-primary">
-                                               <i class="bi bi-eye"></i> Ver niveles
-                                            </a>
-                                            <a href="{% url 'levels:generated-levels-edit' performance.generated_levels.id %}"
-                                                class="btn btn-sm btn-outline-secondary">
-                                                <i class="bi bi-pencil-square"></i> Editar niveles
-                                            </a>
-
-                                            {% if performance.has_assessment_rubric %}
-                                            <a href="#assessment-rubric-{{ performance.id }}"
-                                               class="btn btn-sm btn-outline-primary">
-                                               <i class="bi bi-journal-text"></i> Ver rúbrica
-                                            </a>
-                                            <a href="{% url 'levels:assessment-rubric-edit' performance.generated_levels.assessment_rubric.id %}"
-                                               class="btn btn-sm btn-outline-secondary">
-                                               <i class="bi bi-pencil"></i> Editar rúbrica
-                                            </a>
-                                            {% else %}
-                                            <a href="{% url 'levels:assessment-rubric-create' %}?generated_levels={{ performance.generated_levels.id }}"
-                                               class="btn btn-sm btn-warning text-dark shadow-sm">
-                                               <i class="bi bi-journal-plus"></i> Generar rúbrica
-                                            </a>
-                                            {% endif %}
-                                        {% else %}
-                                            <a href="{% url 'levels:generated-levels-create' %}?template={{ performance.id }}"
-                                               class="btn btn-sm btn-success shadow-sm">
-                                               <i class="bi bi-magic"></i> Generar con IA
-                                            </a>
-                                        {% endif %}
+                                        <button class="btn btn-sm btn-outline-primary"
+                                                type="button"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#performance-detail-{{ performance.id }}"
+                                                aria-expanded="false"
+                                                aria-controls="performance-detail-{{ performance.id }}">
+                                            <i class="bi bi-eye"></i> Ver información
+                                        </button>
 
                                         <form id="delete-template-form-{{ performance.id }}"
                                               method="post"
@@ -151,43 +128,44 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3 p-3 bg-white rounded border border-light">
-                                    <small class="text-muted d-block fw-bold text-uppercase mb-2" style="font-size: 0.7rem;">Información del template</small>
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <small class="text-muted d-block">Área</small>
-                                            <p class="mb-0 fw-semibold">{{ performance.area }}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <small class="text-muted d-block">Asignatura</small>
-                                            <p class="mb-0 fw-semibold">{{ performance.subject }}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <small class="text-muted d-block">Grado</small>
-                                            <p class="mb-0 fw-semibold">{{ performance.get_grade_display }}</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <small class="text-muted d-block">Periodo académico</small>
-                                            <p class="mb-0 fw-semibold">{{ performance.academic_period }}</p>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted d-block">Competencia</small>
-                                            <p class="mb-0">{{ performance.competency|default:"-" }}</p>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted d-block">Afirmación</small>
-                                            <p class="mb-0">{{ performance.statement|linebreaksbr }}</p>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted d-block">Evidencia de aprendizaje</small>
-                                            <p class="mb-0">{{ performance.learning_evidence|linebreaksbr }}</p>
-                                        </div>
-                                        <div class="col-12">
-                                            <small class="text-muted d-block">Descripción del desempeño</small>
-                                            <p class="mb-0">{{ performance.level_description|default:"-"|linebreaksbr }}</p>
+                                <div class="collapse" id="performance-detail-{{ performance.id }}">
+                                    <div class="mb-3 p-3 bg-white rounded border border-light">
+                                        <small class="text-muted d-block fw-bold text-uppercase mb-2" style="font-size: 0.7rem;">Información del template</small>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Área</small>
+                                                <p class="mb-0 fw-semibold">{{ performance.area }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Asignatura</small>
+                                                <p class="mb-0 fw-semibold">{{ performance.subject }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Grado</small>
+                                                <p class="mb-0 fw-semibold">{{ performance.get_grade_display }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted d-block">Periodo académico</small>
+                                                <p class="mb-0 fw-semibold">{{ performance.academic_period }}</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block">Competencia</small>
+                                                <p class="mb-0">{{ performance.competency|default:"-" }}</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block">Afirmación</small>
+                                                <p class="mb-0">{{ performance.statement|linebreaksbr }}</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block">Evidencia de aprendizaje</small>
+                                                <p class="mb-0">{{ performance.learning_evidence|linebreaksbr }}</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block">Descripción del desempeño</small>
+                                                <p class="mb-0">{{ performance.level_description|default:"-"|linebreaksbr }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
                                 {% if performance.has_generated_levels %}
                                 <div id="generated-levels-{{ performance.id }}" class="row g-3">
@@ -284,7 +262,36 @@
                                     {% endif %}
 
                                     <div class="p-3 rounded border bg-light bg-opacity-25">
+                                        {% with rows=performance.generated_levels.assessment_rubric.rubric_content|rubric_rows %}
+                                        {% if rows %}
+                                        <div class="table-responsive">
+                                            <table class="table table-sm align-middle mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="min-width: 220px;">Criterio</th>
+                                                        <th style="min-width: 200px;">Nivel Bajo</th>
+                                                        <th style="min-width: 200px;">Nivel Básico</th>
+                                                        <th style="min-width: 200px;">Nivel Alto</th>
+                                                        <th style="min-width: 220px;">Nivel Superior</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for row in rows %}
+                                                    <tr>
+                                                        <td class="fw-semibold">{{ row.criterion|default:"-" }}</td>
+                                                        <td>{{ row.low|default:"-" }}</td>
+                                                        <td>{{ row.basic|default:"-" }}</td>
+                                                        <td>{{ row.high|default:"-" }}</td>
+                                                        <td>{{ row.superior|default:"-" }}</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {% else %}
                                         <p class="mb-0">{{ performance.generated_levels.assessment_rubric.rubric_content|linebreaksbr }}</p>
+                                        {% endif %}
+                                        {% endwith %}
                                     </div>
                                 </div>
                                 {% endif %}
@@ -293,6 +300,33 @@
                                     <i class="bi bi-info-circle"></i> Esta plantilla aún no tiene niveles detallados. Use el botón superior para generarlos.
                                 </div>
                                 {% endif %}
+
+                                <div class="d-flex gap-2 flex-wrap mt-3">
+                                    {% if performance.has_generated_levels %}
+                                    <a href="{% url 'levels:generated-levels-edit' performance.generated_levels.id %}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil-square"></i> Editar niveles
+                                    </a>
+
+                                    {% if performance.has_assessment_rubric %}
+                                    <a href="{% url 'levels:assessment-rubric-edit' performance.generated_levels.assessment_rubric.id %}"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-pencil"></i> Editar rúbrica
+                                    </a>
+                                    {% else %}
+                                    <a href="{% url 'levels:assessment-rubric-create' %}?generated_levels={{ performance.generated_levels.id }}"
+                                       class="btn btn-sm btn-warning text-dark shadow-sm">
+                                        <i class="bi bi-journal-plus"></i> Generar rúbrica
+                                    </a>
+                                    {% endif %}
+                                    {% else %}
+                                    <a href="{% url 'levels:generated-levels-create' %}?template={{ performance.id }}"
+                                       class="btn btn-sm btn-success shadow-sm">
+                                        <i class="bi bi-magic"></i> Generar con IA
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                </div>
 
                             </div>
                         </div>

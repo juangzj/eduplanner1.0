@@ -64,7 +64,10 @@ class OpenAIProvider(AIProvider):
                         "You are an expert educational pedagogue specialized in assessment rubric design. "
                         "You generate coherent assessment rubrics aligned with evidence and performance levels. "
                         "Return ONLY valid JSON with these keys: "
-                        "title, rubric_description, rubric_content."
+                        "title, rubric_description, rubric_content. "
+                        "Write all content in Spanish. "
+                        "rubric_content must be a markdown table with columns: "
+                        "Criterio, Nivel Bajo, Nivel Básico, Nivel Alto, Nivel Superior."
                     ),
                 },
                 {"role": "user", "content": prompt},

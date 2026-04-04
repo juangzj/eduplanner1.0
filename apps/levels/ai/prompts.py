@@ -77,56 +77,62 @@ class AssessmentPrompt:
     def build_prompt(prompt_data: dict[str, Any]) -> str:
         """
         Build the prompt for generating an assessment rubric.
-        Uses generated levels and context to create a coherent rubric.
+          Uses context to create a coherent rubric in markdown format.
         """
         return f"""
-    You are an expert educational pedagogue specialized in competency-based assessment.
+You are an expert educational pedagogue specialized in competency-based assessment and rubric design for elementary and middle school education.
 
-    Your task is to generate a complete assessment rubric in Spanish using the context and the four generated performance levels.
+Your task is to generate a high-quality assessment rubric based on the following information:
 
-    Rules:
-    1. The rubric must align with the competency, statement, and learning evidence.
-    2. The rubric must be practical and ready for classroom use.
-    3. Use clear, professional, and concise language.
-    4. Keep pedagogical coherence with Bloom's taxonomy progression already represented in the levels.
-    5. The rubric content should clearly map each criterion to the four performance levels.
+Area: {prompt_data.get('area')}
+Subject: {prompt_data.get('subject')}
+Grade: {prompt_data.get('grade')}
+Academic period: {prompt_data.get('academic_period')}
+Competence: {prompt_data.get('competence') or prompt_data.get('competency')}
+Statement: {prompt_data.get('statement')}
+Learning evidence: {prompt_data.get('learning_evidence')}
+Performance description: {prompt_data.get('level_description')}
 
-    Context:
+Pedagogical rules you must follow:
 
-    Area: {prompt_data.get('area', '')}
-    Subject: {prompt_data.get('subject', '')}
-    Grade: {prompt_data.get('grade', '')}
-    Academic Period: {prompt_data.get('academic_period', '')}
-    Competency: {prompt_data.get('competency', '')}
-    Learning Statement: {prompt_data.get('statement', '')}
-    Learning Evidence: {prompt_data.get('learning_evidence', '')}
-    Level Title: {prompt_data.get('level_title', '')}
-    Level Description: {prompt_data.get('level_description', '')}
+1. The rubric must be clearly aligned with the competence and the learning evidence.
+2. The rubric must include 3 or 4 evaluation criteria only.
+3. Each criterion must evaluate only one skill (do not mix multiple skills in the same criterion).
+4. The criteria must be ordered from basic cognitive level to higher cognitive level.
+5. The performance levels must be:
+    - Nivel Bajo
+    - Nivel Básico
+    - Nivel Alto
+    - Nivel Superior
+6. Each level must show real progression (not the same sentence with small changes).
+7. Use clear, professional and pedagogically correct language.
+8. Do not generate very long descriptions.
+9. The rubric must be appropriate for grade {prompt_data.get('grade')} students.
 
-    Generated performance levels:
-    
-    Low Level: {prompt_data.get('low_level', '')}
-    Basic Level: {prompt_data.get('basic_level', '')}
-    High Level: {prompt_data.get('high_level', '')}
-    Superior Level: {prompt_data.get('superior_level', '')}
+Now generate:
 
-    Generate a comprehensive assessment rubric that:
-    - Has a clear, descriptive title related to the competency
-    - Includes a brief description of the rubric's purpose and use
-    - Provides detailed rubric content with criteria and performance indicators
+1. A professional rubric title
+2. A short rubric description (maximum 3 lines)
+3. A rubric table in Markdown with:
+    - 3 or 4 criteria
+    - The 4 performance levels
+    - Clear and pedagogical wording
 
-    Return ONLY a valid JSON object with these keys:
+IMPORTANT:
 
-    title
-    rubric_description
-    rubric_content
+The entire response MUST be written in Spanish.
 
-    Formatting expectations:
-    - title: short and specific title for the rubric in Spanish.
-    - rubric_description: short paragraph (2-3 sentences) explaining scope and use.
-    - rubric_content: structured rubric text in Spanish, organized with clear criteria and progression across the four levels.
+Return ONLY a valid JSON object using this exact structure:
 
-    Do not include markdown fences.
-    Do not include explanations.
-    Do not include extra keys.
+{{
+  "title": "",
+  "rubric_description": "",
+  "rubric_content": ""
+}}
+
+Where "rubric_content" MUST contain only a valid Markdown table with this header order:
+| Criterio | Nivel Bajo | Nivel Básico | Nivel Alto | Nivel Superior |
+
+Do not add explanations.
+Do not add text outside the JSON.
     """

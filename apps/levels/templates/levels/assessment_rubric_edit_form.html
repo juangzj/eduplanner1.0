@@ -1,3 +1,5 @@
+{% load levels_extras %}
+
 <div class="card shadow-sm border-0">
     <div class="card-header bg-white border-bottom py-2">
         <h6 class="mb-0 fw-semibold">Editar rúbrica generada</h6>
@@ -43,7 +45,43 @@
                 <label class="form-label small fw-semibold">Contenido de la rúbrica</label>
                 {{ form.rubric_content }}
                 {{ form.rubric_content.errors }}
+                <small class="form-text text-muted d-block mt-1">
+                    Use una tabla Markdown con este orden de columnas:
+                    <strong>Criterio | Nivel Bajo | Nivel Básico | Nivel Alto | Nivel Superior</strong>.
+                </small>
             </div>
+
+            {% with rows=form.instance.rubric_content|rubric_rows %}
+            {% if rows %}
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Previsualización actual</label>
+                <div class="table-responsive border rounded p-2 bg-light bg-opacity-25">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th style="min-width: 220px;">Criterio</th>
+                                <th style="min-width: 180px;">Nivel Bajo</th>
+                                <th style="min-width: 180px;">Nivel Básico</th>
+                                <th style="min-width: 180px;">Nivel Alto</th>
+                                <th style="min-width: 180px;">Nivel Superior</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                            <tr>
+                                <td class="fw-semibold">{{ row.criterion|default:"-" }}</td>
+                                <td>{{ row.low|default:"-" }}</td>
+                                <td>{{ row.basic|default:"-" }}</td>
+                                <td>{{ row.high|default:"-" }}</td>
+                                <td>{{ row.superior|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+            {% endwith %}
 
             <div class="d-flex justify-content-end gap-2">
                 <a href="{% url 'levels:levels' %}" class="btn btn-sm btn-outline-secondary">Cancelar</a>
