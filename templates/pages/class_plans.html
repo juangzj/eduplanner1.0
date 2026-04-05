@@ -1,0 +1,120 @@
+{% extends 'base/base_left_sidebar.html' %}
+
+{% block title %}Planeaciones de clase{% endblock %}
+
+{% block sidebar_content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="fw-bold">Planeaciones de clase</h3>
+            <p class="text-muted mb-0">
+                Aquí puedes consultar todas tus planeaciones con su información completa y el contenido generado por IA.
+            </p>
+        </div>
+    </div>
+
+    {% if class_plannings %}
+        <div class="row g-4">
+            {% for class_planning in class_plannings %}
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <h5 class="mb-1 fw-bold text-primary">{{ class_planning.topic }}</h5>
+                                <small class="text-muted">
+                                    {{ class_planning.performance_template.area }} | {{ class_planning.performance_template.get_grade_display }} | {{ class_planning.performance_template.academic_period }}
+                                </small>
+                            </div>
+                            <small class="text-muted">Creada: {{ class_planning.created_at|date:"d/m/Y H:i" }}</small>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">Subtema</small>
+                                    <p class="mb-0">{{ class_planning.subtopic|default:"-" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">Duración</small>
+                                    <p class="mb-0">{{ class_planning.duration_minutes }} minutos</p>
+                                </div>
+                                <div class="col-12">
+                                    <small class="text-muted d-block">Objetivo de clase</small>
+                                    <p class="mb-0">{{ class_planning.class_objective|linebreaksbr }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">Metodología</small>
+                                    <p class="mb-0">{{ class_planning.methodology|default:"-"|linebreaksbr }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <small class="text-muted d-block">Recursos</small>
+                                    <p class="mb-0">{{ class_planning.resources|default:"-"|linebreaksbr }}</p>
+                                </div>
+                                <div class="col-12">
+                                    <small class="text-muted d-block">Prompt del docente</small>
+                                    <p class="mb-0">{{ class_planning.prompt|linebreaksbr }}</p>
+                                </div>
+                            </div>
+
+                            <div class="accordion" id="context-accordion-{{ class_planning.id }}">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-context-{{ class_planning.id }}">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-context-{{ class_planning.id }}" aria-expanded="false" aria-controls="collapse-context-{{ class_planning.id }}">
+                                            Ver contexto pedagógico completo (plantilla, niveles y rúbrica)
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-context-{{ class_planning.id }}" class="accordion-collapse collapse" aria-labelledby="heading-context-{{ class_planning.id }}" data-bs-parent="#context-accordion-{{ class_planning.id }}">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">
+                                                <h6 class="fw-bold mb-2">Plantilla de desempeño</h6>
+                                                <p class="mb-1"><strong>Competencia:</strong> {{ class_planning.performance_template.competency }}</p>
+                                                <p class="mb-1"><strong>Afirmación:</strong> {{ class_planning.performance_template.statement|linebreaksbr }}</p>
+                                                <p class="mb-0"><strong>Evidencia:</strong> {{ class_planning.performance_template.learning_evidence|linebreaksbr }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h6 class="fw-bold mb-2">Niveles de desempeño</h6>
+                                                <p class="mb-1"><strong>Bajo:</strong> {{ class_planning.generated_levels.low_level|linebreaksbr }}</p>
+                                                <p class="mb-1"><strong>Básico:</strong> {{ class_planning.generated_levels.basic_level|linebreaksbr }}</p>
+                                                <p class="mb-1"><strong>Alto:</strong> {{ class_planning.generated_levels.high_level|linebreaksbr }}</p>
+                                                <p class="mb-0"><strong>Superior:</strong> {{ class_planning.generated_levels.superior_level|linebreaksbr }}</p>
+                                            </div>
+                                            <div>
+                                                <h6 class="fw-bold mb-2">Rúbrica de evaluación</h6>
+                                                <p class="mb-1"><strong>Título:</strong> {{ class_planning.assessment_rubric.title }}</p>
+                                                <p class="mb-1"><strong>Descripción:</strong> {{ class_planning.assessment_rubric.rubric_description|default:"-"|linebreaksbr }}</p>
+                                                <p class="mb-0"><strong>Contenido:</strong> {{ class_planning.assessment_rubric.rubric_content|linebreaksbr }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h6 class="fw-bold mb-2">Contenido generado de la clase</h6>
+                                {% with generated=class_planning.generated_classes.first %}
+                                    {% if generated %}
+                                        <div class="p-3 border rounded bg-light">
+                                            <small class="text-muted d-block mb-2">
+                                                Modelo: {{ generated.ai_model|default:"No especificado" }} | Fecha: {{ generated.created_at|date:"d/m/Y H:i" }}
+                                            </small>
+                                            <div>{{ generated.generated_content|linebreaksbr }}</div>
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-warning mb-0">
+                                            Esta planeación no tiene contenido generado registrado todavía.
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Aún no tienes planeaciones creadas.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

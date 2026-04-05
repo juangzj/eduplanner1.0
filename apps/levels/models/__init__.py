@@ -2,3 +2,4 @@ from .performance_level_template_model import PerformanceLevelTemplate
 from .generated_levels_model import GeneratedLevels
 from .assessment_rubric_model import AssessmentRubric
 from .class_planning_model import ClassPlanning
+from .generated_class_plan_model import GeneratedClassPlan
