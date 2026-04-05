@@ -138,10 +138,23 @@
                                     Planeación activa
                                 </div>
                             </div>
-                            <small class="text-muted">Creada: {{ class_planning.created_at|date:"d/m/Y H:i" }}</small>
+                            <div class="text-end">
+                                <small class="text-muted d-block mb-2">Creada: {{ class_planning.created_at|date:"d/m/Y H:i" }}</small>
+                                <button
+                                    class="btn btn-sm btn-outline-primary"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#plan-body-{{ class_planning.id }}"
+                                    aria-expanded="false"
+                                    aria-controls="plan-body-{{ class_planning.id }}"
+                                >
+                                    <i class="bi bi-eye"></i> Ver información
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="card-body">
+                        <div class="collapse" id="plan-body-{{ class_planning.id }}">
+                            <div class="card-body">
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
                                     <div class="detail-box">
@@ -251,6 +264,7 @@
                                         </div>
                                     {% endif %}
                                 {% endwith %}
+                            </div>
                             </div>
                         </div>
                     </div>

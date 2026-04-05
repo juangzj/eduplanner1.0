@@ -4,3 +4,4 @@ from .generated_levels_form import GeneratedLevelsUpdateForm
 from .filter_performance_level_form import PerformanceLevelFilterForm
 from .assessment_rubric_form import AssessmentRubricCreateForm
 from .assessment_rubric_form import AssessmentRubricUpdateForm
+from .class_planning_form import ClassPlanningCreateForm

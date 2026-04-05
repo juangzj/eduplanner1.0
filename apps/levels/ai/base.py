@@ -17,3 +17,9 @@ class AIProvider(ABC):
         Generate assessment rubric content from generated levels and context.
         """
 
+    @abstractmethod
+    def generate_class_planning_content(self, prompt_data: dict[str, Any]) -> dict[str, str]:
+        """
+        Generate a complete class planning from pedagogical context and teacher input.
+        """
+

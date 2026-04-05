@@ -1,0 +1,22 @@
+{% extends 'base/base_left_sidebar.html' %}
+{% load static %}
+
+{% block title %}Generar planeación de clase{% endblock %}
+
+{% block sidebar_content %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="{% url 'levels:levels' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver a plantillas
+            </a>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% include "levels/class_planning_create_form.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

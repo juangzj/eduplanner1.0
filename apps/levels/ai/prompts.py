@@ -134,3 +134,76 @@ Where "rubric_content" MUST contain only a valid Markdown table with this header
 Do not add explanations.
 Do not add text outside the JSON.
     """
+
+
+class ClassPlanningPrompt:
+        """Prompts for generating class planning content."""
+
+        @staticmethod
+        def build_prompt(prompt_data: dict[str, Any]) -> str:
+                """
+                Build the prompt for generating a complete class planning.
+                """
+                return f"""
+You are an expert educational pedagogue specialized in classroom planning, competency-based learning and didactic sequencing.
+
+Your task is to generate a complete class planning in Spanish, using the context provided below.
+
+Pedagogical rules you must follow:
+
+1. The planning must be coherent with the competency, learning statement, evidence, performance levels and assessment rubric.
+2. The content must be practical for a teacher to use in class.
+3. Use clear, professional and pedagogically precise language.
+4. Organize the planning with readable Markdown structure.
+5. Include pedagogical sections such as objective, moments of the class, activities, assessment and resources.
+6. Avoid vague generic statements.
+7. Adapt the language to the grade and academic period.
+8. Use the teacher prompt as the pedagogical intention, but do not copy it blindly.
+9. Make the sequence realistic for a class of {prompt_data.get('duration_minutes')} minutes.
+
+Context:
+
+Area: {prompt_data.get('area', '')}
+Grade: {prompt_data.get('grade', '')}
+Academic Period: {prompt_data.get('academic_period', '')}
+Competency: {prompt_data.get('competency', '')}
+Learning Statement: {prompt_data.get('statement', '')}
+Learning Evidence: {prompt_data.get('learning_evidence', '')}
+Level Title: {prompt_data.get('level_title', '')}
+Level Description: {prompt_data.get('level_description', '')}
+Low Level: {prompt_data.get('low_level', '')}
+Basic Level: {prompt_data.get('basic_level', '')}
+High Level: {prompt_data.get('high_level', '')}
+Superior Level: {prompt_data.get('superior_level', '')}
+Rubric Title: {prompt_data.get('rubric_title', '')}
+Rubric Description: {prompt_data.get('rubric_description', '')}
+Rubric Content: {prompt_data.get('rubric_content', '')}
+Topic: {prompt_data.get('topic', '')}
+Subtopic: {prompt_data.get('subtopic', '')}
+Class Objective: {prompt_data.get('class_objective', '')}
+Duration Minutes: {prompt_data.get('duration_minutes', '')}
+Methodology: {prompt_data.get('methodology', '')}
+Resources: {prompt_data.get('resources', '')}
+Teacher Prompt: {prompt_data.get('prompt', '')}
+
+Generate a complete class planning with this structure:
+
+1. Title
+2. General context
+3. Class objective
+4. Development of the class with three moments: inicio, desarrollo y cierre
+5. Assessment strategy aligned with the rubric
+6. Required resources
+7. Teacher notes or recommendations
+
+Return ONLY a valid JSON object with this exact structure:
+
+{{
+    "generated_content": ""
+}}
+
+The generated_content value MUST contain only Markdown formatted text.
+Do not add explanations.
+Do not add extra keys.
+Do not add text outside the JSON.
+                """

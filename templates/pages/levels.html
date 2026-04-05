@@ -303,6 +303,10 @@
                                        class="btn btn-sm btn-outline-secondary">
                                         <i class="bi bi-pencil"></i> Editar rúbrica
                                     </a>
+                                    <a href="{% url 'levels:class-planning-create' %}?template={{ performance.id }}"
+                                       class="btn btn-sm btn-success shadow-sm">
+                                        <i class="bi bi-journal-plus"></i> Crear planeación
+                                    </a>
                                     {% else %}
                                     <a href="{% url 'levels:assessment-rubric-create' %}?generated_levels={{ performance.generated_levels.id }}"
                                        class="btn btn-sm btn-warning text-dark shadow-sm">

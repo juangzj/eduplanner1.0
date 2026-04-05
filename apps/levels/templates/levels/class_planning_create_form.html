@@ -1,0 +1,100 @@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-2">
+        <h6 class="mb-0 fw-semibold">Generar planeación con IA</h6>
+    </div>
+
+    <div class="card-body pt-3">
+        <div class="alert alert-info py-2" role="alert">
+            Completa la información de la clase y el sistema generará una planeación completa en Markdown, junto con su contenido asociado.
+        </div>
+
+        {% if selected_template %}
+        <div class="mb-3 p-3 border rounded bg-light">
+            <small class="text-muted d-block fw-semibold text-uppercase mb-1">Plantilla seleccionada</small>
+            <div class="fw-bold">{{ selected_template.level_title|default:"Sin título" }}</div>
+            <div class="text-muted small">
+                {{ selected_template.area }} | {{ selected_template.get_grade_display }} | {{ selected_template.academic_period }}
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger py-2">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% if not form.performance_template.is_hidden %}
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Plantilla de desempeño</label>
+                {{ form.performance_template }}
+                {{ form.performance_template.errors }}
+            </div>
+            {% else %}
+                {{ form.performance_template }}
+            {% endif %}
+
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Tema</label>
+                        {{ form.topic }}
+                        {{ form.topic.errors }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Duración (minutos)</label>
+                        {{ form.duration_minutes }}
+                        {{ form.duration_minutes.errors }}
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Subtema</label>
+                        {{ form.subtopic }}
+                        {{ form.subtopic.errors }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Objetivo de la clase</label>
+                        {{ form.class_objective }}
+                        {{ form.class_objective.errors }}
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Prompt del docente</label>
+                        {{ form.prompt }}
+                        {{ form.prompt.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Metodología</label>
+                        {{ form.methodology }}
+                        {{ form.methodology.errors }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Recursos</label>
+                        {{ form.resources }}
+                        {{ form.resources.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{% url 'levels:levels' %}" class="btn btn-sm btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-sm btn-primary">
+                    Generar planeación con IA
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

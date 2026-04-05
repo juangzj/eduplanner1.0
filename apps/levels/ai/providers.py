@@ -7,7 +7,7 @@ from django.conf import settings
 from openai import OpenAI
 
 from .base import AIProvider
-from .prompts import LevelPrompt, AssessmentPrompt
+from .prompts import LevelPrompt, AssessmentPrompt, ClassPlanningPrompt
 
 
 class OpenAIProvider(AIProvider):
@@ -15,6 +15,7 @@ class OpenAIProvider(AIProvider):
 
     REQUIRED_KEYS = ("low_level", "basic_level", "high_level", "superior_level")
     ASSESSMENT_REQUIRED_KEYS = ("title", "rubric_description", "rubric_content")
+    CLASS_PLANNING_REQUIRED_KEYS = ("generated_content",)
 
     def __init__(self) -> None:
         api_key = getattr(settings, "OPENAI_API_KEY", "")
@@ -80,6 +81,33 @@ class OpenAIProvider(AIProvider):
         self._validate_assessment_response(normalized)
         return normalized
 
+    def generate_class_planning_content(self, prompt_data: dict[str, Any]) -> dict[str, str]:
+        prompt = ClassPlanningPrompt.build_prompt(prompt_data)
+
+        response = self.client.chat.completions.create(
+            model=self.model,
+            temperature=0.5,
+            response_format={"type": "json_object"},
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an expert educational pedagogue specialized in classroom planning. "
+                        "You generate complete class plans aligned with competencies, evidence, levels and rubrics. "
+                        "Return ONLY valid JSON with this key: generated_content. "
+                        "Write all content in Spanish and use Markdown in generated_content."
+                    ),
+                },
+                {"role": "user", "content": prompt},
+            ],
+        )
+
+        raw_content = response.choices[0].message.content or "{}"
+        parsed = json.loads(raw_content)
+        normalized = self._normalize_class_planning_response(parsed)
+        self._validate_class_planning_response(normalized)
+        return normalized
+
     def _normalize_response(self, payload: dict[str, Any]) -> dict[str, str]:
         alias_map = {
             "nivel_bajo": "low_level",
@@ -120,5 +148,25 @@ class OpenAIProvider(AIProvider):
 
     def _validate_assessment_response(self, payload: dict[str, str]) -> None:
         missing = [key for key in self.ASSESSMENT_REQUIRED_KEYS if not payload.get(key)]
+        if missing:
+            raise ValueError(f"AI response is missing required keys: {', '.join(missing)}")
+
+    def _normalize_class_planning_response(self, payload: dict[str, Any]) -> dict[str, str]:
+        alias_map = {
+            "contenido_generado": "generated_content",
+            "generatedContent": "generated_content",
+        }
+
+        normalized: dict[str, str] = {}
+
+        for key, value in payload.items():
+            normalized_key = alias_map.get(key, key)
+            if normalized_key in self.CLASS_PLANNING_REQUIRED_KEYS:
+                normalized[normalized_key] = str(value).strip()
+
+        return normalized
+
+    def _validate_class_planning_response(self, payload: dict[str, str]) -> None:
+        missing = [key for key in self.CLASS_PLANNING_REQUIRED_KEYS if not payload.get(key)]
         if missing:
             raise ValueError(f"AI response is missing required keys: {', '.join(missing)}")
