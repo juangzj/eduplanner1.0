@@ -260,9 +260,13 @@
                                                     <a href="{% url 'levels:generated-class-plan-edit' generated.id %}" class="btn btn-sm btn-outline-primary">
                                                         <i class="bi bi-pencil"></i> Editar
                                                     </a>
-                                                    <form method="post" action="{% url 'levels:generated-class-plan-delete' generated.id %}" class="m-0" onsubmit="return confirm('¿Seguro que deseas eliminar esta clase generada?');">
+                                                    <form method="post" action="{% url 'levels:generated-class-plan-delete' generated.id %}" class="m-0" id="delete-generated-class-plan-form-{{ generated.id }}">
                                                         {% csrf_token %}
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            onclick="openConfirmModal('Eliminar clase generada', '¿Seguro que deseas eliminar esta clase generada?', 'delete-generated-class-plan-form-{{ generated.id }}', 'btn-danger')"
+                                                        >
                                                             <i class="bi bi-trash"></i> Eliminar
                                                         </button>
                                                     </form>

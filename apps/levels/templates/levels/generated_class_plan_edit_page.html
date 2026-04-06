@@ -74,9 +74,13 @@
                             {{ object.class_planning.topic }} | {{ object.class_planning.performance_template.area }}
                         </small>
                     </div>
-                    <form method="post" action="{% url 'levels:generated-class-plan-delete' object.id %}" class="m-0" onsubmit="return confirm('¿Seguro que deseas eliminar esta clase generada?');">
+                    <form method="post" action="{% url 'levels:generated-class-plan-delete' object.id %}" class="m-0" id="delete-generated-class-plan-form-{{ object.id }}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="openConfirmModal('Eliminar clase generada', '¿Seguro que deseas eliminar esta clase generada?', 'delete-generated-class-plan-form-{{ object.id }}', 'btn-danger')"
+                        >
                             Eliminar contenido
                         </button>
                     </form>
