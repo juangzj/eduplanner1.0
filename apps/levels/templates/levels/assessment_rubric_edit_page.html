@@ -3,6 +3,57 @@
 
 {% block title %}Editar rúbrica de evaluación{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<style>
+    .tox-tinymce {
+        border-radius: 0.85rem !important;
+        overflow: hidden;
+        border-color: #dbe3ea !important;
+    }
+
+    .tox .tox-toolbar__primary {
+        background: #f8fafc !important;
+    }
+
+    .tox .tox-edit-area__iframe {
+        background: #ffffff !important;
+    }
+
+    .editor-shell {
+        border: 1px solid #dbe3ea;
+        border-radius: 1rem;
+        background: #ffffff;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+        margin-bottom: 1rem;
+    }
+
+    .editor-shell__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.85rem 1rem;
+        background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+        border-bottom: 1px solid #dbe3ea;
+    }
+
+    .editor-shell__header strong {
+        display: block;
+        color: #0f172a;
+    }
+
+    .editor-shell__header small {
+        color: #64748b;
+    }
+
+    .editor-shell__body {
+        padding: 0;
+    }
+</style>
+{% endblock %}
+
 {% block sidebar_content %}
 <div class="container-fluid">
     <div class="row mb-3">
@@ -14,9 +65,72 @@
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-lg-9">
+        <div class="col-lg-10">
             {% include "levels/assessment_rubric_edit_form.html" %}
         </div>
     </div>
 </div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/turndown/dist/turndown.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/turndown-plugin-gfm/dist/turndown-plugin-gfm.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rubricTextarea = document.getElementById("id_rubric_content");
+        const form = rubricTextarea ? rubricTextarea.closest("form") : null;
+        if (!rubricTextarea || typeof tinymce === "undefined") {
+            return;
+        }
+
+        if (rubricTextarea.dataset.wysiwygInitialized === "true") {
+            return;
+        }
+
+        rubricTextarea.dataset.wysiwygInitialized = "true";
+
+        const markdownSource = rubricTextarea.value || "";
+        rubricTextarea.value = markdownSource ? marked.parse(markdownSource) : "";
+
+        tinymce.init({
+            target: rubricTextarea,
+            menubar: false,
+            branding: false,
+            height: 520,
+            plugins: "autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount",
+            toolbar: "undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table link blockquote | removeformat code preview fullscreen help",
+            content_style: "body { font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.6; padding: 1rem; } table { width: 100%; border-collapse: collapse; } table td, table th { border: 1px solid #d1d5db; padding: 0.5rem; } th { background: #f8fafc; }",
+            setup: function (editor) {
+                editor.on('init', function () {
+                    editor.setContent(marked.parse(markdownSource || ""));
+                });
+            },
+        });
+
+        if (form && typeof TurndownService !== "undefined") {
+            form.addEventListener("submit", function () {
+                const editor = tinymce.get(rubricTextarea.id);
+                if (!editor) {
+                    return;
+                }
+
+                const turndownService = new TurndownService({
+                    headingStyle: "atx",
+                    bulletListMarker: "-",
+                    codeBlockStyle: "fenced",
+                });
+
+                if (typeof turndownPluginGfm !== "undefined") {
+                    turndownService.use(turndownPluginGfm.gfm);
+                }
+
+                rubricTextarea.value = turndownService.turndown(editor.getContent({ format: "html" })).trim();
+            });
+        }
+    });
+</script>
 {% endblock %}
