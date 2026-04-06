@@ -1,13 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Prefetch
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from ..forms import ClassPlanningCreateForm
-from ..models import ClassPlanning, PerformanceLevelTemplate
+from ..models import ClassPlanning, GeneratedClassPlan, PerformanceLevelTemplate
 from ..services.class_planning_services import ClassPlanningCreateService
 
 
@@ -23,7 +24,12 @@ def class_plans_list_view(request):
 			"generated_levels",
 			"assessment_rubric",
 		)
-		.prefetch_related("generated_classes")
+		.prefetch_related(
+			Prefetch(
+				"generated_classes",
+				queryset=GeneratedClassPlan.objects.filter(deleted_at__isnull=True).order_by("-created_at"),
+			),
+		)
 		.order_by("-created_at")
 	)
 

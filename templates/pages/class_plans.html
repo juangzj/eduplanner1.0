@@ -252,9 +252,22 @@
                                 {% with generated=class_planning.generated_classes.first %}
                                     {% if generated %}
                                         <div class="p-3 border rounded bg-light">
-                                            <small class="text-muted d-block mb-2">
-                                                Modelo: {{ generated.ai_model|default:"No especificado" }} | Fecha: {{ generated.created_at|date:"d/m/Y H:i" }}
-                                            </small>
+                                            <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap mb-2">
+                                                <small class="text-muted d-block">
+                                                    Modelo: {{ generated.ai_model|default:"No especificado" }} | Fecha: {{ generated.created_at|date:"d/m/Y H:i" }}
+                                                </small>
+                                                <div class="d-flex gap-2 flex-wrap">
+                                                    <a href="{% url 'levels:generated-class-plan-edit' generated.id %}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-pencil"></i> Editar
+                                                    </a>
+                                                    <form method="post" action="{% url 'levels:generated-class-plan-delete' generated.id %}" class="m-0" onsubmit="return confirm('¿Seguro que deseas eliminar esta clase generada?');">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            <i class="bi bi-trash"></i> Eliminar
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
                                             <div class="markdown-source d-none">{{ generated.generated_content|default:"" }}</div>
                                             <div class="markdown-content markdown-render-target"></div>
                                         </div>

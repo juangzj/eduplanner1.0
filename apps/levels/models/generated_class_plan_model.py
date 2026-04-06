@@ -37,11 +37,22 @@ class GeneratedClassPlan(models.Model):
         verbose_name="Fecha de Creación"
     )
 
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Fecha de Actualización"
+    )
+
+    deleted_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Fecha de Eliminación"
+    )
+
     class Meta:
         db_table = "generated_class_plans"
         verbose_name = "Clase Generada"
         verbose_name_plural = "Clases Generadas"
-        ordering = ['-created_at']  # 👈 siempre trae la más reciente primero
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"Clase - {self.class_planning.topic} ({self.created_at})"
