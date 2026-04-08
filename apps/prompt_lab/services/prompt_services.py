@@ -6,7 +6,7 @@ from ..models import Prompt
 
 def create_prompt_service(user, data):
     full_prompt = build_prompt(data)
-    score, feedback = evaluate_prompt(full_prompt)
+    score, feedback = evaluate_prompt(full_prompt, data=data)
 
     feedback_text = "\n".join(f"- {item}" for item in feedback) if feedback else ""
 
