@@ -1,0 +1,57 @@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-3">
+        <h5 class="mb-1 fw-semibold">Prompt Lab Canvas</h5>
+        <p class="text-muted small mb-0">Construye un prompt pedagogico usando Prompt Canvas y principios de andamiaje.</p>
+    </div>
+
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            {% if missing_fields %}
+                <div class="alert alert-danger py-2">
+                    Campos obligatorios faltantes: {{ missing_fields|join:", " }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="purpose" class="form-label fw-semibold">Proposito *</label>
+                <textarea id="purpose" name="purpose" rows="3" class="form-control" placeholder="Que objetivo de aprendizaje debe apoyar este prompt?" required>{{ form_data.purpose|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label fw-semibold">Rol *</label>
+                <textarea id="role" name="role" rows="2" class="form-control" placeholder="Como debe comportarse la IA?" required>{{ form_data.role|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="context" class="form-label fw-semibold">Contexto *</label>
+                <textarea id="context" name="context" rows="4" class="form-control" placeholder="Incluye grado, area y necesidades del grupo." required>{{ form_data.context|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="task" class="form-label fw-semibold">Tarea *</label>
+                <textarea id="task" name="task" rows="4" class="form-control" placeholder="Describe la tarea concreta que debe realizar la IA." required>{{ form_data.task|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="process" class="form-label fw-semibold">Proceso</label>
+                <textarea id="process" name="process" rows="3" class="form-control" placeholder="Pasos opcionales para orientar la respuesta.">{{ form_data.process|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="format" class="form-label fw-semibold">Formato *</label>
+                <textarea id="format" name="format" rows="3" class="form-control" placeholder="Define estructura, tabla, rubrica, pasos, etc." required>{{ form_data.format|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="constraints" class="form-label fw-semibold">Restricciones</label>
+                <textarea id="constraints" name="constraints" rows="3" class="form-control" placeholder="Restricciones opcionales: tono, extension, exclusiones, idioma.">{{ form_data.constraints|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Generar Prompt</button>
+            </div>
+        </form>
+    </div>
+</div>

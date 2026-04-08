@@ -1,0 +1,43 @@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold">Listado de Prompts Generados</h6>
+    </div>
+    <div class="card-body p-0">
+        {% if prompts %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Proposito</th>
+                            <th scope="col">Puntaje</th>
+                            <th scope="col" class="text-end">Accion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for prompt in prompts %}
+                            <tr>
+                                <td>{{ prompt.created_at|date:"Y-m-d H:i" }}</td>
+                                <td>{{ prompt.purpose|truncatechars:90 }}</td>
+                                <td>
+                                    {% if prompt.score %}
+                                        <span class="badge text-bg-primary">{{ prompt.score }}/10</span>
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <a href="{% url 'prompt_lab:prompt-detail' prompt.id %}" class="btn btn-outline-secondary btn-sm">Ver Detalle</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="p-4 text-center text-muted">
+                Aun no has creado prompts. Empieza creando el primero.
+            </div>
+        {% endif %}
+    </div>
+</div>

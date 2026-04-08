@@ -1,0 +1,13 @@
+{% extends "base/base_left_sidebar.html" %}
+
+{% block title %}Prompt Lab{% endblock %}
+
+{% block sidebar_content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-xl-9 col-lg-10">
+            {% include "prompt_lab/prompt_create_form.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

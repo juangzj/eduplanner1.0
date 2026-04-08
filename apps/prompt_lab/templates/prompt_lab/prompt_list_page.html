@@ -1,0 +1,19 @@
+{% extends "base/base_left_sidebar.html" %}
+
+{% block title %}Mis Prompts{% endblock %}
+
+{% block sidebar_content %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Mis Prompts</h4>
+            <a href="{% url 'prompt_lab:prompt-create' %}" class="btn btn-primary btn-sm">Crear Prompt</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            {% include "prompt_lab/prompt_list_content.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.landing.apps.LandingConfig',
     'apps.levels.apps.LevelsConfig',
+    'apps.interactions.apps.InteractionsConfig',
+    'apps.prompt_lab.apps.PromptLabConfig',
     
 ]
 

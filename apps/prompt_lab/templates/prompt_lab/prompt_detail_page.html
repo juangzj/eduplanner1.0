@@ -1,0 +1,19 @@
+{% extends "base/base_left_sidebar.html" %}
+
+{% block title %}Detalle del Prompt{% endblock %}
+
+{% block sidebar_content %}
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Resultado del Prompt</h4>
+            <a href="{% url 'prompt_lab:prompt-create' %}" class="btn btn-outline-secondary btn-sm">Crear Nuevo Prompt</a>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            {% include "prompt_lab/prompt_detail_content.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}
