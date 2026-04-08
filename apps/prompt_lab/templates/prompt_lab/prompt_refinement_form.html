@@ -1,0 +1,56 @@
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold">Nuevo refinamiento</h6>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="refine">
+
+            {% if missing_fields %}
+                <div class="alert alert-danger py-2">
+                    Campos obligatorios faltantes: {{ missing_fields|join:", " }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="purpose" class="form-label fw-semibold">Proposito *</label>
+                <textarea id="purpose" name="purpose" rows="3" class="form-control" required>{{ form_data.purpose|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label fw-semibold">Rol *</label>
+                <textarea id="role" name="role" rows="2" class="form-control" required>{{ form_data.role|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="context" class="form-label fw-semibold">Contexto *</label>
+                <textarea id="context" name="context" rows="4" class="form-control" required>{{ form_data.context|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="task" class="form-label fw-semibold">Tarea *</label>
+                <textarea id="task" name="task" rows="4" class="form-control" required>{{ form_data.task|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="process" class="form-label fw-semibold">Proceso</label>
+                <textarea id="process" name="process" rows="3" class="form-control">{{ form_data.process|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="format" class="form-label fw-semibold">Formato *</label>
+                <textarea id="format" name="format" rows="3" class="form-control" required>{{ form_data.format|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="mb-4">
+                <label for="constraints" class="form-label fw-semibold">Restricciones</label>
+                <textarea id="constraints" name="constraints" rows="3" class="form-control">{{ form_data.constraints|default_if_none:"" }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Enviar refinamiento</button>
+            </div>
+        </form>
+    </div>
+</div>

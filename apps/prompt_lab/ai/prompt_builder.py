@@ -208,6 +208,112 @@ Devuelve SOLO JSON valido con esta forma exacta:
     }
 
 
+def generate_quality_prompt(data, feedback_history=None):
+    normalized = {key: str(data.get(key, "")).strip() for key in FIELD_KEYS}
+    feedback_history = feedback_history or []
+
+    api_key = getattr(settings, "OPENAI_API_KEY", "").strip()
+    if not api_key:
+        return {
+            **normalized,
+            "full_prompt": build_prompt(normalized),
+        }
+
+    try:
+        from openai import OpenAI
+    except Exception:
+        return {
+            **normalized,
+            "full_prompt": build_prompt(normalized),
+        }
+
+    client = OpenAI(api_key=api_key)
+    model = getattr(settings, "OPENAI_MODEL", "gpt-4o-mini")
+
+    feedback_text = "\n".join(f"- {item}" for item in feedback_history if item)
+
+    system_message = (
+        "You are an expert pedagogical prompt engineer. "
+        "Rewrite the teacher prompt to a high-quality version following Prompt Canvas and cognitive scaffolding. "
+        "Return only valid JSON and keep the final content in Spanish."
+    )
+
+    user_message = f"""
+Toma el ultimo intento del docente y mejora el prompt con calidad pedagogica.
+
+Campos del ultimo intento:
+- purpose: {normalized.get('purpose', '')}
+- role: {normalized.get('role', '')}
+- context: {normalized.get('context', '')}
+- task: {normalized.get('task', '')}
+- process: {normalized.get('process', '')}
+- format: {normalized.get('format', '')}
+- constraints: {normalized.get('constraints', '')}
+
+Retroalimentacion acumulada:
+{feedback_text or '- Sin retroalimentacion previa'}
+
+Reglas:
+1. Mejora todos los campos para que queden claros, especificos y aplicables en secundaria.
+2. Mantener coherencia entre objetivo, tarea, proceso, formato y restricciones.
+3. Incluir andamiaje cognitivo en process.
+4. full_prompt debe seguir esta estructura exacta:
+Purpose:\n...\n\nRole:\n...\n\nContext:\n...\n\nTask:\n...\n\nProcess:\n...\n\nFormat:\n...\n\nConstraints:\n...
+
+Devuelve SOLO JSON valido con esta estructura exacta:
+{{
+  "purpose": "",
+  "role": "",
+  "context": "",
+  "task": "",
+  "process": "",
+  "format": "",
+  "constraints": "",
+  "full_prompt": ""
+}}
+"""
+
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            temperature=0.3,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message},
+            ],
+        )
+    except Exception:
+        return {
+            **normalized,
+            "full_prompt": build_prompt(normalized),
+        }
+
+    raw_content = response.choices[0].message.content if response.choices else None
+    if not raw_content:
+        return {
+            **normalized,
+            "full_prompt": build_prompt(normalized),
+        }
+
+    try:
+        payload = json.loads(raw_content)
+    except json.JSONDecodeError:
+        return {
+            **normalized,
+            "full_prompt": build_prompt(normalized),
+        }
+
+    improved = {
+        key: str(payload.get(key, normalized.get(key, ""))).strip()
+        for key in FIELD_KEYS
+    }
+
+    full_prompt = str(payload.get("full_prompt", "")).strip() or build_prompt(improved)
+    improved["full_prompt"] = full_prompt
+    return improved
+
+
 def _extract_section(prompt, section_name):
     marker = f"{section_name}:\n"
     start = prompt.find(marker)

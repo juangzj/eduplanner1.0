@@ -151,3 +151,7 @@ MESSAGE_TAGS = {
 AI_PROVIDER = os.getenv('AI_PROVIDER', 'openai')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
+
+# Prompt Lab configuration
+PROMPT_LAB_MAX_REFINEMENTS = int(os.getenv('PROMPT_LAB_MAX_REFINEMENTS', '5'))
+PROMPT_LAB_GENERATION_MIN_REFINEMENTS = int(os.getenv('PROMPT_LAB_GENERATION_MIN_REFINEMENTS', '3'))

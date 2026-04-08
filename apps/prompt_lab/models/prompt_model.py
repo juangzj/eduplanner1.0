@@ -8,6 +8,22 @@ class Prompt(models.Model):
         on_delete=models.CASCADE,
         related_name="prompts",
     )
+    parent_prompt = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="refinement_attempts",
+        null=True,
+        blank=True,
+    )
+    root_prompt = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="thread_prompts",
+        null=True,
+        blank=True,
+    )
+    refinement_number = models.PositiveIntegerField(default=0)
+    is_ai_generated = models.BooleanField(default=False)
     purpose = models.TextField()
     role = models.TextField()
     context = models.TextField()
