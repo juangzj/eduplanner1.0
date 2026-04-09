@@ -16,6 +16,30 @@ from ..services import (
 
 REQUIRED_FIELDS = ["purpose", "role", "context", "task", "format"]
 
+FEEDBACK_SECTION_TITLES = {
+    "status": "Estado de calidad",
+    "general": "Retroalimentacion general",
+    "purpose": "Proposito",
+    "role": "Rol",
+    "context": "Contexto",
+    "task": "Tarea",
+    "process": "Proceso",
+    "format": "Formato",
+    "constraints": "Restricciones",
+    "other": "Recomendaciones adicionales",
+}
+
+FEEDBACK_KEY_BY_PREFIX = {
+    "Retroalimentacion general": "general",
+    "Proposito": "purpose",
+    "Rol": "role",
+    "Contexto": "context",
+    "Tarea": "task",
+    "Proceso": "process",
+    "Formato": "format",
+    "Restricciones": "constraints",
+}
+
 
 @login_required(login_url="/users/login/")
 def prompt_create_view(request):
@@ -133,6 +157,59 @@ def _feedback_to_items(feedback_text):
     return [line.lstrip("- ").strip() for line in feedback_text.splitlines() if line.strip()]
 
 
+def _feedback_to_blocks(feedback_items):
+    if not feedback_items:
+        return []
+
+    grouped = {key: [] for key in FEEDBACK_SECTION_TITLES.keys()}
+
+    for item in feedback_items:
+        normalized = item.strip()
+
+        if normalized.startswith("El prompt ya tiene calidad") or normalized.startswith("El prompt aun no alcanza"):
+            grouped["status"].append(normalized)
+            continue
+
+        matched = False
+        for prefix, key in FEEDBACK_KEY_BY_PREFIX.items():
+            prefix_with_colon = f"{prefix}:"
+            if normalized.startswith(prefix_with_colon):
+                grouped[key].append(normalized[len(prefix_with_colon):].strip())
+                matched = True
+                break
+
+        if not matched:
+            grouped["other"].append(normalized)
+
+    ordered_keys = [
+        "status",
+        "general",
+        "purpose",
+        "role",
+        "context",
+        "task",
+        "process",
+        "format",
+        "constraints",
+        "other",
+    ]
+
+    blocks = []
+    for key in ordered_keys:
+        entries = grouped.get(key, [])
+        if not entries:
+            continue
+        blocks.append(
+            {
+                "key": key,
+                "title": FEEDBACK_SECTION_TITLES[key],
+                "entries": entries,
+            }
+        )
+
+    return blocks
+
+
 def _render_prompt_detail(request, root_prompt, form_data=None, missing_fields=None, show_refine_form=False):
     thread_prompts = list(get_thread_prompts(root_prompt))
     latest_prompt = thread_prompts[-1]
@@ -166,6 +243,7 @@ def _render_prompt_detail(request, root_prompt, form_data=None, missing_fields=N
                 "prompt": item,
                 "card_title": card_title,
                 "feedback_items": _feedback_to_items(item.feedback),
+                "feedback_blocks": _feedback_to_blocks(_feedback_to_items(item.feedback)),
             }
         )
 

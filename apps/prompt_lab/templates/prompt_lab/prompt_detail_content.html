@@ -20,12 +20,39 @@
             <pre class="mb-3" style="white-space: pre-wrap; word-break: break-word;">{{ card.prompt.full_prompt }}</pre>
 
             <h6 class="fw-semibold">Retroalimentacion automatica</h6>
-            {% if card.feedback_items %}
-                <ul class="mb-0">
-                    {% for item in card.feedback_items %}
-                        <li>{{ item }}</li>
+            {% if card.feedback_blocks %}
+                <div class="accordion" id="feedbackAccordion{{ card.prompt.id }}">
+                    {% for block in card.feedback_blocks %}
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ card.prompt.id }}{{ forloop.counter }}">
+                                <button
+                                    class="accordion-button {% if not forloop.first %}collapsed{% endif %}"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ card.prompt.id }}{{ forloop.counter }}"
+                                    aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+                                    aria-controls="collapse{{ card.prompt.id }}{{ forloop.counter }}"
+                                >
+                                    {{ block.title }}
+                                </button>
+                            </h2>
+                            <div
+                                id="collapse{{ card.prompt.id }}{{ forloop.counter }}"
+                                class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+                                aria-labelledby="heading{{ card.prompt.id }}{{ forloop.counter }}"
+                                data-bs-parent="#feedbackAccordion{{ card.prompt.id }}"
+                            >
+                                <div class="accordion-body">
+                                    <ul class="mb-0 ps-3">
+                                        {% for entry in block.entries %}
+                                            <li>{{ entry }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     {% endfor %}
-                </ul>
+                </div>
             {% else %}
                 <p class="mb-0 text-muted">No hay retroalimentacion disponible.</p>
             {% endif %}

@@ -14,6 +14,26 @@ FIELD_LABELS_ES = {
     "constraints": "Restricciones",
 }
 
+FIELD_MIN_LENGTH = {
+    "purpose": 40,
+    "role": 25,
+    "context": 60,
+    "task": 60,
+    "process": 25,
+    "format": 35,
+    "constraints": 20,
+}
+
+FIELD_EXAMPLES = {
+    "purpose": "Ejemplo: Disenar una actividad de analisis de fuentes historicas para fortalecer pensamiento critico en grado 9.",
+    "role": "Ejemplo: Actua como asesor pedagogico experto en aprendizaje activo y evaluacion formativa en secundaria.",
+    "context": "Ejemplo: Curso de 38 estudiantes de grado 8, nivel heterogeneo, con 50 minutos de clase y acceso limitado a internet.",
+    "task": "Ejemplo: Genera una secuencia de 3 actividades, cada una con objetivo, instrucciones y criterio de logro observable.",
+    "process": "Ejemplo: 1) Activar saberes previos 2) Modelado guiado 3) Practica colaborativa 4) Cierre metacognitivo.",
+    "format": "Ejemplo: Responde en tabla con columnas: fase, objetivo, actividad, evidencia, tiempo, instrumento de evaluacion.",
+    "constraints": "Ejemplo: Usa lenguaje claro para secundaria, maximo 450 palabras, incluir al menos 1 estrategia de inclusion.",
+}
+
 
 def build_prompt(data):
     sections = {
@@ -36,10 +56,16 @@ def evaluate_prompt(prompt, data=None):
     ai_result = _evaluate_prompt_with_ai(normalized_data)
 
     if not ai_result:
-        return heuristic_score, heuristic_feedback
+        detailed_feedback = _expand_feedback_with_field_guidance(
+            heuristic_feedback,
+            normalized_data,
+            include_strengths=False,
+        )
+        return heuristic_score, detailed_feedback
 
     ai_score = max(0.0, min(10.0, float(ai_result.get("score", heuristic_score))))
     quality_ready = bool(ai_result.get("is_quality", ai_score >= 8.0))
+    ai_score = _calibrate_ai_score(ai_score, quality_ready, normalized_data)
     overall_feedback = str(ai_result.get("overall_feedback", "")).strip()
     field_feedback = ai_result.get("field_feedback", {}) or {}
 
@@ -63,7 +89,12 @@ def evaluate_prompt(prompt, data=None):
         if rule_feedback not in feedback:
             feedback.append(rule_feedback)
 
-    return round(ai_score, 1), feedback
+    detailed_feedback = _expand_feedback_with_field_guidance(
+        feedback,
+        normalized_data,
+        include_strengths=True,
+    )
+    return round(ai_score, 1), detailed_feedback
 
 
 def _evaluate_prompt_with_rules(prompt):
@@ -154,6 +185,10 @@ Reglas de salida:
 4. field_feedback: objeto con keys purpose, role, context, task, process, format, constraints.
 5. Cada valor de field_feedback debe tener recomendacion breve en espanol para mejorar ese campo.
 6. Si un campo esta bien, indica que esta correcto y como reforzarlo.
+7. Usa toda la escala: 10 solo para excelencia pedagogica real y completa.
+8. Asigna 10 si el prompt es claro, especifico, contextualizado, con tarea evaluable,
+   andamiaje util y formato/restricciones bien definidos.
+9. En cada campo explica: (a) que esta bien, (b) que falta, (c) una mejora concreta en una frase.
 
 Devuelve SOLO JSON valido con esta forma exacta:
 {{
@@ -328,3 +363,67 @@ def _extract_section(prompt, section_name):
         return remaining.strip()
 
     return remaining[:next_break].strip()
+
+
+def _calibrate_ai_score(ai_score, quality_ready, data):
+    if not quality_ready:
+        return ai_score
+
+    purpose_ok = len(data.get("purpose", "")) >= 40
+    role_ok = len(data.get("role", "")) >= 25
+    context_ok = len(data.get("context", "")) >= 60
+    task_ok = len(data.get("task", "")) >= 60
+    format_ok = len(data.get("format", "")) >= 35
+
+    # At least one of these should be detailed for scaffolding quality.
+    process_ok = len(data.get("process", "")) >= 25
+    constraints_ok = len(data.get("constraints", "")) >= 20
+
+    core_quality = all([purpose_ok, role_ok, context_ok, task_ok, format_ok])
+    scaffolding_quality = process_ok or constraints_ok
+
+    if core_quality and scaffolding_quality and ai_score >= 9.2:
+        return 10.0
+
+    return ai_score
+
+
+def _expand_feedback_with_field_guidance(base_feedback, data, include_strengths):
+    feedback = list(base_feedback)
+
+    for field in FIELD_KEYS:
+        value = str(data.get(field, "")).strip()
+        min_len = FIELD_MIN_LENGTH[field]
+        label = FIELD_LABELS_ES[field]
+
+        if len(value) < min_len:
+            gap = min_len - len(value)
+            feedback.append(
+                f"Guia de mejora - {label}: este campo esta incompleto (faltan aprox. {gap} caracteres para un nivel robusto). "
+                f"Describe con mayor precision el para que, el como y el criterio de calidad esperado."
+            )
+            feedback.append(FIELD_EXAMPLES[field])
+        elif include_strengths:
+            feedback.append(
+                f"Fortaleza - {label}: la informacion es suficiente. Ahora mejora precision agregando indicadores observables "
+                f"(que hara el estudiante, en cuanto tiempo y con que evidencia)."
+            )
+
+    return _deduplicate_feedback(feedback)
+
+
+def _deduplicate_feedback(items):
+    cleaned = []
+    seen = set()
+
+    for item in items:
+        text = str(item).strip()
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(text)
+
+    return cleaned
