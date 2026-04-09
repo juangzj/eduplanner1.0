@@ -7,63 +7,67 @@
 
 <div class="row mb-4">
     <div class="col-12">
-        <h2 class="fw-bold mb-1">Bienvenido, Docente</h2>
+        <h2 class="fw-bold mb-1">Bienvenido, {{ teacher_display_name }}</h2>
         <p class="text-secondary">Este es el resumen de tu actividad en Eduplanner.</p>
     </div>
 </div>
 
 <div class="row g-4 mb-4">
     <div class="col-sm-6 col-xl-3">
-        <a href="#" class="text-decoration-none h-100 d-block">
+        <a href="{% url 'prompt_lab:prompt-list' %}" class="text-decoration-none h-100 d-block">
             <div class="card shadow-sm border-0 h-100 transition-hover">
                 <div class="card-body p-4 text-center text-sm-start">
                     <div class="bg-primary bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
-                        <i class="bi bi-robot text-primary fs-3"></i>
+                        <i class="bi bi-chat-square-text text-primary fs-3"></i>
                     </div>
-                    <h6 class="fw-bold mb-2 text-dark">Asistente IA</h6>
-                    <p class="text-muted small mb-0">Genera contenido pedagógico inteligente.</p>
+                    <h6 class="fw-bold mb-1 text-dark">Prompts creados</h6>
+                    <p class="text-muted small mb-2">Hilos de Prompt Lab activos.</p>
+                    <span class="badge text-bg-primary">{{ stats.prompt_count }}</span>
                 </div>
             </div>
         </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <a href="#" class="text-decoration-none h-100 d-block">
+        <a href="{% url 'levels:class-plans' %}" class="text-decoration-none h-100 d-block">
             <div class="card shadow-sm border-0 h-100 transition-hover">
                 <div class="card-body p-4 text-center text-sm-start">
                     <div class="bg-success bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
                         <i class="bi bi-journal-text text-success fs-3"></i>
                     </div>
-                    <h6 class="fw-bold mb-2 text-dark">Planeaciones</h6>
-                    <p class="text-muted small mb-0">Organiza tus unidades y clases.</p>
+                    <h6 class="fw-bold mb-1 text-dark">Planeaciones</h6>
+                    <p class="text-muted small mb-2">Registros activos del docente.</p>
+                    <span class="badge text-bg-success">{{ stats.class_planning_count }}</span>
                 </div>
             </div>
         </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <a href="#" class="text-decoration-none h-100 d-block">
+        <a href="{% url 'levels:levels' %}" class="text-decoration-none h-100 d-block">
             <div class="card shadow-sm border-0 h-100 transition-hover">
                 <div class="card-body p-4 text-center text-sm-start">
                     <div class="bg-warning bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
                         <i class="bi bi-check2-square text-warning fs-3"></i>
                     </div>
-                    <h6 class="fw-bold mb-2 text-dark">Rúbricas</h6>
-                    <p class="text-muted small mb-0">Evalúa con criterios claros.</p>
+                    <h6 class="fw-bold mb-1 text-dark">Rúbricas</h6>
+                    <p class="text-muted small mb-2">Rúbricas asociadas a tus niveles.</p>
+                    <span class="badge text-bg-warning">{{ stats.rubric_count }}</span>
                 </div>
             </div>
         </a>
     </div>
 
     <div class="col-sm-6 col-xl-3">
-        <a href="#" class="text-decoration-none h-100 d-block">
+        <a href="{% url 'levels:levels' %}" class="text-decoration-none h-100 d-block">
             <div class="card shadow-sm border-0 h-100 transition-hover">
                 <div class="card-body p-4 text-center text-sm-start">
                     <div class="bg-info bg-opacity-10 p-3 rounded-3 mb-3 d-inline-block">
-                        <i class="bi bi-bookmarks text-info fs-3"></i>
+                        <i class="bi bi-diagram-3 text-info fs-3"></i>
                     </div>
-                    <h6 class="fw-bold mb-2 text-dark">Biblioteca</h6>
-                    <p class="text-muted small mb-0">Tus recursos guardados.</p>
+                    <h6 class="fw-bold mb-1 text-dark">Plantillas de nivel</h6>
+                    <p class="text-muted small mb-2">Base para generar niveles y rúbricas.</p>
+                    <span class="badge text-bg-info">{{ stats.template_count }}</span>
                 </div>
             </div>
         </a>
@@ -77,43 +81,29 @@
                 <h5 class="fw-bold mb-0 text-dark">Actividad reciente</h5>
             </div>
             <div class="card-body p-4">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item px-0 py-3 border-0 border-bottom">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
-                                <i class="bi bi-file-earmark-plus text-primary"></i>
+                {% if activities %}
+                    <div class="list-group list-group-flush">
+                        {% for item in activities %}
+                            <div class="list-group-item px-0 py-3 border-0 {% if not forloop.last %}border-bottom{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
+                                        <i class="bi {{ item.icon }} text-{{ item.color }}"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="mb-0 fw-medium">{{ item.title }}</p>
+                                        <small class="text-muted d-block">{{ item.description }}</small>
+                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">{{ item.created_at|timesince }} atrás</small>
+                                    </div>
+                                    <div class="ms-2">
+                                        <a href="{{ item.url }}" class="btn btn-sm btn-outline-secondary">Ver</a>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0 fw-medium">Planeación: Ciencias Naturales</p>
-                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Creado hace 10m</small>
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
-
-                    <div class="list-group-item px-0 py-3 border-0 border-bottom">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
-                                <i class="bi bi-robot text-info"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0 fw-medium">Rúbrica generada con IA</p>
-                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Ayer 4:30 PM</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="list-group-item px-0 py-3 border-0">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 bg-light p-2 rounded-circle me-3">
-                                <i class="bi bi-gear text-success"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <p class="mb-0 fw-medium">Perfil de docente actualizado</p>
-                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem;">Lunes, 23 Mar</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% else %}
+                    <p class="text-muted mb-0">Todavía no tienes actividad reciente registrada.</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -127,19 +117,32 @@
             <div class="card-body p-4 d-flex flex-column position-relative">
                 <h5 class="fw-bold mb-4">Acciones rápidas</h5>
 
+                <div class="mb-4">
+                    <p class="small text-white-50 mb-1">Promedio de calidad en Prompt Lab</p>
+                    {% if stats.average_prompt_score_has_data %}
+                        <h3 class="fw-bold mb-0">{{ stats.average_prompt_score }}/10</h3>
+                    {% else %}
+                        <h3 class="fw-bold mb-0">N/A</h3>
+                    {% endif %}
+                </div>
+
                 <div class="d-grid gap-3 mt-auto">
-                    <a href="#" class="btn btn-primary fw-semibold py-2">
-                        <i class="bi bi-plus-lg me-2"></i> Nueva planeación
+                    <a href="{% url 'levels:class-plans' %}" class="btn btn-primary fw-semibold py-2">
+                        <i class="bi bi-plus-lg me-2"></i> Nueva planeacion
                     </a>
 
-                    <a href="#" class="btn btn-outline-light py-2">
-                        <i class="bi bi-check2-square me-2"></i> Nueva rúbrica
+                    <a href="{% url 'prompt_lab:prompt-create' %}" class="btn btn-outline-light py-2">
+                        <i class="bi bi-chat-square-text me-2"></i> Nuevo prompt
+                    </a>
+
+                    <a href="{% url 'levels:levels' %}" class="btn btn-outline-light py-2">
+                        <i class="bi bi-check2-square me-2"></i> Crear niveles y rubricas
                     </a>
 
                     <hr class="my-3 opacity-25">
 
-                    <a href="#" class="btn btn-link text-white-50 text-decoration-none text-center small">
-                        Ver tutoriales de uso
+                    <a href="{% url 'prompt_lab:prompt-list' %}" class="btn btn-link text-white-50 text-decoration-none text-center small">
+                        Ver historial de prompts
                     </a>
                 </div>
             </div>

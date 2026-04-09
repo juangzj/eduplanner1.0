@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from ..forms import TeacherLoginForm
 from ..services.auth_user_teacher_services import login_teacher_service, process_logout
+from ..services.dashboard_services import get_dashboard_data
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 
@@ -32,7 +33,8 @@ def logout_view(request):
 @never_cache
 @login_required()
 def dashboard_view(request):
-    return render (request, 'pages/dashboard.html')
+    dashboard_data = get_dashboard_data(request.user)
+    return render(request, 'pages/dashboard.html', dashboard_data)
 
 
 
