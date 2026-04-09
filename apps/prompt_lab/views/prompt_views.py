@@ -16,6 +16,16 @@ from ..services import (
 
 REQUIRED_FIELDS = ["purpose", "role", "context", "task", "format"]
 
+PROMPT_MARKDOWN_SECTIONS = [
+    ("purpose", "Proposito"),
+    ("role", "Rol"),
+    ("context", "Contexto"),
+    ("task", "Tarea"),
+    ("process", "Proceso"),
+    ("format", "Formato"),
+    ("constraints", "Restricciones"),
+]
+
 FEEDBACK_SECTION_TITLES = {
     "status": "Estado de calidad",
     "general": "Retroalimentacion general",
@@ -157,6 +167,34 @@ def _feedback_to_items(feedback_text):
     return [line.lstrip("- ").strip() for line in feedback_text.splitlines() if line.strip()]
 
 
+def _prompt_to_markdown(prompt_obj):
+    blocks = []
+
+    for field_name, label in PROMPT_MARKDOWN_SECTIONS:
+        value = getattr(prompt_obj, field_name, "")
+        value_text = str(value).strip() if value else ""
+        blocks.append(f"## {label}\n\n{value_text or '_No especificado._'}")
+
+    return "\n\n".join(blocks)
+
+
+def _prompt_to_sections(prompt_obj):
+    sections = []
+
+    for field_name, label in PROMPT_MARKDOWN_SECTIONS:
+        value = getattr(prompt_obj, field_name, "")
+        text = str(value).strip() if value else ""
+        sections.append(
+            {
+                "field": field_name,
+                "label": label,
+                "value": text or "No especificado.",
+            }
+        )
+
+    return sections
+
+
 def _feedback_to_blocks(feedback_items):
     if not feedback_items:
         return []
@@ -242,6 +280,8 @@ def _render_prompt_detail(request, root_prompt, form_data=None, missing_fields=N
             {
                 "prompt": item,
                 "card_title": card_title,
+                "prompt_markdown": _prompt_to_markdown(item),
+                "prompt_sections": _prompt_to_sections(item),
                 "feedback_items": _feedback_to_items(item.feedback),
                 "feedback_blocks": _feedback_to_blocks(_feedback_to_items(item.feedback)),
             }
