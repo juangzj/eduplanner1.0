@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from ..forms import TeacherProfileForm, TeacherRegisterForm
 from ..services import register_teacher_service, update_teacher_profile_service
 
+@never_cache
 def register_teacher_view(request):
     """Vista para el registro de nuevos docentes."""
     
@@ -35,6 +37,7 @@ def register_teacher_view(request):
     return render(request, 'users/register_user_teacher.html', {'form': form})
 
 
+@never_cache
 @login_required(login_url='/users/login/')
 def profile_settings_view(request):
     if request.method == 'POST':

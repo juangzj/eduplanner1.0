@@ -7,18 +7,64 @@
 <style>
     body {
         font-family: 'Inter', sans-serif;
+        background:
+            radial-gradient(circle at top left, rgba(13,110,253,0.08), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(25,135,84,0.08), transparent 26%),
+            #f8fafc;
     }
 
     .btn-pill {
         border-radius: 50px;
-        padding: 12px 28px;
+        padding: 12px 26px;
         font-weight: 600;
     }
 
     .hero {
-        min-height: 85vh;
+        min-height: 88vh;
         display: flex;
         align-items: center;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .45rem .9rem;
+        border-radius: 999px;
+        background: rgba(13,110,253,.08);
+        color: #0d6efd;
+        font-weight: 600;
+        font-size: .9rem;
+    }
+
+    .hero-panel {
+        background: linear-gradient(145deg, #0f172a 0%, #111827 55%, #0b5ed7 130%);
+        color: white;
+        border-radius: 28px;
+        padding: 1.75rem;
+        box-shadow: 0 24px 60px rgba(15,23,42,0.18);
+        position: relative;
+        overflow: hidden;
+        min-height: 360px;
+    }
+
+    .hero-panel::after {
+        content: '';
+        position: absolute;
+        inset: auto -40px -40px auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.08);
+        filter: blur(2px);
+    }
+
+    .mini-stat {
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 18px;
+        padding: 1rem;
+        backdrop-filter: blur(8px);
     }
 
     .feature-icon {
@@ -39,20 +85,98 @@
         transform: translateY(-5px);
         box-shadow: 0 15px 35px rgba(0,0,0,0.08);
     }
+
+    .section-kicker {
+        text-transform: uppercase;
+        letter-spacing: .16em;
+        font-size: .78rem;
+        font-weight: 700;
+        color: #0d6efd;
+    }
+
+    .value-card {
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 20px;
+        transition: transform .2s ease, box-shadow .2s ease;
+        background: #fff;
+    }
+
+    .value-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 40px rgba(15,23,42,.08);
+    }
+
+    .module-card {
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 20px;
+        background: white;
+        height: 100%;
+        transition: transform .2s ease, box-shadow .2s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .module-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 40px rgba(15,23,42,.08);
+        color: inherit;
+    }
+
+    .module-card .feature-icon {
+        margin-bottom: 1rem;
+    }
+
+    .soft-section {
+        background: rgba(255,255,255,.8);
+        backdrop-filter: blur(6px);
+        border-top: 1px solid rgba(15, 23, 42, 0.06);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .step-card {
+        background: white;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        border-radius: 18px;
+        padding: 1.25rem;
+        height: 100%;
+    }
+
+    .step-badge {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: #eef4ff;
+        color: #0d6efd;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .quote-card {
+        border-radius: 24px;
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 55%, #0f172a 120%);
+        color: white;
+        padding: 2rem;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
 
 <!-- ===== NAVBAR ===== -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3 sticky-top border-bottom">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-4 text-primary" href="#">
+        <a class="navbar-brand fw-bold fs-4 text-primary" href="{% url 'landing:landing' %}">
             <i class="bi bi-journal-bookmark-fill me-2"></i>Eduplanner
         </a>
 
-        <div class="ms-auto">
-            <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-pill me-2">
+        <div class="ms-auto d-flex gap-2 flex-wrap">
+            <a href="#modulos" class="btn btn-link text-decoration-none fw-semibold d-none d-lg-inline-flex align-items-center">
+                Funcionalidades
+            </a>
+            <a href="{% url 'users:login' %}" class="btn btn-outline-primary btn-pill">
                 Iniciar sesión
             </a>
             <a href="{% url 'users:register_teacher' %}" class="btn btn-primary btn-pill">
@@ -63,31 +187,94 @@
 </nav>
 
 <!-- ===== HERO ===== -->
-<section class="hero bg-white">
+<section class="hero py-5">
     <div class="container">
-        <div class="row align-items-center g-5">
+        <div class="row align-items-center g-5 py-4">
 
             <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-4">
-                    Planificación pedagógica con <span class="text-primary">IA</span>
+                <span class="hero-badge mb-3">
+                    <i class="bi bi-stars"></i>
+                    Plataforma para docentes de educación media
+                </span>
+
+                <h1 class="display-4 fw-bold mb-4 lh-1">
+                    Planificación pedagógica con <span class="text-primary">IA</span> y enfoque curricular
                 </h1>
 
                 <p class="lead text-muted mb-4">
-                    Diseña niveles de desempeño, secuencias didácticas y rúbricas de evaluación en minutos, alineadas con estándares educativos y la taxonomía de Bloom.
+                    {{ subtitulo }}
                 </p>
 
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="#" class="btn btn-primary btn-lg btn-pill shadow">
+                <div class="d-flex gap-3 flex-wrap mb-4">
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'users:dashboard' %}" class="btn btn-primary btn-lg btn-pill shadow">
                         <i class="bi bi-magic me-2"></i>Comenzar
                     </a>
+                    {% else %}
+                    <a href="{% url 'users:login' %}" class="btn btn-primary btn-lg btn-pill shadow">
+                        <i class="bi bi-magic me-2"></i>Comenzar
+                    </a>
+                    {% endif %}
                     <a href="#modulos" class="btn btn-outline-secondary btn-lg btn-pill">
                         Ver funcionalidades
                     </a>
                 </div>
+
+                <div class="row g-3 mt-4">
+                    <div class="col-md-4">
+                        <div class="value-card p-3 h-100">
+                            <h6 class="fw-bold mb-1">{{ resumen.docentes }}</h6>
+                            <p class="text-muted small mb-0">Diseñado para uso institucional.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="value-card p-3 h-100">
+                            <h6 class="fw-bold mb-1">{{ resumen.flujo }}</h6>
+                            <p class="text-muted small mb-0">Desde Prompt Lab hasta clases y rúbricas.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="value-card p-3 h-100">
+                            <h6 class="fw-bold mb-1">{{ resumen.ia }}</h6>
+                            <p class="text-muted small mb-0">Retroalimentación para mejorar cada intento.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-lg-6 text-center">
-                <i class="bi bi-cpu display-1 text-primary opacity-75"></i>
+            <div class="col-lg-6">
+                <div class="hero-panel">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <p class="text-white-50 mb-1 small fw-semibold text-uppercase">Vista general</p>
+                            <h4 class="fw-bold mb-0">Todo tu flujo pedagógico en un solo panel</h4>
+                        </div>
+                        <i class="bi bi-cpu-fill display-6 text-white opacity-75"></i>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        {% for stat in metricas %}
+                        <div class="col-md-4">
+                            <div class="mini-stat h-100">
+                                <div class="fs-4 fw-bold">{{ stat.valor }}</div>
+                                <div class="small text-white-50">{{ stat.etiqueta }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mini-stat">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-white bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-shield-check fs-4"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-bold mb-1">Trabajo lógico, seguro y trazable</h6>
+                                <p class="mb-0 text-white-50 small">Borrado lógico, hilos de refinamiento y control de acceso con sesión.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -95,21 +282,20 @@
 </section>
 
 <!-- ===== MODULOS ===== -->
-<section id="modulos" class="py-5 bg-light">
+<section id="modulos" class="py-5 soft-section">
     <div class="container">
 
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Modulos principales</h2>
-            <p class="text-muted">
-                Herramientas diseñadas para transformar la enseñanza en educación media
-            </p>
+            <div class="section-kicker mb-2">Módulos principales</div>
+            <h2 class="fw-bold mb-2">Herramientas diseñadas para la práctica docente real</h2>
+            <p class="text-muted mb-0">Cada módulo responde a una parte concreta del trabajo académico de planificación y evaluación.</p>
         </div>
 
         <div class="row g-4">
 
             {% for modulo in modulos %}
             <div class="col-md-6 col-lg-3">
-                <div class="card card-hover border-0 p-4 h-100">
+                <a href="{{ modulo.url }}" class="module-card card-hover p-4 d-block text-decoration-none">
 
                     <div class="feature-icon bg-{{ modulo.color }} text-white">
                         <i class="bi {{ modulo.icono }}"></i>
@@ -117,11 +303,11 @@
 
                     <h5 class="fw-bold">{{ modulo.titulo }}</h5>
 
-                    <p class="text-muted small">
+                    <p class="text-muted small mb-0">
                         {{ modulo.descripcion }}
                     </p>
 
-                </div>
+                </a>
             </div>
             {% endfor %}
 
@@ -133,67 +319,63 @@
     <div class="container">
 
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Cómo funciona</h2>
+            <div class="section-kicker mb-2">Flujo de trabajo</div>
+            <h2 class="fw-bold mb-0">Cómo funciona Eduplanner</h2>
         </div>
 
-        <div class="row g-4 text-center">
+        <div class="row g-4">
 
+            {% for paso in proceso %}
             <div class="col-md-4">
-                <i class="bi bi-ui-checks fs-1 text-primary"></i>
-                <h5 class="fw-bold mt-3">Seleccion curricular</h5>
-                <p class="text-muted small">
-                    Define área, grado y periodo académico.
-                </p>
+                <div class="step-card">
+                    <div class="step-badge">{{ paso.paso }}</div>
+                    <h5 class="fw-bold">{{ paso.titulo }}</h5>
+                    <p class="text-muted mb-0">{{ paso.descripcion }}</p>
+                </div>
             </div>
-
-            <div class="col-md-4">
-                <i class="bi bi-pencil-square fs-1 text-success"></i>
-                <h5 class="fw-bold mt-3">Definicion del estándar</h5>
-                <p class="text-muted small">
-                    Ingresa competencia, afirmación y evidencias de aprendizaje.
-                </p>
-            </div>
-
-            <div class="col-md-4">
-                <i class="bi bi-robot fs-1 text-warning"></i>
-                <h5 class="fw-bold mt-3">Generacion con IA</h5>
-                <p class="text-muted small">
-                    La IA crea niveles, secuencias y rúbricas editables.
-                </p>
-            </div>
+            {% endfor %}
 
         </div>
     </div>
 </section>
 
 <!-- ===== ETICA ===== -->
-<section class="py-5 bg-light">
+<section class="py-5 soft-section">
     <div class="container">
 
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Uso responsable de la IA</h2>
+            <div class="section-kicker mb-2">Principios</div>
+            <h2 class="fw-bold mb-0">Uso responsable de la IA</h2>
         </div>
 
         <div class="row g-4 text-center">
 
             <div class="col-md-3">
-                <h6 class="fw-bold">Etica</h6>
-                <p class="small text-muted">Evita plagio y sesgos</p>
+                <div class="value-card p-4 h-100">
+                    <h6 class="fw-bold">Ética</h6>
+                    <p class="small text-muted mb-0">Evita plagio y sesgos</p>
+                </div>
             </div>
 
             <div class="col-md-3">
-                <h6 class="fw-bold">Pedagogia</h6>
-                <p class="small text-muted">Promueve aprendizaje real</p>
+                <div class="value-card p-4 h-100">
+                    <h6 class="fw-bold">Pedagogía</h6>
+                    <p class="small text-muted mb-0">Promueve aprendizaje real</p>
+                </div>
             </div>
 
             <div class="col-md-3">
-                <h6 class="fw-bold">Formacion</h6>
-                <p class="small text-muted">Fomenta autonomia</p>
+                <div class="value-card p-4 h-100">
+                    <h6 class="fw-bold">Formación</h6>
+                    <p class="small text-muted mb-0">Fomenta autonomía</p>
+                </div>
             </div>
 
             <div class="col-md-3">
-                <h6 class="fw-bold">Tecnologia</h6>
-                <p class="small text-muted">Accesibilidad para todos</p>
+                <div class="value-card p-4 h-100">
+                    <h6 class="fw-bold">Tecnología</h6>
+                    <p class="small text-muted mb-0">Accesibilidad para todos</p>
+                </div>
             </div>
 
         </div>
@@ -203,7 +385,7 @@
 <!-- ===== CTA ===== -->
 <section class="py-5">
     <div class="container">
-        <div class="bg-dark text-white p-5 rounded-4 text-center shadow">
+        <div class="quote-card text-center shadow">
 
             <h2 class="fw-bold mb-3">
                 Transforma tu forma de enseñar
@@ -213,9 +395,15 @@
                 Utiliza inteligencia artificial de manera ética y pedagógica
             </p>
 
-            <a href="#" class="btn btn-light btn-lg btn-pill">
-                Empezar ahora
-            </a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'users:dashboard' %}" class="btn btn-light btn-lg btn-pill">
+                    Ir al dashboard
+                </a>
+            {% else %}
+                <a href="{% url 'users:register_teacher' %}" class="btn btn-light btn-lg btn-pill">
+                    Empezar ahora
+                </a>
+            {% endif %}
 
         </div>
     </div>

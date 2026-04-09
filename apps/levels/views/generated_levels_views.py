@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView
+from django.views.decorators.cache import never_cache
 
 from ..forms import GeneratedLevelsCreateForm, GeneratedLevelsUpdateForm
 from ..models import GeneratedLevels
@@ -12,6 +14,7 @@ from ..services.generated_levels_services import (
 )
 
 
+@method_decorator(never_cache, name="dispatch")
 class GeneratedLevelsCreateView(LoginRequiredMixin, CreateView):
     form_class = GeneratedLevelsCreateForm
     template_name = "levels/generated_levels_create_page.html"
@@ -49,6 +52,7 @@ class GeneratedLevelsCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
 class GeneratedLevelsUpdateView(LoginRequiredMixin, UpdateView):
     model = GeneratedLevels
     form_class = GeneratedLevelsUpdateForm

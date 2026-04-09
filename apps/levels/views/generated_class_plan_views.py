@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import never_cache
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import UpdateView
 
@@ -14,6 +16,7 @@ from ..services.generated_class_plan_services import (
 )
 
 
+@method_decorator(never_cache, name="dispatch")
 class GeneratedClassPlanUpdateView(LoginRequiredMixin, UpdateView):
     model = GeneratedClassPlan
     form_class = GeneratedClassPlanUpdateForm
@@ -48,6 +51,7 @@ class GeneratedClassPlanUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_invalid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
 class GeneratedClassPlanDeleteView(LoginRequiredMixin, SingleObjectMixin, View):
     model = GeneratedClassPlan
     success_url = reverse_lazy("levels:class-plans")

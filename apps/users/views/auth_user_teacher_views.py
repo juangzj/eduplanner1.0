@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 
 
+@never_cache
 def login_view(request):
     form = TeacherLoginForm(request.POST or None)
 
@@ -24,6 +25,7 @@ def login_view(request):
     return render(request, 'users/login.html', {'form': form})
 
 
+@never_cache
 def logout_view(request):
     if request.method == 'POST':
         process_logout(request)

@@ -12,7 +12,7 @@ class GeneratedClassLike(models.Model):
     )
 
     generated_class = models.ForeignKey(
-        "GeneratedClassPlan",
+        "levels.GeneratedClassPlan",
         on_delete=models.CASCADE,
         related_name="likes",
         verbose_name="Clase generada"

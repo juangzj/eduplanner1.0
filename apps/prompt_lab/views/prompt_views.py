@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.views.decorators.cache import never_cache
 
 from ..services import (
     create_prompt_service,
@@ -52,6 +53,7 @@ FEEDBACK_KEY_BY_PREFIX = {
 }
 
 
+@never_cache
 @login_required(login_url="/users/login/")
 def prompt_create_view(request):
     if request.method == "POST":
@@ -86,6 +88,7 @@ def prompt_create_view(request):
     return render(request, "prompt_lab/prompt_create_page.html")
 
 
+@never_cache
 @login_required(login_url="/users/login/")
 def prompt_detail_view(request, prompt_id):
     prompt = get_prompt_by_id(prompt_id)
@@ -136,6 +139,7 @@ def prompt_detail_view(request, prompt_id):
     return _render_prompt_detail(request, root_prompt, show_refine_form=show_refine_form)
 
 
+@never_cache
 @login_required(login_url="/users/login/")
 def prompt_list_view(request):
     prompts = get_prompts_by_teacher(request.user)
@@ -149,6 +153,7 @@ def prompt_list_view(request):
     )
 
 
+@never_cache
 @login_required(login_url="/users/login/")
 def prompt_delete_view(request, prompt_id):
     if request.method != "POST":

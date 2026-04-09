@@ -5,13 +5,16 @@ from django.db.models import Prefetch
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView
+from django.views.decorators.cache import never_cache
 
 from ..forms import ClassPlanningCreateForm
 from ..models import ClassPlanning, GeneratedClassPlan, PerformanceLevelTemplate
 from ..services.class_planning_services import ClassPlanningCreateService
 
 
+@never_cache
 @login_required(login_url="/users/login/")
 def class_plans_list_view(request):
 	class_plannings = (
@@ -40,6 +43,7 @@ def class_plans_list_view(request):
 	)
 
 
+@method_decorator(never_cache, name="dispatch")
 class ClassPlanningCreateView(LoginRequiredMixin, CreateView):
 	form_class = ClassPlanningCreateForm
 	template_name = "levels/class_planning_create_page.html"

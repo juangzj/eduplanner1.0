@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, UpdateView
+from django.views.decorators.cache import never_cache
 
 from ..forms import AssessmentRubricCreateForm, AssessmentRubricUpdateForm
 from ..models import AssessmentRubric
@@ -12,6 +14,7 @@ from ..services.assessment_rubric_services import (
 )
 
 
+@method_decorator(never_cache, name="dispatch")
 class AssessmentRubricCreateView(LoginRequiredMixin, CreateView):
     form_class = AssessmentRubricCreateForm
     template_name = "levels/assessment_rubric_create_page.html"
@@ -49,6 +52,7 @@ class AssessmentRubricCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
+@method_decorator(never_cache, name="dispatch")
 class AssessmentRubricUpdateView(LoginRequiredMixin, UpdateView):
     model = AssessmentRubric
     form_class = AssessmentRubricUpdateForm

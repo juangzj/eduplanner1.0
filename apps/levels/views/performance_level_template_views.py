@@ -4,6 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
 from ..forms import PerformanceLevelFilterForm, PerformanceLevelTemplateCreateForm
@@ -11,6 +12,8 @@ from ..models import PerformanceLevelTemplate
 from ..services import create_performance_level_service, soft_delete_performance_level_service
 
 
+@login_required(login_url="/users/login/")
+@never_cache
 def performance_level_create_view(request):
     """
     Vista exclusiva para la creación de niveles de desempeño.
@@ -39,6 +42,7 @@ def performance_level_create_view(request):
         'title': 'Registrar Nuevo Nivel de Desempeño'
     })
 
+@never_cache
 @login_required(login_url="/users/login/")
 def levels_view(request):
 
@@ -117,6 +121,7 @@ def levels_view(request):
     )
 
 
+@never_cache
 @login_required(login_url="/users/login/")
 @require_POST
 def performance_level_soft_delete_view(request: HttpRequest, performance_id: str) -> HttpResponse:
