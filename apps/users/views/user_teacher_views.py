@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from ..forms import TeacherRegisterForm
-from ..services import register_teacher_service
+from django.contrib.auth.decorators import login_required
+from ..forms import TeacherProfileForm, TeacherRegisterForm
+from ..services import register_teacher_service, update_teacher_profile_service
 
 def register_teacher_view(request):
     """Vista para el registro de nuevos docentes."""
@@ -32,3 +33,27 @@ def register_teacher_view(request):
         form = TeacherRegisterForm()
     
     return render(request, 'users/register_user_teacher.html', {'form': form})
+
+
+@login_required(login_url='/users/login/')
+def profile_settings_view(request):
+    if request.method == 'POST':
+        form = TeacherProfileForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            try:
+                update_teacher_profile_service(user=request.user, form=form)
+                messages.success(request, 'Tu perfil fue actualizado correctamente.')
+                return redirect('users:profile-settings')
+
+            except ValueError as e:
+                messages.error(request, str(e))
+            except Exception:
+                messages.error(request, 'Ocurrió un error inesperado al actualizar tu perfil.')
+        else:
+            messages.error(request, 'Por favor corrige los errores del formulario.')
+
+    else:
+        form = TeacherProfileForm(instance=request.user)
+
+    return render(request, 'users/profile_settings.html', {'form': form})

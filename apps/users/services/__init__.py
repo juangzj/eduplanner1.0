@@ -1,3 +1,4 @@
 from .user_teacher_services import  register_teacher_service
 from .auth_user_teacher_services import login_teacher_service
 from .dashboard_services import get_dashboard_data
+from .user_teacher_services import update_teacher_profile_service

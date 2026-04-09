@@ -37,3 +37,24 @@ def register_teacher_service(data):
     except Exception as e:
         # Cualquier otro error inesperado lo relanzamos para que la vista lo vea
         raise e
+
+
+def update_teacher_profile_service(*, user, form):
+    """Actualiza datos basicos del docente con validaciones de integridad."""
+
+    try:
+        updated_user = form.save(commit=False)
+        updated_user.id = user.id
+        updated_user.save()
+        return updated_user
+
+    except IntegrityError as e:
+        if "gmail" in str(e).lower():
+            raise ValueError("Este correo electrónico ya se encuentra registrado.")
+        raise ValueError("No fue posible actualizar el perfil por una restricción de datos.")
+
+    except DatabaseError:
+        raise Exception("Error de conexión con la base de datos. Intente más tarde.")
+
+    except Exception as e:
+        raise e
