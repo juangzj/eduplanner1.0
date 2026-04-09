@@ -28,6 +28,16 @@
                                 </td>
                                 <td class="text-end">
                                     <a href="{% url 'prompt_lab:prompt-detail' prompt.id %}" class="btn btn-outline-secondary btn-sm">Ver Detalle</a>
+                                    <form id="delete-prompt-form-{{ prompt.id }}" action="{% url 'prompt_lab:prompt-delete' prompt.id %}" method="post" style="display: none;">
+                                        {% csrf_token %}
+                                    </form>
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-danger btn-sm"
+                                        onclick="openConfirmModal('¿Eliminar prompt?', 'Se realizara un borrado logico del prompt y de sus refinamientos. ¿Deseas continuar?', 'delete-prompt-form-{{ prompt.id }}', 'btn-danger')"
+                                    >
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
                         {% endfor %}

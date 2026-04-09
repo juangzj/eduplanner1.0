@@ -34,6 +34,7 @@ class Prompt(models.Model):
     full_prompt = models.TextField()
     score = models.FloatField(blank=True, null=True)
     feedback = models.TextField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

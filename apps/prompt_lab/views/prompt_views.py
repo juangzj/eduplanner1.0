@@ -12,6 +12,7 @@ from ..services import (
     get_refinement_limits,
     get_root_prompt,
     get_thread_prompts,
+    soft_delete_prompt_service,
 )
 
 REQUIRED_FIELDS = ["purpose", "role", "context", "task", "format"]
@@ -146,6 +147,28 @@ def prompt_list_view(request):
             "prompts": prompts,
         },
     )
+
+
+@login_required(login_url="/users/login/")
+def prompt_delete_view(request, prompt_id):
+    if request.method != "POST":
+        messages.error(request, "Metodo no permitido para eliminar prompts.")
+        return redirect("prompt_lab:prompt-list")
+
+    prompt = get_prompt_by_id(prompt_id)
+
+    try:
+        deleted = soft_delete_prompt_service(request.user, prompt)
+    except PermissionError:
+        messages.error(request, "No tienes permiso para eliminar este prompt.")
+        return redirect("prompt_lab:prompt-list")
+
+    if deleted:
+        messages.success(request, "Prompt eliminado correctamente.")
+    else:
+        messages.info(request, "El prompt ya habia sido eliminado previamente.")
+
+    return redirect("prompt_lab:prompt-list")
 
 
 def _build_payload_from_request(request):

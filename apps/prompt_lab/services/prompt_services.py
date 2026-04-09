@@ -1,6 +1,8 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from ..ai.prompt_builder import build_prompt, evaluate_prompt, generate_quality_prompt
 from ..models import Prompt
@@ -32,11 +34,15 @@ def create_prompt_service(user, data):
 
 
 def get_prompt_by_id(prompt_id):
-    return get_object_or_404(Prompt, id=prompt_id)
+    return get_object_or_404(Prompt, id=prompt_id, deleted_at__isnull=True)
 
 
 def get_prompts_by_teacher(user):
-    return Prompt.objects.filter(teacher=user, parent_prompt__isnull=True).order_by("-created_at")
+    return Prompt.objects.filter(
+        teacher=user,
+        parent_prompt__isnull=True,
+        deleted_at__isnull=True,
+    ).order_by("-created_at")
 
 
 def get_root_prompt(prompt):
@@ -45,7 +51,10 @@ def get_root_prompt(prompt):
 
 def get_thread_prompts(prompt):
     root = get_root_prompt(prompt)
-    return Prompt.objects.filter(Q(id=root.id) | Q(root_prompt=root)).order_by("created_at", "id")
+    return Prompt.objects.filter(
+        Q(id=root.id) | Q(root_prompt=root),
+        deleted_at__isnull=True,
+    ).order_by("created_at", "id")
 
 
 def get_latest_thread_prompt(prompt):
@@ -137,3 +146,23 @@ def generate_quality_prompt_service(user, source_prompt):
         score=score,
         feedback=feedback_text or None,
     )
+
+
+@transaction.atomic
+def soft_delete_prompt_service(user, source_prompt):
+    root = get_root_prompt(source_prompt)
+
+    if root.teacher_id != user.id:
+        raise PermissionError("User does not own this prompt thread.")
+
+    if root.deleted_at is not None:
+        return False
+
+    now = timezone.now()
+    updated = Prompt.objects.filter(
+        Q(id=root.id) | Q(root_prompt=root),
+        teacher=user,
+        deleted_at__isnull=True,
+    ).update(deleted_at=now)
+
+    return updated > 0
