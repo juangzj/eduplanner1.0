@@ -43,9 +43,11 @@ class GeneratedLevelsCreateService:
             "area": template.area,
             "grade": template.get_grade_display(),
             "academic_period": template.academic_period,
-            "competency": template.competency,
-            "statement": template.statement,
+            "learning": template.learning,
+            "didactic_resources": template.didactic_resources,
             "learning_evidence": template.learning_evidence,
+            "evaluation_criteria": template.evaluation_criteria,
+            "assessment_instrument": template.assessment_instrument,
             "level_title": template.level_title,
             "level_description": template.level_description,
         }

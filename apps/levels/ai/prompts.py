@@ -48,9 +48,11 @@ class LevelPrompt:
     Area: {prompt_data.get('area', '')}
     Grade: {prompt_data.get('grade', '')}
     Academic Period: {prompt_data.get('academic_period', '')}
-    Competency: {prompt_data.get('competency', '')}
-    Learning Statement: {prompt_data.get('statement', '')}
+    Learning: {prompt_data.get('learning', '')}
+    Didactic Resources: {prompt_data.get('didactic_resources', '')}
     Learning Evidence: {prompt_data.get('learning_evidence', '')}
+    Evaluation Criteria: {prompt_data.get('evaluation_criteria', '')}
+    Assessment Instrument: {prompt_data.get('assessment_instrument', '')}
     Level Title: {prompt_data.get('level_title', '')}
     Level Description: {prompt_data.get('level_description', '')}
 
@@ -86,14 +88,16 @@ Your task is to generate a high-quality assessment rubric based on the following
 Area: {prompt_data.get('area')}
 Grade: {prompt_data.get('grade')}
 Academic period: {prompt_data.get('academic_period')}
-Competence: {prompt_data.get('competence') or prompt_data.get('competency')}
-Statement: {prompt_data.get('statement')}
+Learning: {prompt_data.get('learning')}
+Didactic resources: {prompt_data.get('didactic_resources')}
 Learning evidence: {prompt_data.get('learning_evidence')}
+Evaluation criteria: {prompt_data.get('evaluation_criteria')}
+Assessment instrument: {prompt_data.get('assessment_instrument')}
 Performance description: {prompt_data.get('level_description')}
 
 Pedagogical rules you must follow:
 
-1. The rubric must be clearly aligned with the competence and the learning evidence.
+1. The rubric must be clearly aligned with learning, didactic resources, learning evidence, evaluation criteria and assessment instrument.
 2. The rubric must include 3 or 4 evaluation criteria only.
 3. Each criterion must evaluate only one skill (do not mix multiple skills in the same criterion).
 4. The criteria must be ordered from basic cognitive level to higher cognitive level.
@@ -151,7 +155,7 @@ Your task is to generate a complete class planning in Spanish, using the context
 
 Pedagogical rules you must follow:
 
-1. The planning must be coherent with the competency, learning statement, evidence, performance levels and assessment rubric.
+1. The planning must be coherent with learning, didactic resources, evidences, performance levels and assessment rubric.
 2. The content must be practical for a teacher to use in class.
 3. Use clear, professional and pedagogically precise language.
 4. Organize the planning with readable Markdown structure.
@@ -166,9 +170,11 @@ Context:
 Area: {prompt_data.get('area', '')}
 Grade: {prompt_data.get('grade', '')}
 Academic Period: {prompt_data.get('academic_period', '')}
-Competency: {prompt_data.get('competency', '')}
-Learning Statement: {prompt_data.get('statement', '')}
+Learning: {prompt_data.get('learning', '')}
+Didactic Resources: {prompt_data.get('didactic_resources', '')}
 Learning Evidence: {prompt_data.get('learning_evidence', '')}
+Evaluation Criteria: {prompt_data.get('evaluation_criteria', '')}
+Assessment Instrument: {prompt_data.get('assessment_instrument', '')}
 Level Title: {prompt_data.get('level_title', '')}
 Level Description: {prompt_data.get('level_description', '')}
 Low Level: {prompt_data.get('low_level', '')}

@@ -23,9 +23,17 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
             "level_title": "Título opcional del nivel de desempeño.",
             "level_description": "Descripción general del nivel.",
             "grade": "Seleccione el grado académico.",
-            "competency": "Competencia que se desea evaluar.",
-            "statement": "Afirmación de desempeño.",
-            "learning_evidence": "Evidencia de aprendizaje esperada.",
+            "learning": "Aprendizaje esperado para la unidad o clase.",
+            "didactic_resources": (
+                "Puede incluir como guía: recursos didácticos, materiales y actividades pedagógicas. "
+                "Esta información va dentro del campo de recursos didácticos."
+            ),
+            "learning_evidence": "Evidencias de aprendizaje.",
+            "evaluation_criteria": (
+                "Puede incluir como guía: qué se evalúa, cuándo se evalúa y cómo se evalúa. "
+                "Esta información va dentro del mismo campo."
+            ),
+            "assessment_instrument": "Instrumento de evaluación sugerido (rúbrica, lista de chequeo, etc.).",
             "academic_period": "Seleccione el periodo académico.",
         }
 
@@ -37,14 +45,20 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
             "grade": {
                 "required": "Debe seleccionar el grado.",
             },
-            "competency": {
-                "required": "Debe ingresar la competencia.",
+            "learning": {
+                "required": "Debe escribir el aprendizaje.",
             },
-            "statement": {
-                "required": "Debe escribir la afirmación.",
+            "didactic_resources": {
+                "required": "Debe escribir los recursos didácticos.",
             },
             "learning_evidence": {
-                "required": "Debe escribir la evidencia de aprendizaje.",
+                "required": "Debe escribir las evidencias de aprendizaje.",
+            },
+            "evaluation_criteria": {
+                "required": "Debe escribir los criterios de evaluación.",
+            },
+            "assessment_instrument": {
+                "required": "Debe escribir el instrumento de evaluación.",
             },
             "academic_period": {
                 "required": "Debe seleccionar el periodo académico.",
@@ -74,21 +88,34 @@ class PerformanceLevelTemplateCreateForm(forms.ModelForm):
                 "class": "form-select"
             }),
 
-            "competency": forms.TextInput(attrs={
+            "learning": forms.Textarea(attrs={
                 "class": "form-control",
-                "placeholder": "Competencia"
+                "rows": 3,
+                "placeholder": "Aprendizaje"
             }),
 
-            "statement": forms.Textarea(attrs={
+            "didactic_resources": forms.Textarea(attrs={
                 "class": "form-control",
                 "rows": 4,
-                "placeholder": "Afirmación de desempeño"
+                "placeholder": "Recursos didácticos"
             }),
 
             "learning_evidence": forms.Textarea(attrs={
                 "class": "form-control",
                 "rows": 4,
-                "placeholder": "Evidencia de aprendizaje"
+                "placeholder": "Evidencias de aprendizaje"
+            }),
+
+            "evaluation_criteria": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 4,
+                "placeholder": "Criterios de evaluación"
+            }),
+
+            "assessment_instrument": forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 3,
+                "placeholder": "Instrumento de evaluación"
             }),
 
             # PERIODO ACADÉMICO COMO SELECT

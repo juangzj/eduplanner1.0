@@ -209,12 +209,20 @@
                                         <div class="accordion-body">
                                             <div class="mb-3 context-section">
                                                 <h6 class="fw-bold mb-2">Plantilla de desempeño</h6>
-                                                <p class="mb-1"><strong>Competencia:</strong> {{ class_planning.performance_template.competency }}</p>
-                                                <p class="mb-1"><strong>Afirmación:</strong></p>
-                                                <div class="markdown-source d-none">{{ class_planning.performance_template.statement|default:"" }}</div>
+                                                <p class="mb-1"><strong>Aprendizaje:</strong></p>
+                                                <div class="markdown-source d-none">{{ class_planning.performance_template.learning|default:"" }}</div>
                                                 <div class="markdown-content markdown-render-target mb-2"></div>
-                                                <p class="mb-1"><strong>Evidencia:</strong></p>
+                                                <p class="mb-1"><strong>Recursos didácticos:</strong></p>
+                                                <div class="markdown-source d-none">{{ class_planning.performance_template.didactic_resources|default:"" }}</div>
+                                                <div class="markdown-content markdown-render-target mb-2"></div>
+                                                <p class="mb-1"><strong>Evidencias de aprendizaje:</strong></p>
                                                 <div class="markdown-source d-none">{{ class_planning.performance_template.learning_evidence|default:"" }}</div>
+                                                <div class="markdown-content markdown-render-target"></div>
+                                                <p class="mb-1 mt-2"><strong>Criterios de evaluación:</strong></p>
+                                                <div class="markdown-source d-none">{{ class_planning.performance_template.evaluation_criteria|default:"" }}</div>
+                                                <div class="markdown-content markdown-render-target mb-2"></div>
+                                                <p class="mb-1"><strong>Instrumento de evaluación:</strong></p>
+                                                <div class="markdown-source d-none">{{ class_planning.performance_template.assessment_instrument|default:"" }}</div>
                                                 <div class="markdown-content markdown-render-target"></div>
                                             </div>
                                             <div class="mb-3 context-section">

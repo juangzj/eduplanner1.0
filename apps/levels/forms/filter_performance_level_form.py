@@ -29,7 +29,7 @@ class PerformanceLevelFilterForm(forms.Form):
         required=False,
         label="Buscar",
         widget=forms.TextInput(attrs={
-            'placeholder': 'Buscar por título, competencia o afirmación...',
+            'placeholder': 'Buscar por título, aprendizaje, recursos o evidencias...',
             'class': 'form-control'
         })
     )

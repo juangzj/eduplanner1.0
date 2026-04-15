@@ -21,48 +21,90 @@
             <div class="mb-3">
                 <label class="form-label fw-semibold">Área</label>
                 {{ form.area }}
+                {% if form.area.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.area.help_text }}</small>
+                {% endif %}
                 {{ form.area.errors }}
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Grado</label>
                 {{ form.grade }}
+                {% if form.grade.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.grade.help_text }}</small>
+                {% endif %}
                 {{ form.grade.errors }}
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Título</label>
                 {{ form.level_title }}
+                {% if form.level_title.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.level_title.help_text }}</small>
+                {% endif %}
                 {{ form.level_title.errors }}
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-semibold">Descripción</label>
                 {{ form.level_description }}
+                {% if form.level_description.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.level_description.help_text }}</small>
+                {% endif %}
                 {{ form.level_description.errors }}
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-semibold">Competencia</label>
-                {{ form.competency }}
-                {{ form.competency.errors }}
+                <label class="form-label fw-semibold">Aprendizaje</label>
+                {{ form.learning }}
+                {% if form.learning.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.learning.help_text }}</small>
+                {% endif %}
+                {{ form.learning.errors }}
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-semibold">Afirmación</label>
-                {{ form.statement }}
-                {{ form.statement.errors }}
+                <label class="form-label fw-semibold">Recursos didácticos</label>
+                {{ form.didactic_resources }}
+                {% if form.didactic_resources.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.didactic_resources.help_text }}</small>
+                {% endif %}
+                {{ form.didactic_resources.errors }}
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-semibold">Evidencia</label>
+                <label class="form-label fw-semibold">Evidencias de aprendizaje</label>
                 {{ form.learning_evidence }}
+                {% if form.learning_evidence.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.learning_evidence.help_text }}</small>
+                {% endif %}
                 {{ form.learning_evidence.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Criterios de evaluación</label>
+                {{ form.evaluation_criteria }}
+                {% if form.evaluation_criteria.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.evaluation_criteria.help_text }}</small>
+                {% endif %}
+                {{ form.evaluation_criteria.errors }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Instrumento de evaluación</label>
+                {{ form.assessment_instrument }}
+                {% if form.assessment_instrument.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.assessment_instrument.help_text }}</small>
+                {% endif %}
+                {{ form.assessment_instrument.errors }}
             </div>
 
             <div class="mb-4">
                 <label class="form-label fw-semibold">Periodo académico</label>
                 {{ form.academic_period }}
+                {% if form.academic_period.help_text %}
+                    <small class="form-text text-muted d-block mt-1">{{ form.academic_period.help_text }}</small>
+                {% endif %}
                 {{ form.academic_period.errors }}
             </div>
 

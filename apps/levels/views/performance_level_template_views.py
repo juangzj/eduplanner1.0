@@ -88,8 +88,11 @@ def levels_view(request):
             performance_levels = performance_levels.filter(
                 Q(level_title__icontains=search)
                 | Q(level_description__icontains=search)
-                | Q(competency__icontains=search)
-                | Q(statement__icontains=search)
+                | Q(learning__icontains=search)
+                | Q(didactic_resources__icontains=search)
+                | Q(learning_evidence__icontains=search)
+                | Q(evaluation_criteria__icontains=search)
+                | Q(assessment_instrument__icontains=search)
             )
 
     performance_levels = performance_levels.select_related(

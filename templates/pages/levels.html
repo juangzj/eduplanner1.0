@@ -139,16 +139,24 @@
                                                 <p class="mb-0 fw-semibold">{{ performance.academic_period }}</p>
                                             </div>
                                             <div class="col-12">
-                                                <small class="text-muted d-block">Competencia</small>
-                                                <p class="mb-0">{{ performance.competency|default:"-" }}</p>
+                                                <small class="text-muted d-block">Aprendizaje</small>
+                                                <p class="mb-0">{{ performance.learning|default:"-"|linebreaksbr }}</p>
                                             </div>
                                             <div class="col-12">
-                                                <small class="text-muted d-block">Afirmación</small>
-                                                <p class="mb-0">{{ performance.statement|linebreaksbr }}</p>
+                                                <small class="text-muted d-block">Recursos didácticos</small>
+                                                <p class="mb-0">{{ performance.didactic_resources|default:"-"|linebreaksbr }}</p>
                                             </div>
                                             <div class="col-12">
-                                                <small class="text-muted d-block">Evidencia de aprendizaje</small>
+                                                <small class="text-muted d-block">Evidencias de aprendizaje</small>
                                                 <p class="mb-0">{{ performance.learning_evidence|linebreaksbr }}</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block">Criterios de evaluación</small>
+                                                <p class="mb-0">{{ performance.evaluation_criteria|default:"-"|linebreaksbr }}</p>
+                                            </div>
+                                            <div class="col-12">
+                                                <small class="text-muted d-block">Instrumento de evaluación</small>
+                                                <p class="mb-0">{{ performance.assessment_instrument|default:"-"|linebreaksbr }}</p>
                                             </div>
                                             <div class="col-12">
                                                 <small class="text-muted d-block">Descripción del desempeño</small>

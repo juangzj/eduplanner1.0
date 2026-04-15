@@ -98,9 +98,15 @@ class PerformanceLevelTemplate(models.Model):
         verbose_name="Grado"
     )
 
-    competency = models.CharField(max_length=255, verbose_name="Competencia")
-    statement = models.TextField(verbose_name="Afirmación")
-    learning_evidence = models.TextField(verbose_name="Evidencia de Aprendizaje")
+    learning = models.TextField(verbose_name="Aprendizaje")
+    didactic_resources = models.TextField(
+        blank=True,
+        verbose_name="Recursos Didácticos",
+        help_text="Puede incluir como guía: recursos didácticos, materiales y actividades pedagógicas"
+    )
+    learning_evidence = models.TextField(verbose_name="Evidencias de Aprendizaje")
+    evaluation_criteria = models.TextField(verbose_name="Criterios de Evaluación")
+    assessment_instrument = models.TextField(verbose_name="Instrumento de Evaluación")
 
     # PERIODO ACADÉMICO COMO CAMPO DE ELECCIÓN
     academic_period = models.CharField(

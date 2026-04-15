@@ -10,7 +10,7 @@ from .models.performance_level_template_model import PerformanceLevelTemplate
 @admin.register(PerformanceLevelTemplate)
 class PerformanceLevelTemplateAdmin(admin.ModelAdmin):
 	list_display = ("id", "user", "area", "grade", "academic_period", "created_at")
-	search_fields = ("user__gmail", "level_title", "competency", "statement")
+	search_fields = ("user__gmail", "level_title", "learning", "didactic_resources", "learning_evidence")
 	list_filter = ("area", "grade", "academic_period", "created_at")
 
 
