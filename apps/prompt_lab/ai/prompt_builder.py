@@ -1,4 +1,5 @@
 import json
+import re
 
 from django.conf import settings
 
@@ -145,7 +146,12 @@ def evaluate_prompt(prompt, data=None):
     ai_result = _evaluate_prompt_with_ai(normalized_data)
 
     if ai_result:
-        final_score = max(0.0, min(100.0, float(ai_result.get("score", 0))))
+        ai_result = _enforce_strict_role_scoring(ai_result, normalized_data)
+        ai_score = max(0.0, min(100.0, float(ai_result.get("score", 0))))
+        fallback_score, _ = _evaluate_prompt_with_rubric_rules(normalized_data)
+        consistency_guard = min(ai_score, fallback_score + 10)
+        final_score = _apply_soft_quality_caps(consistency_guard, ai_result.get("dimension_scores") or {})
+        ai_result["score"] = final_score
         detailed_feedback = _build_rubric_feedback(ai_result)
         return round(final_score, 1), detailed_feedback
 
@@ -267,7 +273,8 @@ Devuelve SOLO JSON valido con esta forma exacta:
         source = raw_dimension_scores.get(dimension_id) or {}
         max_level = RUBRIC_MAX_LEVELS[dimension_id]
         level = _to_int(source.get("level", 0), min_value=0, max_value=max_level)
-        weighted_score = _to_float(source.get("weighted_score", 0), min_value=0, max_value=RUBRIC_WEIGHTS[dimension_id])
+        weight = RUBRIC_WEIGHTS[dimension_id]
+        weighted_score = round((level / max_level) * weight, 1) if max_level else 0.0
 
         normalized_dimension_scores[dimension_id] = {
             "level": level,
@@ -285,12 +292,7 @@ Devuelve SOLO JSON valido con esta forma exacta:
         sum(item["weighted_score"] for item in normalized_dimension_scores.values()),
         1,
     )
-    model_total = _to_float(payload.get("score", computed_total), min_value=0, max_value=100)
-
-    if abs(model_total - computed_total) <= 0.2:
-        final_total = model_total
-    else:
-        final_total = computed_total
+    final_total = computed_total
 
     return {
         "score": final_total,
@@ -515,20 +517,136 @@ def _to_int(value, min_value=0, max_value=4):
     return max(min_value, min(max_value, result))
 
 
+def _matches_any_pattern(text, patterns):
+    return any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in patterns)
+
+
+def _count_pattern_matches(text, patterns):
+    return sum(1 for pattern in patterns if re.search(pattern, text, flags=re.IGNORECASE))
+
+
+def _apply_soft_quality_caps(score, dimension_scores):
+    final_score = max(0.0, min(100.0, float(score)))
+
+    role_level = _to_int((dimension_scores.get("persona_rol") or {}).get("level", 0), min_value=0, max_value=3)
+    task_level = _to_int((dimension_scores.get("task_intent") or {}).get("level", 0), min_value=0, max_value=4)
+    context_level = _to_int((dimension_scores.get("contexto") or {}).get("level", 0), min_value=0, max_value=4)
+    output_level = _to_int((dimension_scores.get("output") or {}).get("level", 0), min_value=0, max_value=4)
+
+    # Soft caps only for clearly weak pedagogical structure to avoid overly punitive scoring.
+    if role_level == 0:
+        final_score = min(final_score, 68.0)
+    elif role_level == 1:
+        final_score = min(final_score, 80.0)
+    if task_level <= 1:
+        final_score = min(final_score, 72.0)
+    if context_level <= 1:
+        final_score = min(final_score, 74.0)
+    if output_level <= 1:
+        final_score = min(final_score, 76.0)
+
+    return round(final_score, 1)
+
+
+def _enforce_strict_role_scoring(ai_result, data):
+    result = dict(ai_result or {})
+    dimension_scores = dict(result.get("dimension_scores") or {})
+
+    role_level = _score_persona_role(data)
+    role_max_level = RUBRIC_MAX_LEVELS["persona_rol"]
+    role_weight = RUBRIC_WEIGHTS["persona_rol"]
+    role_weighted_score = round((role_level / role_max_level) * role_weight, 1) if role_max_level else 0.0
+
+    role_detail = dict(dimension_scores.get("persona_rol") or {})
+    role_detail["level"] = role_level
+    role_detail["max_level"] = role_max_level
+    role_detail["weighted_score"] = role_weighted_score
+    role_detail["feedback"] = _build_role_feedback_message(role_level)
+
+    dimension_scores["persona_rol"] = role_detail
+    result["dimension_scores"] = dimension_scores
+
+    recomputed_total = round(
+        sum(
+            round(
+                _to_float((dimension_scores.get(dimension_id) or {}).get("weighted_score", 0), min_value=0, max_value=RUBRIC_WEIGHTS[dimension_id]),
+                1,
+            )
+            for dimension_id in RUBRIC_DIMENSION_NAMES.keys()
+        ),
+        1,
+    )
+    result["score"] = recomputed_total
+
+    return result
+
+
+def _build_role_feedback_message(level):
+    if level <= 0:
+        return (
+            "No se definio un rol docente claro. Indica un rol especifico, por ejemplo: "
+            "docente de matematicas de grado 10 con enfoque en didactica."
+        )
+    if level == 1:
+        return (
+            "El rol es generico. Para mejorarlo, agrega area disciplinar, nivel educativo "
+            "y un enfoque pedagogico concreto."
+        )
+    if level == 2:
+        return (
+            "El rol incluye area, pero aun puede fortalecerse. Agrega nivel educativo "
+            "y enfoque pedagogico para mayor precision."
+        )
+    return "El rol esta bien definido y alineado al contexto educativo."
+
+
 def _score_persona_role(data):
     role = data.get("role", "")
-    role_lower = role.lower()
+    role_text = role.strip()
 
-    if not role:
+    if not role_text:
         return 0
-    if len(role) < 20:
+
+    generic_role_patterns = [
+        r"\b(profesor|profesora|teacher|experto|experta|especialista)\b",
+        r"\b(actua\s+como|haz\s+de)\s+(profesor|profesora|experto|experta)\b",
+    ]
+    area_patterns = [
+        r"\bmatematicas?\b", r"\blengua(?:je)?\b", r"\bciencias?\b", r"\bfisica\b",
+        r"\bquimica\b", r"\bhistoria\b", r"\bgeografia\b", r"\bbiologia\b",
+        r"\bingles\b", r"\btecnologia\b", r"\bartes?\b", r"\bfilosofia\b",
+    ]
+    educational_level_patterns = [
+        r"\bgrado\s*\d+\b", r"\bsecundaria\b", r"\bbachillerato\b", r"\bprimaria\b",
+        r"\bmedia\b", r"\b(9|10|11)(?:o|ro|do)?\b",
+    ]
+    pedagogical_approach_patterns = [
+        r"\benfoque\b", r"\bevaluacion\s+formativa\b", r"\baprendizaje\s+basado\b",
+        r"\bconstructiv\w*\b", r"\bdidact\w*\b", r"\bandamiaje\b", r"\binclusi\w*\b",
+        r"\bdiferenciad\w*\b", r"\bmetacogn\w*\b",
+    ]
+
+    has_area = _matches_any_pattern(role_text, area_patterns)
+    has_educational_level = _matches_any_pattern(role_text, educational_level_patterns)
+    has_pedagogical_approach = _matches_any_pattern(role_text, pedagogical_approach_patterns)
+    has_generic_role = _matches_any_pattern(role_text, generic_role_patterns)
+
+    signal_groups = [has_area, has_educational_level, has_pedagogical_approach]
+    matched_groups = sum(1 for flag in signal_groups if flag)
+
+    # Nivel 3: rol completo con al menos 2 grupos de senales pedagogicas.
+    if matched_groups >= 2:
+        return 3
+
+    # Nivel 2: rol con area disciplinar explicita.
+    if has_area:
+        return 2
+
+    # Nivel 1: rol generico o demasiado corto/sin especificidad.
+    if has_generic_role or len(role_text.split()) <= 2 or len(role_text) < 20:
         return 1
 
-    pedagogical_signals = [
-        "docente", "pedagog", "educa", "didact", "aprendiz", "evaluacion", "secundaria", "primaria"
-    ]
-    has_pedagogical_alignment = any(token in role_lower for token in pedagogical_signals)
-    return 3 if has_pedagogical_alignment else 2
+    return 1
 
 
 def _score_task_intent(data):
@@ -578,23 +696,31 @@ def _score_context(data):
 
 def _score_output_format(data):
     output_text = data.get("format", "")
-    output_lower = output_text.lower()
+    format_text = output_text.strip()
 
-    if not output_text:
+    if not format_text:
         return 0
-    if len(output_text) < 20:
-        return 1
 
-    structure_signals = ["lista", "parrafo", "seccion", "estructura", "columnas", "pasos"]
-    formatted_signals = ["tabla", "markdown", "json", "csv", "rubrica", "checklist"]
+    specific_format_patterns = [
+        r"\btabla\b", r"\bmarkdown\b", r"\bjson\b", r"\bcsv\b", r"\byaml\b",
+        r"\brubrica\b", r"\bchecklist\b", r"\bhtml\b",
+    ]
+    structured_text_patterns = [
+        r"\blista(?:\s+numerada)?\b", r"\bseccion(?:es)?\b", r"\bsubtitulo(?:s)?\b",
+        r"\bcolumna(?:s)?\b", r"\bencabezado(?:s)?\b", r"(?m)^\s*(?:\d+[\).]|[-*])\s+",
+    ]
+    simple_text_patterns = [
+        r"\btexto\b", r"\bparrafo(?:s)?\b", r"\bexplicacion\b", r"\bresumen\b",
+    ]
 
-    has_structure = any(token in output_lower for token in structure_signals)
-    has_formatted = any(token in output_lower for token in formatted_signals)
-
-    if has_formatted:
+    if _matches_any_pattern(format_text, specific_format_patterns):
         return 4
-    if has_structure:
+    if _matches_any_pattern(format_text, structured_text_patterns):
         return 3
+    if _matches_any_pattern(format_text, simple_text_patterns):
+        return 2
+    if len(format_text) < 20:
+        return 1
     return 2
 
 
@@ -620,18 +746,37 @@ def _score_audience(data):
 
 
 def _score_steps(data):
-    process = data.get("process", "").lower()
-    task = data.get("task", "").lower()
+    process_text = data.get("process", "").strip()
+    task_text = data.get("task", "").strip()
 
-    if not process and not task:
+    if not process_text and not task_text:
         return 0
 
-    explicit_steps = ["1)", "2)", "3)", "paso", "fase", "secuencia"]
-    if process and any(token in process for token in explicit_steps):
+    numbered_step_patterns = [
+        r"(?m)^\s*\d+[\).:-]\s+",
+        r"(?m)^\s*(paso|fase|etapa)\s*\d+\b",
+    ]
+    logical_sequence_patterns = [
+        r"\bprimero\b", r"\bsegundo\b", r"\btercero\b", r"\bluego\b",
+        r"\ba\s+continuacion\b", r"\bdespues\b", r"\bfinalmente\b", r"\bpor\s+ultimo\b",
+    ]
+    step_presence_patterns = [
+        r"\bpasos?\b", r"\bfases?\b", r"\bsecuencia\b",
+        r"(?m)^\s*[-*]\s+",
+    ]
+
+    has_numbered_steps = _matches_any_pattern(process_text, numbered_step_patterns)
+    sequence_markers = _count_pattern_matches(process_text, logical_sequence_patterns)
+    has_step_presence = _matches_any_pattern(process_text, step_presence_patterns)
+    mentions_step_by_step = _matches_any_pattern(process_text, [r"\bpaso\s+a\s+paso\b", r"\bstep\s+by\s+step\b"])
+
+    if has_numbered_steps or sequence_markers >= 3:
         return 3
-    if process:
+    if mentions_step_by_step:
+        return 1
+    if has_step_presence:
         return 2
-    if any(token in task for token in ["paso", "secuencia"]):
+    if _matches_any_pattern(task_text, [r"\bpaso\s+a\s+paso\b", r"\bsecuencia\b"]):
         return 1
     return 0
 
@@ -667,22 +812,36 @@ def _score_tonality(data):
 
 
 def _score_prompting_techniques(data):
-    combined = " ".join([
+    combined_text = " ".join([
         data.get("task", ""),
         data.get("process", ""),
         data.get("format", ""),
         data.get("constraints", ""),
-    ]).lower()
+    ]).strip()
 
-    if not combined.strip():
+    if not combined_text:
         return 0
 
-    advanced_signals = ["step by step", "paso a paso", "delimitador", "```", "json", "rubrica", "criterio"]
-    basic_signals = ["instruccion", "indica", "debe", "usa"]
+    numbered_list_patterns = [r"(?m)^\s*\d+[\).:-]\s+"]
+    delimiter_patterns = [r"###", r"---", r"```"]
+    example_patterns = [r"\bejemplo(?:s)?\b", r"\bentrada\s*/\s*salida\b", r"\bcaso\s+de\s+uso\b"]
+    meta_instruction_patterns = [
+        r"\brazona\b", r"\banaliza\b", r"\bpiensa\b", r"\bjustifica\b",
+        r"\bantes\s+de\s+responder\b", r"\bverifica\b",
+    ]
+    basic_instruction_patterns = [r"\bindica\b", r"\bdebe\b", r"\busa\b", r"\bsigue\b"]
 
-    if any(token in combined for token in advanced_signals):
+    technique_count = 0
+    technique_count += 1 if _matches_any_pattern(combined_text, numbered_list_patterns) else 0
+    technique_count += 1 if _matches_any_pattern(combined_text, delimiter_patterns) else 0
+    technique_count += 1 if _matches_any_pattern(combined_text, example_patterns) else 0
+    technique_count += 1 if _matches_any_pattern(combined_text, meta_instruction_patterns) else 0
+
+    if technique_count >= 2:
         return 2
-    if any(token in combined for token in basic_signals):
+    if technique_count == 1:
+        return 1
+    if _matches_any_pattern(combined_text, basic_instruction_patterns):
         return 1
     return 0
 
