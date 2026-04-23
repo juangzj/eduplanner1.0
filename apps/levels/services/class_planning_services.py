@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from django.db import transaction
+from django.utils import timezone
 
 from ..ai.factory import get_ai_client
 from ..models import ClassPlanning, GeneratedClassPlan, PerformanceLevelTemplate
@@ -76,3 +77,26 @@ class ClassPlanningCreateService:
 			"resources": cleaned_data.get("resources"),
 			"prompt": cleaned_data.get("prompt"),
 		}
+
+
+class ClassPlanningDeleteService:
+
+	@staticmethod
+	@transaction.atomic
+	def soft_delete_class_planning_service(*, class_planning: ClassPlanning, user) -> bool:
+		if class_planning.user_id != user.id:
+			raise PermissionError("User does not own this class planning record.")
+
+		if class_planning.deleted_at is not None:
+			return False
+
+		now = timezone.now()
+		class_planning.deleted_at = now
+		class_planning.save(update_fields=["deleted_at", "updated_at"])
+
+		GeneratedClassPlan.objects.filter(
+			class_planning=class_planning,
+			deleted_at__isnull=True,
+		).update(deleted_at=now, updated_at=now)
+
+		return True

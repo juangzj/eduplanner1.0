@@ -6,12 +6,14 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import CreateView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.decorators.cache import never_cache
 
 from ..forms import ClassPlanningCreateForm
 from ..models import ClassPlanning, GeneratedClassPlan, PerformanceLevelTemplate
-from ..services.class_planning_services import ClassPlanningCreateService
+from ..services.class_planning_services import ClassPlanningCreateService, ClassPlanningDeleteService
 
 
 @never_cache
@@ -100,3 +102,39 @@ class ClassPlanningCreateView(LoginRequiredMixin, CreateView):
 	def form_invalid(self, form):
 		messages.error(self.request, "Revise los datos del formulario e intente de nuevo.")
 		return super().form_invalid(form)
+
+
+@method_decorator(never_cache, name="dispatch")
+class ClassPlanningDeleteView(LoginRequiredMixin, SingleObjectMixin, View):
+	model = ClassPlanning
+	success_url = reverse_lazy("levels:class-plans")
+	login_url = "/users/login/"
+	http_method_names = ["post"]
+
+	def get_success_url(self):
+		return self.success_url
+
+	def get_queryset(self):
+		return ClassPlanning.objects.filter(
+			user=self.request.user,
+			deleted_at__isnull=True,
+		)
+
+	def post(self, request, *args, **kwargs):
+		self.object = self.get_object()
+
+		try:
+			was_deleted = ClassPlanningDeleteService.soft_delete_class_planning_service(
+				class_planning=self.object,
+				user=request.user,
+			)
+		except Exception as exc:
+			messages.error(request, f"No fue posible eliminar la planeación de clase: {exc}")
+			return HttpResponseRedirect(self.get_success_url())
+
+		if was_deleted:
+			messages.success(request, "La planeación de clase fue eliminada correctamente.")
+		else:
+			messages.error(request, "No se pudo eliminar la planeación de clase seleccionada.")
+
+		return HttpResponseRedirect(self.get_success_url())

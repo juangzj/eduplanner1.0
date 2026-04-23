@@ -140,16 +140,28 @@
                             </div>
                             <div class="text-end">
                                 <small class="text-muted d-block mb-2">Creada: {{ class_planning.created_at|date:"d/m/Y H:i" }}</small>
-                                <button
-                                    class="btn btn-sm btn-outline-primary"
-                                    type="button"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#plan-body-{{ class_planning.id }}"
-                                    aria-expanded="false"
-                                    aria-controls="plan-body-{{ class_planning.id }}"
-                                >
-                                    <i class="bi bi-eye"></i> Ver información
-                                </button>
+                                <div class="d-flex gap-2 justify-content-end flex-wrap">
+                                    <button
+                                        class="btn btn-sm btn-outline-primary"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#plan-body-{{ class_planning.id }}"
+                                        aria-expanded="false"
+                                        aria-controls="plan-body-{{ class_planning.id }}"
+                                    >
+                                        <i class="bi bi-eye"></i> Ver información
+                                    </button>
+                                    <form method="post" action="{% url 'levels:class-planning-delete' class_planning.id %}" class="m-0" id="delete-class-planning-form-{{ class_planning.id }}">
+                                        {% csrf_token %}
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="openConfirmModal('Eliminar planeación', 'Esta acción eliminará de forma lógica toda la planeación y su contenido generado. ¿Deseas continuar?', 'delete-class-planning-form-{{ class_planning.id }}', 'btn-danger')"
+                                        >
+                                            <i class="bi bi-trash"></i> Eliminar planeación
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 
