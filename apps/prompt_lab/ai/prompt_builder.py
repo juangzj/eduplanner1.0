@@ -325,15 +325,20 @@ def generate_quality_prompt(data, feedback_history=None):
     model = getattr(settings, "OPENAI_MODEL", "gpt-4o-mini")
 
     feedback_text = "\n".join(f"- {item}" for item in feedback_history if item)
+    rubric_json = json.dumps(PROMPT_CANVAS_RUBRIC, ensure_ascii=False)
 
     system_message = (
-        "You are an expert pedagogical prompt engineer. "
-        "Rewrite the teacher prompt to a high-quality version following Prompt Canvas and cognitive scaffolding. "
-        "Return only valid JSON and keep the final content in Spanish."
+        "You are an expert pedagogical prompt engineer and rubric optimizer. "
+        "Improve the teacher prompt using exactly the provided fields and the official rubric dimensions. "
+        "Do not invent context not present in the teacher input unless it is a generic pedagogical clarification. "
+        "Return only valid JSON and keep all generated content in Spanish."
     )
 
     user_message = f"""
-Toma el ultimo intento del docente y mejora el prompt con calidad pedagogica.
+Mejora el ultimo intento del docente para generar un prompt final de alta calidad pedagogica.
+
+Debes usar la misma rubrica con la que se evalua y recomienda:
+{rubric_json}
 
 Campos del ultimo intento:
 - purpose: {normalized.get('purpose', '')}
@@ -348,10 +353,14 @@ Retroalimentacion acumulada:
 {feedback_text or '- Sin retroalimentacion previa'}
 
 Reglas:
-1. Mejora todos los campos para que queden claros, especificos y aplicables en secundaria.
-2. Mantener coherencia entre objetivo, tarea, proceso, formato y restricciones.
-3. Incluir andamiaje cognitivo en process.
-4. full_prompt debe seguir esta estructura exacta:
+1. Conserva la intencion del docente y mejora precision, claridad y accionabilidad de TODOS los campos.
+2. Usa explicitamente la retroalimentacion acumulada para corregir debilidades y subir dimensiones bajas de la rubrica.
+3. Mantener coherencia entre objetivo, tarea, proceso, formato, audiencia y restricciones.
+4. En process incluye secuencia pedagogica paso a paso y andamiaje cognitivo.
+5. En format define estructura verificable de salida (secciones, orden, formato esperado).
+6. No dejes campos vacios; si falta detalle, completa con formulaciones pedagogicas neutrales coherentes con lo que ya dio el docente.
+7. No contradigas el contexto ni la tarea del docente.
+8. full_prompt debe seguir esta estructura exacta:
 Purpose:\n...\n\nRole:\n...\n\nContext:\n...\n\nTask:\n...\n\nProcess:\n...\n\nFormat:\n...\n\nConstraints:\n...
 
 Devuelve SOLO JSON valido con esta estructura exacta:

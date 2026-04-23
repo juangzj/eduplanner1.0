@@ -5,6 +5,67 @@
     </div>
 
     <div class="card-body">
+        <details class="mb-4">
+            <summary class="fw-semibold" style="cursor: pointer;">Guia para diligenciar el prompt (clic para ver u ocultar)</summary>
+            <div class="mt-3">
+                <div class="alert alert-primary border-0 mb-3">
+                    <h6 class="fw-semibold mb-2">Como diligenciar este formulario</h6>
+                    <p class="mb-2 small">
+                        Piensa que estas dando instrucciones a un asistente docente. Entre mas claro seas en objetivo,
+                        contexto, tarea y formato, mejor sera la respuesta y mejor calificacion recibira tu prompt.
+                    </p>
+                    <p class="mb-1 small"><strong>Secuencia recomendada:</strong></p>
+                    <ol class="small mb-2">
+                        <li>Define que aprendizaje buscas (Proposito).</li>
+                        <li>Define el perfil de la IA (Rol).</li>
+                        <li>Explica el escenario real del aula (Contexto).</li>
+                        <li>Describe exactamente que debe producir la IA (Tarea).</li>
+                        <li>Indica pasos sugeridos (Proceso, opcional pero recomendado).</li>
+                        <li>Especifica como quieres la respuesta (Formato).</li>
+                        <li>Agrega limites o condiciones (Restricciones).</li>
+                    </ol>
+                    <p class="mb-1 small"><strong>Ejemplo rapido completo:</strong></p>
+                    <div class="small bg-white rounded p-2 border">
+                        <p class="mb-1"><strong>Proposito:</strong> Fortalecer la argumentacion escrita en estudiantes de grado 9 al analizar un texto historico.</p>
+                        <p class="mb-1"><strong>Rol:</strong> Actua como docente de Lengua Castellana de secundaria con enfoque en evaluacion formativa.</p>
+                        <p class="mb-1"><strong>Contexto:</strong> Curso de 34 estudiantes de grado 9, lectura sobre Independencia de Colombia, 45 minutos de clase, nivel heterogeneo de escritura.</p>
+                        <p class="mb-1"><strong>Tarea:</strong> Disena una actividad de escritura argumentativa con objetivo, instrucciones, criterios de exito y evidencia de aprendizaje.</p>
+                        <p class="mb-1"><strong>Proceso:</strong> 1) Activacion de saberes previos, 2) lectura guiada, 3) construccion de tesis, 4) redaccion del parrafo, 5) retroalimentacion breve.</p>
+                        <p class="mb-1"><strong>Formato:</strong> Entrega en tabla markdown con columnas: momento, tiempo, accion docente, accion estudiante, evidencia.</p>
+                        <p class="mb-0"><strong>Restricciones:</strong> Lenguaje claro para adolescentes, maximo 350 palabras, incluir adaptacion para estudiantes con ritmo de aprendizaje mas lento.</p>
+                    </div>
+                </div>
+
+                <div class="card border mb-0">
+                    <div class="card-body py-3">
+                        <h6 class="fw-semibold mb-3">Definiciones de cada campo</h6>
+                        <div class="small">
+                            <p class="mb-2"><strong>Proposito:</strong> Es el aprendizaje o resultado educativo que quieres lograr con la actividad. Responde a: <em>para que</em> se usa el prompt.</p>
+                            <p class="mb-2 text-muted">Ejemplo: "Fortalecer la comprension lectora inferencial en estudiantes de grado 8".</p>
+
+                            <p class="mb-2"><strong>Rol:</strong> Es el perfil profesional que debe asumir la IA para responder. Define area, nivel y enfoque pedagogico.</p>
+                            <p class="mb-2 text-muted">Ejemplo: "Actua como docente de Ciencias Sociales de secundaria con enfoque en aprendizaje activo".</p>
+
+                            <p class="mb-2"><strong>Contexto:</strong> Es la situacion real del aula donde se aplicara la respuesta. Incluye grado, tema, tiempo, recursos y necesidades del grupo.</p>
+                            <p class="mb-2 text-muted">Ejemplo: "Grado 10, tema Revolucion Industrial, 55 minutos, aula sin proyector, grupo con niveles mixtos".</p>
+
+                            <p class="mb-2"><strong>Tarea:</strong> Es lo que debe hacer exactamente la IA. Debe describir una accion concreta y un producto esperado.</p>
+                            <p class="mb-2 text-muted">Ejemplo: "Disena una actividad de debate con instrucciones, criterios de evaluacion y evidencia de aprendizaje".</p>
+
+                            <p class="mb-2"><strong>Proceso:</strong> Son los pasos que orientan como construir la respuesta. Ayuda a ordenar la salida y mejorar su calidad.</p>
+                            <p class="mb-2 text-muted">Ejemplo: "1) Diagnostico rapido, 2) explicacion guiada, 3) practica colaborativa, 4) cierre y reflexion".</p>
+
+                            <p class="mb-2"><strong>Formato:</strong> Es la forma en que quieres recibir la respuesta (tabla, lista, rubrica, secciones). Hace que la salida sea util y aplicable.</p>
+                            <p class="mb-2 text-muted">Ejemplo: "Tabla markdown con columnas: objetivo, actividad, tiempo, recurso, evaluacion".</p>
+
+                            <p class="mb-1"><strong>Restricciones:</strong> Son limites o condiciones que la IA debe respetar (extension, tono, idioma, exclusiones, adaptaciones).</p>
+                            <p class="mb-0 text-muted">Ejemplo: "Maximo 250 palabras, tono claro y motivador, incluir adaptacion para estudiantes con rezago".</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+
         <form method="post">
             {% csrf_token %}
 
@@ -17,36 +78,43 @@
             <div class="mb-3">
                 <label for="purpose" class="form-label fw-semibold">Proposito *</label>
                 <textarea id="purpose" name="purpose" rows="3" class="form-control" placeholder="Que objetivo de aprendizaje debe apoyar este prompt?" required>{{ form_data.purpose|default_if_none:"" }}</textarea>
+                <div class="form-text">Describe el aprendizaje que quieres lograr. Ejemplo: "Desarrollar pensamiento critico al comparar dos fuentes historicas en grado 10".</div>
             </div>
 
             <div class="mb-3">
                 <label for="role" class="form-label fw-semibold">Rol *</label>
                 <textarea id="role" name="role" rows="2" class="form-control" placeholder="Como debe comportarse la IA?" required>{{ form_data.role|default_if_none:"" }}</textarea>
+                <div class="form-text">Define perfil pedagogico y area. Ejemplo: "Actua como docente de Ciencias Naturales de grado 8 con enfoque en aprendizaje basado en indagacion".</div>
             </div>
 
             <div class="mb-3">
                 <label for="context" class="form-label fw-semibold">Contexto *</label>
                 <textarea id="context" name="context" rows="4" class="form-control" placeholder="Incluye grado, area y necesidades del grupo." required>{{ form_data.context|default_if_none:"" }}</textarea>
+                <div class="form-text">Incluye grado, tema, tiempo, recursos y caracteristicas del grupo. Ejemplo: "Grado 7, fracciones equivalentes, 50 minutos, sin acceso a internet, 3 estudiantes con rezago".</div>
             </div>
 
             <div class="mb-3">
                 <label for="task" class="form-label fw-semibold">Tarea *</label>
                 <textarea id="task" name="task" rows="4" class="form-control" placeholder="Describe la tarea concreta que debe realizar la IA." required>{{ form_data.task|default_if_none:"" }}</textarea>
+                <div class="form-text">Usa un verbo de accion y producto esperado. Ejemplo: "Genera una secuencia de 3 actividades con objetivo, instrucciones, criterio de logro y evidencia".</div>
             </div>
 
             <div class="mb-3">
                 <label for="process" class="form-label fw-semibold">Proceso</label>
                 <textarea id="process" name="process" rows="3" class="form-control" placeholder="Pasos opcionales para orientar la respuesta.">{{ form_data.process|default_if_none:"" }}</textarea>
+                <div class="form-text">Sugiere pasos para guiar la respuesta. Ejemplo: "Primero diagnostica errores comunes, luego propone actividad guiada y finalmente cierre metacognitivo".</div>
             </div>
 
             <div class="mb-3">
                 <label for="format" class="form-label fw-semibold">Formato *</label>
                 <textarea id="format" name="format" rows="3" class="form-control" placeholder="Define estructura, tabla, rubrica, pasos, etc." required>{{ form_data.format|default_if_none:"" }}</textarea>
+                <div class="form-text">Indica estructura exacta de salida. Ejemplo: "Responde en tabla markdown con 5 filas y columnas: objetivo, actividad, recurso, evaluacion, adaptacion".</div>
             </div>
 
             <div class="mb-4">
                 <label for="constraints" class="form-label fw-semibold">Restricciones</label>
                 <textarea id="constraints" name="constraints" rows="3" class="form-control" placeholder="Restricciones opcionales: tono, extension, exclusiones, idioma.">{{ form_data.constraints|default_if_none:"" }}</textarea>
+                <div class="form-text">Agrega limites claros. Ejemplo: "No usar tecnicismos, maximo 300 palabras, tono motivador, incluir una actividad sin materiales impresos".</div>
             </div>
 
             <div class="d-flex justify-content-end">
