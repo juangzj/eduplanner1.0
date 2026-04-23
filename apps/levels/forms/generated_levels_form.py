@@ -1,3 +1,5 @@
+import uuid
+
 from django import forms
 
 from ..models import GeneratedLevels, PerformanceLevelTemplate
@@ -32,6 +34,7 @@ class GeneratedLevelsCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
+        selected_template_id = kwargs.pop("selected_template_id", None)
         super().__init__(*args, **kwargs)
         if user is None or not getattr(user, "is_authenticated", False):
             qs = PerformanceLevelTemplate.objects.none()
@@ -45,6 +48,24 @@ class GeneratedLevelsCreateForm(forms.ModelForm):
                 .order_by("-created_at")
             )
         self.fields["performance_template"].queryset = qs
+        self.selected_template = None
+
+        if not selected_template_id:
+            return
+
+        try:
+            parsed_template_id = uuid.UUID(str(selected_template_id))
+        except (TypeError, ValueError):
+            return
+
+        locked_template = qs.filter(id=parsed_template_id).first()
+        if locked_template is None:
+            return
+
+        self.fields["performance_template"].queryset = qs.filter(id=locked_template.id)
+        self.initial["performance_template"] = locked_template.id
+        self.fields["performance_template"].widget = forms.HiddenInput()
+        self.selected_template = locked_template
 
     def clean_performance_template(self):
         template = self.cleaned_data["performance_template"]

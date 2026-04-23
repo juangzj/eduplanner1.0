@@ -20,7 +20,14 @@
             <!-- PLANTILLA -->
             <div class="mb-3">
                 <label class="form-label small fw-semibold">Plantilla seleccionada</label>
-                {{ form.performance_template }}
+                {% if form.selected_template %}
+                    {{ form.performance_template }}
+                    <div class="form-control bg-light">
+                        {{ form.selected_template.level_title|default:"Sin título" }} | {{ form.selected_template.area }} | Grado {{ form.selected_template.get_grade_display }}
+                    </div>
+                {% else %}
+                    {{ form.performance_template }}
+                {% endif %}
                 {{ form.performance_template.errors }}
             </div>
 

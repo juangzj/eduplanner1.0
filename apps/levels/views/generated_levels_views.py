@@ -24,6 +24,7 @@ class GeneratedLevelsCreateView(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["user"] = self.request.user
+        kwargs["selected_template_id"] = self.request.GET.get("template") or self.request.POST.get("performance_template")
         return kwargs
 
     def get_initial(self):
