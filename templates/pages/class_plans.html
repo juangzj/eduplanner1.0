@@ -142,14 +142,14 @@
                                 <small class="text-muted d-block mb-2">Creada: {{ class_planning.created_at|date:"d/m/Y H:i" }}</small>
                                 <div class="d-flex gap-2 justify-content-end flex-wrap">
                                     <button
-                                        class="btn btn-sm btn-outline-primary"
+                                        class="btn btn-sm btn-outline-primary js-toggle-info-text"
                                         type="button"
                                         data-bs-toggle="collapse"
                                         data-bs-target="#plan-body-{{ class_planning.id }}"
                                         aria-expanded="false"
                                         aria-controls="plan-body-{{ class_planning.id }}"
                                     >
-                                        <i class="bi bi-eye"></i> Ver información
+                                        <i class="bi bi-eye"></i> <span class="js-toggle-label">Ver mas</span>
                                     </button>
                                     <form method="post" action="{% url 'levels:class-planning-delete' class_planning.id %}" class="m-0" id="delete-class-planning-form-{{ class_planning.id }}">
                                         {% csrf_token %}
@@ -322,6 +322,32 @@
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        const toggleButtons = document.querySelectorAll("button.js-toggle-info-text[data-bs-toggle='collapse']");
+        toggleButtons.forEach(function (button) {
+            const targetSelector = button.getAttribute("data-bs-target");
+            if (!targetSelector) {
+                return;
+            }
+
+            const collapseElement = document.querySelector(targetSelector);
+            const label = button.querySelector(".js-toggle-label");
+            if (!collapseElement || !label) {
+                return;
+            }
+
+            const setLabel = function (isExpanded) {
+                label.textContent = isExpanded ? "Ver menos" : "Ver mas";
+            };
+
+            setLabel(collapseElement.classList.contains("show"));
+            collapseElement.addEventListener("shown.bs.collapse", function () {
+                setLabel(true);
+            });
+            collapseElement.addEventListener("hidden.bs.collapse", function () {
+                setLabel(false);
+            });
+        });
+
         if (typeof marked === "undefined" || typeof DOMPurify === "undefined") {
             return;
         }

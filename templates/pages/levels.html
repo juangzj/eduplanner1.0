@@ -100,13 +100,13 @@
                                     </div>
 
                                     <div class="d-flex gap-2 flex-wrap">
-                                        <button class="btn btn-sm btn-outline-primary"
+                                        <button class="btn btn-sm btn-outline-primary js-toggle-info-text"
                                                 type="button"
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#performance-detail-{{ performance.id }}"
                                                 aria-expanded="false"
                                                 aria-controls="performance-detail-{{ performance.id }}">
-                                            <i class="bi bi-eye"></i> Ver información
+                                            <i class="bi bi-eye"></i> <span class="js-toggle-label">Ver mas</span>
                                         </button>
 
                                         <form id="delete-template-form-{{ performance.id }}"
@@ -359,4 +359,37 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleButtons = document.querySelectorAll("button.js-toggle-info-text[data-bs-toggle='collapse']");
+        toggleButtons.forEach(function (button) {
+            const targetSelector = button.getAttribute("data-bs-target");
+            if (!targetSelector) {
+                return;
+            }
+
+            const collapseElement = document.querySelector(targetSelector);
+            const label = button.querySelector(".js-toggle-label");
+            if (!collapseElement || !label) {
+                return;
+            }
+
+            const setLabel = function (isExpanded) {
+                label.textContent = isExpanded ? "Ver menos" : "Ver mas";
+            };
+
+            setLabel(collapseElement.classList.contains("show"));
+            collapseElement.addEventListener("shown.bs.collapse", function () {
+                setLabel(true);
+            });
+            collapseElement.addEventListener("hidden.bs.collapse", function () {
+                setLabel(false);
+            });
+        });
+    });
+</script>
 {% endblock %}
