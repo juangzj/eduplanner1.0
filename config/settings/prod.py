@@ -5,7 +5,7 @@ from .base import *
 DEBUG = False
 ALLOWED_HOSTS = [
 	host.strip()
-	for host in os.getenv('ALLOWED_HOSTS', '').split(',')
+	for host in os.getenv('ALLOWED_HOSTS', 'eduplanner1-0.onrender.com').split(',')
 	if host.strip()
 ]
 
