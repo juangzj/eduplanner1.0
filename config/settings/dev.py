@@ -1,4 +1,4 @@
 from .base import *
 
-DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+DEBUG = False
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'eduplanner1-0.onrender.com']
