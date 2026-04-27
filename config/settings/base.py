@@ -146,11 +146,11 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# En producción (DEBUG=False), usa WhiteNoise para servir y comprimir estáticos
+# En producción (DEBUG=False), usa WhiteNoise para servir estáticos con hash (cache-busting)
 if not DEBUG:
-    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
-    # and renames the files with unique names for each version to support long-term caching
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # Use ManifestStaticFilesStorage for reliable static file serving
+    # WhiteNoise middleware will serve these files with the correct content-type headers
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 
 # AUTH_USER_MODEL
