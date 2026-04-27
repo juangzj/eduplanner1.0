@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() in {'1', 'true', 'yes', 'on'}
+DEBUG = os.getenv('DEBUG').lower() in {'1', 'true', 'yes', 'on'}
 
 ALLOWED_HOSTS = [
     host.strip()
@@ -169,3 +169,9 @@ OPENAI_MODEL = os.getenv('OPENAI_MODEL', 'gpt-4o-mini')
 # Prompt Lab configuration
 PROMPT_LAB_MAX_REFINEMENTS = int(os.getenv('PROMPT_LAB_MAX_REFINEMENTS', '5'))
 PROMPT_LAB_GENERATION_MIN_REFINEMENTS = int(os.getenv('PROMPT_LAB_GENERATION_MIN_REFINEMENTS', '3'))
+
+# If running on Render or a platform that exposes an external hostname, append it
+# to ALLOWED_HOSTS so the app responds correctly when the platform routes requests.
+render_external_hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if render_external_hostname:
+    ALLOWED_HOSTS.append(render_external_hostname)
