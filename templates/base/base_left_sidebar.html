@@ -1,21 +1,14 @@
-{% extends 'base/base.html' %}
-{% load static %}
+{% extends 'base/base.html' %} {% load static %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/base_left_sidebar.css' %}" />
+{% endblock %} {% block layout %}
+<div class="sidebar-layout">
+  {% include 'components/left_sidebar.html' %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/base_left_sidebar.css' %}">
-{% endblock %}
-
-{% block layout %}
-
-{% include 'components/left_sidebar.html' %}
-
-<div class="contenido-principal">
-
+  <div class="contenido-principal">
     <div class="container-fluid py-4 px-3 px-lg-4">
-        {% block sidebar_content %}
-        {% endblock %}
+      {% block sidebar_content %} {% endblock %}
     </div>
-
+  </div>
 </div>
 
 {% endblock %}

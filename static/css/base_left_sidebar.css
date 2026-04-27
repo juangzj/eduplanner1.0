@@ -1,27 +1,36 @@
-/* ===== CONTENIDO PRINCIPAL ===== */
+/* ===== LAYOUT CON SIDEBAR ===== */
 
-#main-content {
-    transition: margin-left 0.3s ease;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    width: 100%; /* Por defecto en móvil */
+.sidebar-layout {
+  min-height: 100vh;
+  width: 100%;
 }
 
-/* Desktop: Ajuste para el sidebar fijo de 260px */
+#main-content {
+  transition: padding-left 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 @media (min-width: 992px) {
-    #main-content {
-        margin-left: 260px; 
-        width: calc(100% - 260px); /* Ocupa el resto de la pantalla */
-    }
+  .sidebar-layout {
+    padding-left: 260px;
+  }
+
+  #main-content {
+    padding-left: 0;
+  }
 }
 
 /* Efecto hover opcional para las tarjetas del dashboard */
 .transition-hover {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 }
 
 .transition-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  transform: translateY(-4px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
 }
