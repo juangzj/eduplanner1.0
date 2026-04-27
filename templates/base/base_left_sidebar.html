@@ -2,6 +2,18 @@
 <link rel="stylesheet" href="{% static 'css/base_left_sidebar.css' %}" />
 {% endblock %} {% block layout %}
 <div class="sidebar-layout">
+  <!-- Desktop toggle button -->
+  <button
+    id="toggleSidebarBtn"
+    class="btn btn-primary d-none d-lg-inline-flex position-fixed top-0 start-0 m-3 rounded-circle shadow"
+    aria-label="Toggle sidebar"
+    title="Mostrar/ocultar menú"
+    style="z-index: 2100; width: 45px; height: 45px"
+  >
+    <span class="visually-hidden">Toggle sidebar</span>
+    <i class="bi bi-list"></i>
+  </button>
+
   {% include 'components/left_sidebar.html' %}
 
   <div class="contenido-principal">

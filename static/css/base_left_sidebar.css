@@ -21,6 +21,20 @@
   #main-content {
     padding-left: 0;
   }
+
+  /* Collapsed sidebar behavior */
+  .sidebar-layout.sidebar-collapsed {
+    padding-left: 0;
+  }
+
+  .sidebar-layout.sidebar-collapsed #sidebar {
+    transform: translateX(-260px);
+  }
+
+  /* Ensure smooth transitions */
+  #sidebar {
+    transition: transform 0.25s ease;
+  }
 }
 
 /* Efecto hover opcional para las tarjetas del dashboard */
