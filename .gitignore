@@ -220,6 +220,6 @@ yarn-error.log*
 # =========================
 .postgres_data/
 
-.estructure.md/ 
+.estructure.md
 
-.prod-env.md
+prod-env.md
