@@ -4,3 +4,4 @@ from .assessment_rubric_services import AssessmentRubricCreateService
 from .assessment_rubric_services import AssessmentRubricUpdateService
 from .generated_class_plan_services import GeneratedClassPlanDeleteService
 from .generated_class_plan_services import GeneratedClassPlanUpdateService
+from .excel_upload_services import ExcelUploadService, ExcelUploadError

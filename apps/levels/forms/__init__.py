@@ -6,3 +6,4 @@ from .assessment_rubric_form import AssessmentRubricCreateForm
 from .assessment_rubric_form import AssessmentRubricUpdateForm
 from .class_planning_form import ClassPlanningCreateForm
 from .generated_class_plan_form import GeneratedClassPlanUpdateForm
+from .excel_upload_form import ExcelUploadForm
