@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from config.admin_views import admin_dashboard
+from config.admin_views import admin_dashboard, admin_excel_upload
 
 urlpatterns = [
     path('admin/dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('admin/excel-upload/', admin_excel_upload, name='admin_excel_upload'),
     path('admin/', admin.site.urls),
     path('',include('apps.landing.urls')),
     path('users/', include('apps.users.urls')),

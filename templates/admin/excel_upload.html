@@ -1,0 +1,181 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Cargar Excel a docente | Administración{% endblock %}
+
+{% block extrastyle %}
+  <style>
+    :root {
+      --bg-primary: #fff;
+      --bg-secondary: #f9f9f9;
+      --text-primary: #333;
+      --text-secondary: #666;
+      --border-color: #ddd;
+      --border-light: #eee;
+      --accent-primary: #417690;
+      --accent-error: #ba2121;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1f1f1f;
+        --bg-secondary: #2d2d2d;
+        --text-primary: #e0e0e0;
+        --text-secondary: #b0b0b0;
+        --border-color: #444;
+        --border-light: #555;
+        --accent-primary: #79aec8;
+        --accent-error: #e57373;
+      }
+    }
+
+    .upload-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .upload-header {
+      margin-bottom: 30px;
+    }
+
+    .upload-header h1 {
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .upload-header p {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .upload-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .upload-card h3 {
+      margin: 0 0 15px 0;
+      color: var(--accent-primary);
+      font-size: 16px;
+      border-bottom: 2px solid var(--border-light);
+      padding-bottom: 10px;
+    }
+
+    .form-field {
+      margin-bottom: 20px;
+    }
+
+    .form-field label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-field select,
+    .form-field input[type="file"] {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .form-help {
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .form-error {
+      color: var(--accent-error);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .mapping-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .mapping-table th,
+    .mapping-table td {
+      padding: 8px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-primary);
+      text-align: left;
+    }
+
+    .mapping-table th {
+      background: var(--bg-secondary);
+    }
+  </style>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Inicio</a>
+  &rsaquo; Cargar Excel a docente
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="upload-container">
+  <div class="upload-header">
+    <h1>📥 Cargar Excel a docente</h1>
+    <p>Seleccione un docente registrado y suba el Excel para crear automáticamente su plantilla de nivel de desempeño.</p>
+  </div>
+
+  <div class="upload-card">
+    <h3>Datos de la carga</h3>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+            <div class="form-help">{{ field.help_text }}</div>
+          {% endif %}
+          {% for error in field.errors %}
+            <div class="form-error">{{ error }}</div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+      <input type="submit" class="default" value="Subir y crear plantilla">
+    </form>
+  </div>
+
+  <div class="upload-card">
+    <h3>Formato del Excel</h3>
+    <p style="color: var(--text-secondary);">La información se toma de la fila 2 de la primera hoja del archivo:</p>
+
+    <table class="mapping-table">
+      <thead>
+        <tr>
+          <th>Celda</th>
+          <th>Campo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>A2</td><td>Área</td></tr>
+        <tr><td>B2</td><td>Grado</td></tr>
+        <tr><td>C2</td><td>Título</td></tr>
+        <tr><td>D2</td><td>Descripción</td></tr>
+        <tr><td>E2</td><td>Aprendizaje</td></tr>
+        <tr><td>F2</td><td>Recursos didácticos</td></tr>
+        <tr><td>G2</td><td>Evidencias de aprendizaje</td></tr>
+        <tr><td>H2</td><td>Criterios de evaluación</td></tr>
+        <tr><td>I2</td><td>Instrumento de evaluación</td></tr>
+        <tr><td>J2</td><td>Periodo académico</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

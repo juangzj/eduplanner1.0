@@ -2,5 +2,6 @@
 
 {% block userlinks %}
   <a href="{% url 'admin_dashboard' %}" style="margin-right: 20px; color: #417690; font-weight: 600;">📊 Dashboard</a>
+  <a href="{% url 'admin_excel_upload' %}" style="margin-right: 20px; color: #417690; font-weight: 600;">📥 Cargar Excel</a>
   {{ block.super }}
 {% endblock %}

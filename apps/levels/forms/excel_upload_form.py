@@ -1,6 +1,7 @@
 import os
 
 from django import forms
+from django.contrib.auth import get_user_model
 
 
 # Tamaño máximo permitido para el archivo Excel (5 MB)
@@ -36,3 +37,22 @@ class ExcelUploadForm(forms.Form):
             raise forms.ValidationError(f"El archivo supera el tamaño máximo de {EXCEL_MAX_SIZE_MB} MB.")
 
         return excel_file
+
+
+class AdminExcelUploadForm(ExcelUploadForm):
+    """
+    Formulario para que el administrador suba un Excel a nombre de un docente.
+    """
+
+    teacher = forms.ModelChoiceField(
+        queryset=get_user_model().objects.filter(is_active=True).order_by("first_name", "last_name"),
+        label="Docente",
+        empty_label="Seleccione un docente",
+        help_text="La plantilla se creará a nombre de este docente.",
+        error_messages={
+            "required": "Debe seleccionar un docente.",
+            "invalid_choice": "El docente seleccionado no es válido.",
+        },
+    )
+
+    field_order = ["teacher", "excel_file"]
