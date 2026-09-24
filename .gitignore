@@ -218,6 +218,8 @@ yarn-error.log*
 # =========================
 # Archivos de migración compilados
 # =========================
-postgres_data/
+.postgres_data/
 
-estructure.md/ 
+.estructure.md/ 
+
+.prod-env.md
