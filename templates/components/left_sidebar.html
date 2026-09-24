@@ -1,147 +1,183 @@
 <!-- ===== SIDEBAR DESKTOP ===== -->
-<div id="sidebar"
-     class="d-none d-lg-flex flex-column position-fixed top-0 start-0 vh-100 bg-dark text-white border-end border-secondary shadow"
-     style="width: 260px; z-index: 1030;">
+<div
+  id="sidebar"
+  class="d-none d-lg-flex flex-column position-fixed top-0 start-0 vh-100 bg-dark text-white border-end border-secondary shadow"
+  style="width: 260px; z-index: 1030"
+>
+  <!-- ===== LOGO ===== -->
+  <div class="p-4 border-bottom border-secondary">
+    <h4 class="fw-bold text-primary mb-1">Eduplanner</h4>
+    <small class="text-secondary">Panel docente</small>
+  </div>
 
-    <!-- ===== LOGO ===== -->
-    <div class="p-4 border-bottom border-secondary">
-        <h4 class="fw-bold text-primary mb-1">Eduplanner</h4>
-        <small class="text-secondary">Panel docente</small>
-    </div>
+  <!-- ===== MENU ===== -->
+  <div class="flex-grow-1 p-3">
+    <nav class="nav nav-pills flex-column gap-2">
+      <a
+        href="{% url 'users:dashboard' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-grid-1x2"></i>
+        <span>Dashboard</span>
+      </a>
 
+      <a
+        href="{% url 'levels:levels' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-robot"></i>
+        <span>Niveles de Desempeños</span>
+      </a>
 
-    <!-- ===== MENU ===== -->
-    <div class="flex-grow-1 p-3">
+      <a
+        href="{% url 'levels:class-plans' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-journal-text"></i>
+        <span>Planeaciones</span>
+      </a>
 
-        <nav class="nav nav-pills flex-column gap-2">
+      <a
+        href="{% url 'prompt_lab:prompt-create' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-chat-square-text"></i>
+        <span>Prompt Lab</span>
+      </a>
 
-            <a href="{% url 'users:dashboard' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-grid-1x2"></i>
-                <span>Dashboard</span>
-            </a>
+      <a
+        href="{% url 'prompt_lab:prompt-list' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-bookmarks"></i>
+        <span>Mis Prompts</span>
+      </a>
 
-            <a href="{% url 'levels:levels' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-robot"></i>
-                <span>Niveles de Desempeños</span>
-            </a>
+      <a
+        href="{% url 'users:profile-settings' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-gear"></i>
+        <span>Configuración</span>
+      </a>
 
-            <a href="{% url 'levels:class-plans' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-journal-text"></i>
-                <span>Planeaciones</span>
-            </a>
+   
+    </nav>
+  </div>
 
-            <a href="{% url 'prompt_lab:prompt-create' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-chat-square-text"></i>
-                <span>Prompt Lab</span>
-            </a>
-
-            <a href="{% url 'prompt_lab:prompt-list' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-bookmarks"></i>
-                <span>Mis Prompts</span>
-            </a>
-
-            <a href="{% url 'users:profile-settings' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-gear"></i>
-                <span>Configuración</span>
-            </a>
-
-        </nav>
-
-    </div>
-
-
-    <!-- ===== LOGOUT ===== -->
- <div class="p-3 border-top border-secondary">
-
-    <form id="logout-form-sidebar" action="{% url 'users:logout' %}" method="POST" style="display: none;">
-        {% csrf_token %}
+  <!-- ===== LOGOUT ===== -->
+  <div class="p-3 border-top border-secondary">
+    <form
+      id="logout-form-sidebar"
+      action="{% url 'users:logout' %}"
+      method="POST"
+      style="display: none"
+    >
+      {% csrf_token %}
     </form>
 
-    <button type="button" 
-            onclick="openConfirmModal('¿Cerrar sesión?', '¿Estás seguro de que deseas cerrar sesion?', 'logout-form-sidebar', 'btn-danger')"
-            class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2">
-        <i class="bi bi-box-arrow-right"></i>
-        Cerrar sesión
+    <button
+      type="button"
+      onclick="
+        openConfirmModal(
+          '¿Cerrar sesión?',
+          '¿Estás seguro de que deseas cerrar sesion?',
+          'logout-form-sidebar',
+          'btn-danger',
+        )
+      "
+      class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2"
+    >
+      <i class="bi bi-box-arrow-right"></i>
+      Cerrar sesión
     </button>
 
     <div class="text-center mt-3">
-        <small class="text-secondary">© 2026 Eduplanner</small>
+      <small class="text-secondary">© 2026 Eduplanner</small>
     </div>
-
+  </div>
 </div>
-
-</div>
-
-
 
 <!-- ===== BOTÓN MOBILE ===== -->
-<button class="btn btn-primary d-lg-none position-fixed top-0 start-0 m-3 rounded-circle shadow"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#mobileSidebar"
-        style="z-index: 2000; width: 45px; height: 45px;">
-    <i class="bi bi-list"></i>
+<button
+  class="btn btn-primary d-lg-none position-fixed top-0 start-0 m-3 rounded-circle shadow"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#mobileSidebar"
+  style="z-index: 2000; width: 45px; height: 45px"
+>
+  <i class="bi bi-list"></i>
 </button>
 
-
-
 <!-- ===== SIDEBAR MOBILE ===== -->
-<div class="offcanvas offcanvas-start bg-dark text-white"
-     tabindex="-1"
-     id="mobileSidebar"
-     style="width: 260px;">
-
-    <!-- Header -->
-    <div class="offcanvas-header border-bottom border-secondary">
-        <div>
-            <h5 class="fw-bold text-primary mb-0">Eduplanner</h5>
-            <small class="text-secondary">Panel docente</small>
-        </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+<div
+  class="offcanvas offcanvas-start bg-dark text-white"
+  tabindex="-1"
+  id="mobileSidebar"
+  style="width: 260px"
+>
+  <!-- Header -->
+  <div class="offcanvas-header border-bottom border-secondary">
+    <div>
+      <h5 class="fw-bold text-primary mb-0">Eduplanner</h5>
+      <small class="text-secondary">Panel docente</small>
     </div>
+    <button
+      type="button"
+      class="btn-close btn-close-white"
+      data-bs-dismiss="offcanvas"
+    ></button>
+  </div>
 
-    <!-- Body -->
-    <div class="offcanvas-body">
+  <!-- Body -->
+  <div class="offcanvas-body">
+    <nav class="nav nav-pills flex-column gap-2">
+      <a href="#" class="nav-link text-white d-flex align-items-center gap-3">
+        <i class="bi bi-grid-1x2"></i>
+        Dashboard
+      </a>
 
-        <nav class="nav nav-pills flex-column gap-2">
+      <a href="#" class="nav-link text-white d-flex align-items-center gap-3">
+        <i class="bi bi-robot"></i>
+        Asistente pedagógico
+      </a>
 
-            <a href="#" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-grid-1x2"></i>
-                Dashboard
-            </a>
+      <a
+        href="{% url 'levels:class-plans' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-journal-text"></i>
+        Planeaciones
+      </a>
 
-            <a href="#" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-robot"></i>
-                Asistente pedagógico
-            </a>
+      <a
+        href="{% url 'prompt_lab:prompt-create' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-chat-square-text"></i>
+        Prompt Lab
+      </a>
 
-            <a href="{% url 'levels:class-plans' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-journal-text"></i>
-                Planeaciones
-            </a>
+      <a href="#" class="nav-link text-white d-flex align-items-center gap-3">
+        <i class="bi bi-check2-square"></i>
+        Rúbricas
+      </a>
 
-            <a href="{% url 'prompt_lab:prompt-create' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-chat-square-text"></i>
-                Prompt Lab
-            </a>
+      <a
+        href="{% url 'prompt_lab:prompt-list' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-bookmarks"></i>
+        Mis Prompts
+      </a>
 
-            <a href="#" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-check2-square"></i>
-                Rúbricas
-            </a>
-
-            <a href="{% url 'prompt_lab:prompt-list' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-bookmarks"></i>
-                Mis Prompts
-            </a>
-
-            <a href="{% url 'users:profile-settings' %}" class="nav-link text-white d-flex align-items-center gap-3">
-                <i class="bi bi-gear"></i>
-                Configuración
-            </a>
-
-        </nav>
-
-    </div>
-
+      <a
+        href="{% url 'users:profile-settings' %}"
+        class="nav-link text-white d-flex align-items-center gap-3"
+      >
+        <i class="bi bi-gear"></i>
+        Configuración
+      </a>
+    </nav>
+  </div>
 </div>

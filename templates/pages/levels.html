@@ -13,24 +13,21 @@
 
 <div class="container-fluid">
 
-    <div class="row mb-4">
-        <div class="col-lg-8">
-            <h3 class="fw-bold">Gestión de niveles de desempeño</h3>
-            <p class="text-muted mb-0">
-                Cree plantillas y genere automáticamente los niveles bajo, básico, alto y superior con IA.
-            </p>
-        </div>
+<div class="row mb-4"> <div class="col-lg-8"> <h3 class="fw-bold">Gestión de niveles de desempeño</h3> <p class="text-muted mb-0"> Cree plantillas y genere automáticamente los niveles bajo, básico, alto y superior con IA. </p> </div>
 
-        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-            <button class="btn btn-primary shadow-sm"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCrearPlantilla">
-                <i class="bi bi-plus-circle"></i>
-                Nueva plantilla
-            </button>
-        </div>
-    </div>
+<div class="col-lg-4 d-flex justify-content-lg-end align-items-center gap-2 mt-3 mt-lg-0">
+    <a href="{% url 'levels:excel-upload' %}" class="btn btn-success shadow-sm">
+        <i class="bi bi-file-earmark-excel"></i>
+        Subir Excel
+    </a>
 
+    <button class="btn btn-primary shadow-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#modalCrearPlantilla">
+        <i class="bi bi-plus-circle"></i>
+        Nueva plantilla
+    </button>
+</div>
 
     <div class="row">
         <div class="col-12">

@@ -3,6 +3,7 @@ from .generated_levels_urls import urlpatterns as generated_levels_patterns
 from .assessment_rubric_urls import urlpatterns as assessment_rubric_patterns
 from .class_planning_urls import urlpatterns as class_planning_patterns
 from .generated_class_plan_urls import urlpatterns as generated_class_plan_patterns
+from .excel_upload_urls import urlpatterns as excel_upload_patterns
 
 app_name = 'levels'
 
@@ -12,4 +13,5 @@ urlpatterns = (
 	+ assessment_rubric_patterns
 	+ class_planning_patterns
 	+ generated_class_plan_patterns
+	+ excel_upload_patterns
 )
