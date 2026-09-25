@@ -15,3 +15,28 @@ body {
     display: flex;
     flex-direction: column;
 }
+/* Aviso de generación con IA */
+.ai-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+.ai-loading-overlay.d-none {
+    display: none !important;
+}
+
+.ai-loading-card {
+    max-width: 420px;
+    width: 100%;
+    padding: 2rem 1.5rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+}

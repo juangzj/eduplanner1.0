@@ -18,7 +18,7 @@
         </div>
         {% endif %}
 
-        <form method="post">
+        <form method="post" data-ai-loading="Generando la planeación de clase con IA...">
             {% csrf_token %}
 
             {% if form.non_field_errors %}

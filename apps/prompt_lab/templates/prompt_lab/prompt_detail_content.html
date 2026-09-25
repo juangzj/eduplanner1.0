@@ -58,7 +58,7 @@
         {% endif %}
 
         {% if can_generate_quality %}
-            <form method="post" class="d-inline">
+            <form method="post" class="d-inline" data-ai-loading="Generando un prompt mejorado con IA...">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="generate-quality">
                 <button type="submit" class="btn btn-success btn-sm">

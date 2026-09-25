@@ -4,7 +4,7 @@
     </div>
 
     <div class="card-body pt-3">
-        <form method="post">
+        <form method="post" data-ai-loading="Generando la rúbrica de evaluación con IA...">
             {% csrf_token %}
 
             {% if form.non_field_errors %}
