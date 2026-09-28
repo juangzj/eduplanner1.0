@@ -1,14 +1,14 @@
 {% extends 'base/base_left_sidebar.html' %}
 {% load static %}
 
-{% block title %}Subir Excel de planeación{% endblock %}
+{% block title %}Subir Excel de prompt{% endblock %}
 
 {% block sidebar_content %}
 <div class="container-fluid">
     <div class="row mb-3">
         <div class="col-12">
-            <a href="{% url 'levels:class-planning-create' %}{% if template_id %}?template={{ template_id }}{% endif %}" class="btn btn-sm btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Volver a la planeación
+            <a href="{% url 'prompt_lab:prompt-create' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver al Prompt Lab
             </a>
         </div>
     </div>
@@ -19,18 +19,27 @@
                 <div class="card-header bg-white border-bottom">
                     <h5 class="mb-0">
                         <i class="bi bi-file-earmark-excel"></i>
-                        Cargar planeación desde Excel
+                        Cargar prompt desde Excel
                     </h5>
                 </div>
 
                 <div class="card-body">
                     <div class="alert alert-info py-2" role="alert">
-                        La información del Excel se cargará en el formulario de planeación para que la revise y edite antes de generarla con IA.
+                        La informacion del Excel se cargara en el formulario de Prompt Lab para que la revises y edites antes de generar el prompt.
+                        <div class="small mt-2">
+                            Celdas esperadas en la fila 2:
+                            <strong>A2</strong> Proposito,
+                            <strong>B2</strong> Rol,
+                            <strong>C2</strong> Contexto,
+                            <strong>D2</strong> Tarea,
+                            <strong>E2</strong> Proceso,
+                            <strong>F2</strong> Formato,
+                            <strong>G2</strong> Restricciones.
+                        </div>
                     </div>
 
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <input type="hidden" name="template" value="{{ template_id }}">
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold" for="{{ form.excel_file.id_for_label }}">

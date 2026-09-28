@@ -3,9 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import never_cache
 
+from apps.levels.forms import ExcelUploadForm
+from apps.levels.services import ExcelUploadError
+
 from ..services import (
     create_prompt_service,
     create_refinement_service,
+    extract_prompt_data_from_excel_service,
     generate_quality_prompt_service,
     get_latest_thread_prompt,
     get_prompt_by_id,
@@ -15,6 +19,9 @@ from ..services import (
     get_thread_prompts,
     soft_delete_prompt_service,
 )
+
+# Clave de sesión con los datos del Excel para precargar el formulario de Prompt Lab
+PROMPT_EXCEL_SESSION_KEY = "prompt_excel_data"
 
 REQUIRED_FIELDS = ["purpose", "role", "context", "task", "format"]
 
@@ -93,7 +100,35 @@ def prompt_create_view(request):
         messages.success(request, "Prompt generado y guardado correctamente.")
         return redirect("prompt_lab:prompt-detail", prompt_id=prompt.id)
 
-    return render(request, "prompt_lab/prompt_create_page.html")
+    # Datos precargados desde el Excel (se usan una sola vez)
+    form_data = request.session.pop(PROMPT_EXCEL_SESSION_KEY, None)
+    return render(request, "prompt_lab/prompt_create_page.html", {"form_data": form_data})
+
+
+@never_cache
+@login_required(login_url="/users/login/")
+def prompt_excel_upload_view(request):
+    """
+    Vista para precargar el formulario de Prompt Lab desde un archivo Excel.
+    Los datos extraídos se guardan en sesión y el docente los revisa antes de generar el prompt.
+    """
+    form = ExcelUploadForm(request.POST or None, request.FILES or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            try:
+                data = extract_prompt_data_from_excel_service(form.cleaned_data["excel_file"])
+                request.session[PROMPT_EXCEL_SESSION_KEY] = data
+
+                messages.success(request, "Datos cargados desde el Excel. Revisalos y genera el prompt.")
+                return redirect("prompt_lab:prompt-create")
+
+            except ExcelUploadError as e:
+                form.add_error("excel_file", str(e))
+
+        messages.error(request, "No se pudo procesar el archivo. Revise los errores e intente de nuevo.")
+
+    return render(request, "prompt_lab/prompt_excel_upload_page.html", {"form": form})
 
 
 @never_cache
