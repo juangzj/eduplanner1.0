@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import unicodedata
 from zipfile import BadZipFile
 from typing import Any
@@ -38,6 +39,18 @@ EXCEL_CELL_MAPPING = {
 }
 
 
+# Celda del Excel -> campo del formulario ClassPlanningCreateForm
+CLASS_PLANNING_EXCEL_CELL_MAPPING = {
+    "A2": "topic",
+    "B2": "duration_minutes",
+    "C2": "subtopic",
+    "D2": "class_objective",
+    "E2": "prompt",
+    "F2": "methodology",
+    "G2": "resources",
+}
+
+
 class ExcelUploadService:
 
     @staticmethod
@@ -62,7 +75,25 @@ class ExcelUploadService:
         return performance_level
 
     @staticmethod
-    def _extract_data(excel_file) -> dict[str, Any]:
+    def extract_class_planning_data_from_excel_service(*, excel_file) -> dict[str, Any]:
+        """
+        Lee el archivo Excel y extrae las celdas definidas en
+        CLASS_PLANNING_EXCEL_CELL_MAPPING para precargar el formulario
+        de planeación de clase. No crea ningún registro.
+        """
+        data = ExcelUploadService._extract_data(excel_file, CLASS_PLANNING_EXCEL_CELL_MAPPING)
+
+        if not any(data.values()):
+            raise ExcelUploadError("El archivo no contiene información en las celdas A2 a G2.")
+
+        # La duración puede venir como "60", "60.0" o "60 min"
+        match = re.match(r"\d+", data["duration_minutes"])
+        data["duration_minutes"] = match.group() if match else ""
+
+        return data
+
+    @staticmethod
+    def _extract_data(excel_file, cell_mapping=EXCEL_CELL_MAPPING) -> dict[str, Any]:
         try:
             workbook = load_workbook(excel_file, read_only=True, data_only=True)
         except (InvalidFileException, BadZipFile, KeyError, OSError, ValueError) as exc:
@@ -71,7 +102,7 @@ class ExcelUploadService:
         try:
             sheet = workbook.active
             data = {}
-            for cell, field in EXCEL_CELL_MAPPING.items():
+            for cell, field in cell_mapping.items():
                 value = sheet[cell].value
                 data[field] = "" if value is None else str(value).strip()
             return data

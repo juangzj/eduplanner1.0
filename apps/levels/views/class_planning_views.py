@@ -14,6 +14,7 @@ from django.views.decorators.cache import never_cache
 from ..forms import ClassPlanningCreateForm
 from ..models import ClassPlanning, GeneratedClassPlan, PerformanceLevelTemplate
 from ..services.class_planning_services import ClassPlanningCreateService, ClassPlanningDeleteService
+from .excel_upload_views import CLASS_PLANNING_EXCEL_SESSION_KEY
 
 
 @never_cache
@@ -62,6 +63,10 @@ class ClassPlanningCreateView(LoginRequiredMixin, CreateView):
 		template_id = self.request.GET.get("template")
 		if template_id:
 			initial["performance_template"] = template_id
+
+		# Datos precargados desde el Excel (se usan una sola vez)
+		if self.request.method == "GET":
+			initial.update(self.request.session.pop(CLASS_PLANNING_EXCEL_SESSION_KEY, None) or {})
 		return initial
 
 	def get_context_data(self, **kwargs):

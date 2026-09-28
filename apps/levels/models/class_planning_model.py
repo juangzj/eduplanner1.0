@@ -79,8 +79,7 @@ class ClassPlanning(models.Model):
     # CONFIGURACIÓN DIDÁCTICA
     # -------------------------
 
-    methodology = models.CharField(
-        max_length=255,
+    methodology = models.TextField(
         blank=True,
         null=True,
         verbose_name="Metodología"

@@ -1,5 +1,5 @@
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 
 from ..models import ClassPlanning, PerformanceLevelTemplate
 
@@ -42,7 +42,7 @@ class ClassPlanningCreateForm(forms.ModelForm):
 			"class_objective": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Objetivo de la clase"}),
 			"duration_minutes": forms.NumberInput(attrs={"class": "form-control", "min": 1, "placeholder": "Duración en minutos"}),
 			"prompt": forms.Textarea(attrs={"class": "form-control", "rows": 4, "placeholder": "Prompt del docente para generar la planeación"}),
-			"methodology": forms.TextInput(attrs={"class": "form-control", "placeholder": "Metodología"}),
+			"methodology": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Metodología"}),
 			"resources": forms.Textarea(attrs={"class": "form-control", "rows": 3, "placeholder": "Recursos y materiales"}),
 		}
 
@@ -75,7 +75,7 @@ class ClassPlanningCreateForm(forms.ModelForm):
 			try:
 				self.selected_template = queryset.get(id=selected_template_id)
 				self.fields["performance_template"].widget = forms.HiddenInput()
-			except (PerformanceLevelTemplate.DoesNotExist, ObjectDoesNotExist):
+			except (PerformanceLevelTemplate.DoesNotExist, ObjectDoesNotExist, ValidationError, ValueError):
 				self.selected_template = None
 
 	def clean_performance_template(self):
