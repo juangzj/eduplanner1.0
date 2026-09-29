@@ -126,7 +126,7 @@ def generate_quality_prompt_service(user, source_prompt):
 
     improved_data = generate_quality_prompt(latest_data, feedback_history=feedback_items)
     full_prompt = improved_data.get("full_prompt") or build_prompt(improved_data)
-    score, feedback = evaluate_prompt(full_prompt, data=improved_data)
+    score, feedback = evaluate_prompt(full_prompt, data=improved_data, ai_generated=True)
     feedback_text = "\n".join(f"- {item}" for item in feedback) if feedback else ""
 
     return Prompt.objects.create(

@@ -51,6 +51,15 @@ CLASS_PLANNING_EXCEL_CELL_MAPPING = {
 }
 
 
+# Nombres alternativos del área que se aceptan en el Excel (normalizados: minúsculas y sin tildes)
+AREA_ALIASES = {
+    "lenguaje": "Español / Castellano",
+    "lengua castellana": "Español / Castellano",
+    "etica": "Ética y Valores",
+    "e. fisica": "Educación Física",
+}
+
+
 class ExcelUploadService:
 
     @staticmethod
@@ -115,7 +124,8 @@ class ExcelUploadService:
         Ajusta los valores del Excel a las opciones del modelo
         (ignora mayúsculas y tildes; el grado acepta número o nombre).
         """
-        data["area"] = ExcelUploadService._match_choice(data["area"], AREAS_OPCIONES)
+        area = AREA_ALIASES.get(ExcelUploadService._normalize_text(data["area"]), data["area"])
+        data["area"] = ExcelUploadService._match_choice(area, AREAS_OPCIONES)
         data["academic_period"] = ExcelUploadService._match_choice(
             data["academic_period"], PERIODO_ACADEMICO_OPCIONES
         )
@@ -131,10 +141,9 @@ class ExcelUploadService:
     def _match_choice(value: str, choices: list[tuple[str, str]]) -> str:
         normalized_value = ExcelUploadService._normalize_text(value)
         for key, label in choices:
-            if normalized_value in (
-                ExcelUploadService._normalize_text(key),
-                ExcelUploadService._normalize_text(label),
-            ):
+            # "Español / Castellano" también acepta "Español" o "Castellano"
+            options = {key, label, *key.split("/"), *label.split("/")}
+            if normalized_value in {ExcelUploadService._normalize_text(option) for option in options}:
                 return key
         return value
 

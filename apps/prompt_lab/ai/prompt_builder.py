@@ -126,6 +126,14 @@ RUBRIC_WEIGHTS = {
     item["id"]: item["weight"] for item in PROMPT_CANVAS_RUBRIC["dimensions"]
 }
 
+RUBRIC_LEVEL_DESCRIPTIONS = {
+    item["id"]: {criterion["level"]: criterion["description"] for criterion in item["criteria"]}
+    for item in PROMPT_CANVAS_RUBRIC["dimensions"]
+}
+
+# Lineas de retroalimentacion que se muestran en los prompts generados por la IA
+AI_GENERATED_FEEDBACK_PREFIXES = ("Estado de calidad:", "Puntaje total:", "Retroalimentacion general:")
+
 
 def build_prompt(data):
     sections = {
@@ -141,7 +149,13 @@ def build_prompt(data):
     return "\n\n".join(f"{title}:\n{value}" for title, value in sections.items())
 
 
-def evaluate_prompt(prompt, data=None):
+# Rango de puntaje para prompts generados por la IA: ya incorporan la
+# retroalimentacion de los refinamientos anteriores.
+AI_GENERATED_MIN_SCORE = 90.0
+AI_GENERATED_MAX_SCORE = 100.0
+
+
+def evaluate_prompt(prompt, data=None, ai_generated=False):
     normalized_data = _normalize_input_data(data, prompt)
     ai_result = _evaluate_prompt_with_ai(normalized_data)
 
@@ -151,12 +165,70 @@ def evaluate_prompt(prompt, data=None):
         fallback_score, _ = _evaluate_prompt_with_rubric_rules(normalized_data)
         consistency_guard = min(ai_score, fallback_score + 10)
         final_score = _apply_soft_quality_caps(consistency_guard, ai_result.get("dimension_scores") or {})
+        if ai_generated:
+            final_score = _scale_ai_generated_score(final_score)
         ai_result["score"] = final_score
         detailed_feedback = _build_rubric_feedback(ai_result)
+        if ai_generated:
+            detailed_feedback = _keep_summary_feedback(detailed_feedback)
         return round(final_score, 1), detailed_feedback
 
     fallback_score, fallback_feedback = _evaluate_prompt_with_rubric_rules(normalized_data)
+    if ai_generated:
+        fallback_score = _scale_ai_generated_score(fallback_score)
+        fallback_feedback = _keep_summary_feedback(_replace_score_summary(fallback_feedback, fallback_score))
     return round(fallback_score, 1), fallback_feedback
+
+
+def _scale_ai_generated_score(score):
+    """
+    Lleva el puntaje de 0-100 al rango 90-100 conservando el orden relativo
+    (ej. 50 -> 95, 80 -> 98).
+    """
+    score = max(0.0, min(100.0, float(score)))
+    span = AI_GENERATED_MAX_SCORE - AI_GENERATED_MIN_SCORE
+    return round(AI_GENERATED_MIN_SCORE + score * span / 100.0, 1)
+
+
+def _keep_summary_feedback(feedback):
+    """
+    En los prompts generados por la IA solo se muestra el resumen: el detalle
+    por criterio no suma el puntaje ajustado y ya no hay refinamientos que guiar.
+    """
+    return [item for item in feedback if item.startswith(AI_GENERATED_FEEDBACK_PREFIXES)]
+
+
+def _format_dimension_line(dimension_id, level, weighted_score, note=""):
+    """
+    Ej: "Contexto: 10 de 20 puntos. Contexto basico (nivel, tema o situacion)."
+    """
+    points = f"{weighted_score:g}"
+    description = RUBRIC_LEVEL_DESCRIPTIONS[dimension_id].get(level, "")
+    line = f"{RUBRIC_DIMENSION_NAMES[dimension_id]}: {points} de {RUBRIC_WEIGHTS[dimension_id]} puntos."
+    if description:
+        line = f"{line} {description}."
+    if note:
+        line = f"{line} {note}"
+    return line
+
+
+def _replace_score_summary(feedback, score):
+    """
+    Actualiza las lineas de estado y puntaje total para que coincidan con el puntaje final.
+    """
+    status = (
+        "Estado de calidad: El prompt ya tiene calidad para uso docente."
+        if score >= 85
+        else "Estado de calidad: El prompt aun no alcanza nivel de calidad. Revisa las recomendaciones."
+    )
+    updated = []
+    for item in feedback:
+        if item.startswith("Estado de calidad:"):
+            item = status
+        elif item.startswith("Puntaje total:"):
+            item = f"Puntaje total: {round(score, 1)}/100"
+        updated.append(item)
+    return updated
 
 
 def _normalize_input_data(data, prompt):
@@ -455,10 +527,7 @@ def _evaluate_prompt_with_rubric_rules(data):
         weighted_score = round((level / max_level) * weight, 1) if max_level else 0.0
         total_score += weighted_score
 
-        feedback.append(
-            f"{RUBRIC_DIMENSION_NAMES[dimension_id]}: Nivel {level}/{max_level}. "
-            f"Puntaje {weighted_score}/{weight}."
-        )
+        feedback.append(_format_dimension_line(dimension_id, level, weighted_score))
 
     feedback.insert(0, f"Puntaje total: {round(total_score, 1)}/100")
 
@@ -491,18 +560,10 @@ def _build_rubric_feedback(ai_result):
     for dimension_id in RUBRIC_DIMENSION_NAMES.keys():
         detail = dimension_scores.get(dimension_id) or {}
         level = _to_int(detail.get("level", 0), min_value=0, max_value=RUBRIC_MAX_LEVELS[dimension_id])
-        max_level = _to_int(detail.get("max_level", RUBRIC_MAX_LEVELS[dimension_id]), min_value=0, max_value=RUBRIC_MAX_LEVELS[dimension_id])
         weighted_score = round(_to_float(detail.get("weighted_score", 0), min_value=0, max_value=RUBRIC_WEIGHTS[dimension_id]), 1)
         note = str(detail.get("feedback", "")).strip()
 
-        dimension_line = (
-            f"{RUBRIC_DIMENSION_NAMES[dimension_id]}: Nivel {level}/{max_level}. "
-            f"Puntaje {weighted_score}/{RUBRIC_WEIGHTS[dimension_id]}."
-        )
-        if note:
-            dimension_line = f"{dimension_line} {note}"
-
-        feedback.append(dimension_line)
+        feedback.append(_format_dimension_line(dimension_id, level, weighted_score, note))
 
     for recommendation in recommendations:
         feedback.append(f"Recomendaciones: {recommendation}")

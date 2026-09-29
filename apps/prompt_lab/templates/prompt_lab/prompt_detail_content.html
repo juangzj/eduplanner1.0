@@ -27,6 +27,12 @@
             </div>
 
             <h6 class="fw-semibold">Retroalimentacion automatica</h6>
+            {% if not card.prompt.is_ai_generated %}
+                <p class="small text-muted mb-2">
+                    El puntaje total (sobre 100) es la suma de los puntos obtenidos en cada criterio.
+                    Cada criterio indica cuantos puntos obtuvo de su maximo y que le falta para mejorar.
+                </p>
+            {% endif %}
             {% if card.feedback_blocks %}
                 <div class="feedback-stack">
                     {% for block in card.feedback_blocks %}
