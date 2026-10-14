@@ -5,13 +5,13 @@ class TeacherRegisterForm(forms.ModelForm):
     # Definimos campos extra que no están en el modelo
     password = forms.CharField(
         label="Contraseña",
-        widget=forms.PasswordInput(attrs={'placeholder': '********'})
+        widget=forms.PasswordInput(attrs={'placeholder': ''})
     )
     confirm_password = forms.CharField(
         label="Confirmar Contraseña",
-        widget=forms.PasswordInput(attrs={'placeholder': '********'})
+        widget=forms.PasswordInput(attrs={'placeholder': ''})
     )
-
+ 
     class Meta:
         model = TeacherUser
         fields = [
@@ -25,7 +25,7 @@ class TeacherRegisterForm(forms.ModelForm):
             'last_name': 'Primer Apellido',
             'second_last_name': 'Segundo Apellido',
             'birth_date': 'Fecha de Nacimiento',
-            'nickname': 'Apodo o Alias',
+            'nickname': 'Apodo (Opcional)',
         }
         widgets = {
             # HTML5 date input para que aparezca el calendario nativo
