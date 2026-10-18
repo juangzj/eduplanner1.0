@@ -12,12 +12,16 @@ from ..services import ExcelUploadError, ExcelUploadService
 # Clave de sesión con los datos del Excel para precargar la planeación de clase
 CLASS_PLANNING_EXCEL_SESSION_KEY = "class_planning_excel_data"
 
+# Clave de sesión con los datos del Excel para precargar la plantilla de desempeño
+PERFORMANCE_LEVEL_EXCEL_SESSION_KEY = "performance_level_excel_data"
+
 
 @never_cache
 @login_required(login_url="/users/login/")
 def excel_upload_view(request):
     """
-    Vista para la carga de plantillas desde un archivo Excel.
+    Vista para precargar el formulario de plantilla desde un archivo Excel.
+    Los datos extraídos con IA se guardan en sesión y el docente los revisa antes de guardar.
     """
 
     form = ExcelUploadForm(request.POST or None, request.FILES or None)
@@ -26,12 +30,13 @@ def excel_upload_view(request):
 
         if form.is_valid():
             try:
-                ExcelUploadService.create_performance_level_from_excel_service(
+                data = ExcelUploadService.extract_performance_level_data_from_excel_service(
                     excel_file=form.cleaned_data["excel_file"],
-                    user=request.user,
                 )
 
-                messages.success(request, "Plantilla creada correctamente desde el Excel.")
+                request.session[PERFORMANCE_LEVEL_EXCEL_SESSION_KEY] = data
+
+                messages.success(request, "Datos cargados desde el Excel. Revíselos y guarde la plantilla.")
                 return redirect("levels:levels")
 
             except ExcelUploadError as e:

@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from ..forms import PerformanceLevelFilterForm, PerformanceLevelTemplateCreateForm
 from ..models import PerformanceLevelTemplate
 from ..services import create_performance_level_service, soft_delete_performance_level_service
+from .excel_upload_views import PERFORMANCE_LEVEL_EXCEL_SESSION_KEY
 
 
 @login_required(login_url="/users/login/")
@@ -57,8 +58,12 @@ def levels_view(request):
             return redirect("levels:levels")
 
         messages.error(request, "Revise los datos del formulario e intente de nuevo.")
+        open_create_modal = True
     else:
-        form = PerformanceLevelTemplateCreateForm()
+        # Datos precargados desde el Excel (se usan una sola vez)
+        excel_data = request.session.pop(PERFORMANCE_LEVEL_EXCEL_SESSION_KEY, None)
+        form = PerformanceLevelTemplateCreateForm(initial=excel_data or None)
+        open_create_modal = bool(excel_data)
 
     performance_levels = (
         PerformanceLevelTemplate.objects.filter(
@@ -120,6 +125,7 @@ def levels_view(request):
             "form": form,
             "filter_form": filter_form,
             "performance_levels": performance_levels,
+            "open_create_modal": open_create_modal,
         },
     )
 

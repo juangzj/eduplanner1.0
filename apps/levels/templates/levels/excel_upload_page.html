@@ -24,9 +24,9 @@
                 </div>
 
                 <div class="card-body">
-            
-
-                
+                    <div class="alert alert-info py-2" role="alert">
+                        La IA leerá el Excel e identificará qué información corresponde a cada campo. Los datos se cargarán en el formulario de la plantilla para que los revise y edite antes de guardarla.
+                    </div>
 
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -44,7 +44,7 @@
 
                         <button type="submit" class="btn btn-success">
                             <i class="bi bi-upload"></i>
-                            Subir y crear plantilla
+                            Subir y cargar datos
                         </button>
                     </form>
                 </div>

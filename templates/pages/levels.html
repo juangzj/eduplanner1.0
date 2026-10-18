@@ -387,6 +387,11 @@
                 setLabel(false);
             });
         });
+
+        {% if open_create_modal %}
+        // Formulario precargado desde el Excel o con errores: se muestra para revisarlo
+        bootstrap.Modal.getOrCreateInstance(document.getElementById("modalCrearPlantilla")).show();
+        {% endif %}
     });
 </script>
 {% endblock %}

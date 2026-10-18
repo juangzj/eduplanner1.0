@@ -7,7 +7,7 @@ from django.conf import settings
 from openai import OpenAI
 
 from .base import AIProvider
-from .prompts import LevelPrompt, AssessmentPrompt, ClassPlanningPrompt
+from .prompts import LevelPrompt, AssessmentPrompt, ClassPlanningPrompt, ExcelExtractionPrompt
 
 
 class OpenAIProvider(AIProvider):
@@ -106,6 +106,38 @@ class OpenAIProvider(AIProvider):
         parsed = json.loads(raw_content)
         normalized = self._normalize_class_planning_response(parsed)
         self._validate_class_planning_response(normalized)
+        return normalized
+
+    def extract_form_fields_from_excel(self, excel_text: str, fields_schema: list[dict[str, Any]]) -> dict[str, str]:
+        prompt = ExcelExtractionPrompt.build_prompt(excel_text, fields_schema)
+
+        response = self.client.chat.completions.create(
+            model=self.model,
+            temperature=0,
+            response_format={"type": "json_object"},
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You extract information from teacher spreadsheets to fill in web forms. "
+                        "Copy the spreadsheet content without inventing data. "
+                        "Return ONLY valid JSON whose keys are the requested form field names."
+                    ),
+                },
+                {"role": "user", "content": prompt},
+            ],
+        )
+
+        raw_content = response.choices[0].message.content or "{}"
+        parsed = json.loads(raw_content)
+        if not isinstance(parsed, dict):
+            raise ValueError("AI response is not a JSON object.")
+
+        # Solo se aceptan los campos solicitados; los faltantes quedan vacíos
+        normalized: dict[str, str] = {}
+        for field in fields_schema:
+            value = parsed.get(field["name"])
+            normalized[field["name"]] = "" if value is None else str(value).strip()
         return normalized
 
     def _normalize_response(self, payload: dict[str, Any]) -> dict[str, str]:

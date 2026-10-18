@@ -12,11 +12,15 @@ EXCEL_ALLOWED_EXTENSIONS = (".xlsx", ".xlsm")
 class ExcelUploadForm(forms.Form):
     """
     Formulario para subir un archivo Excel con la información de la plantilla.
+    La IA se encarga de identificar qué dato del Excel corresponde a cada campo.
     """
 
     excel_file = forms.FileField(
         label="Archivo Excel",
-        help_text=f"Solo archivos .xlsx o .xlsm (máximo {EXCEL_MAX_SIZE_MB} MB).",
+        help_text=(
+            f"Solo archivos .xlsx o .xlsm (máximo {EXCEL_MAX_SIZE_MB} MB). "
+            "El Excel puede tener cualquier formato: la IA identifica cada campo."
+        ),
         error_messages={
             "required": "Debe seleccionar un archivo Excel.",
         },

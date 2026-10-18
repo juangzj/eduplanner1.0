@@ -23,3 +23,9 @@ class AIProvider(ABC):
         Generate a complete class planning from pedagogical context and teacher input.
         """
 
+
+    @abstractmethod
+    def extract_form_fields_from_excel(self, excel_text: str, fields_schema: list[dict[str, Any]]) -> dict[str, str]:
+        """
+        Identify in the Excel content the value of each form field described in fields_schema.
+        """

@@ -213,3 +213,60 @@ Do not add explanations.
 Do not add extra keys.
 Do not add text outside the JSON.
                 """
+
+
+class ExcelExtractionPrompt:
+    """Prompts for mapping the content of an Excel file to form fields."""
+
+    @staticmethod
+    def build_prompt(excel_text: str, fields_schema: list[dict[str, Any]]) -> str:
+        """
+        Build the prompt for extracting form field values from the Excel content.
+        """
+        fields_description = "\n".join(
+            ExcelExtractionPrompt._describe_field(field) for field in fields_schema
+        )
+        keys = ", ".join(field["name"] for field in fields_schema)
+
+        return f"""
+You are an assistant that reads spreadsheets written by school teachers and fills in a web form with their content.
+
+The spreadsheet has no fixed layout: the information can be in any sheet, row or column, under headers with
+different names, synonyms, abbreviations or no header at all. Identify which information corresponds to each
+form field using the headers, the position and the meaning of the content.
+
+Rules you must follow:
+
+1. Copy the information exactly as it appears in the spreadsheet. Do not summarize, translate, rewrite or invent content.
+2. If a field is made of several cells or rows (for example a list of resources), join them in the same value separated by line breaks.
+3. If the spreadsheet does not contain information for a field, return an empty string for that field.
+4. For fields with allowed options, return ONLY the exact key of the option that best matches the spreadsheet
+   value, or an empty string if none matches.
+5. For numeric fields, return only the number.
+6. Do not use the headers themselves as values.
+
+Form fields:
+
+{fields_description}
+
+Spreadsheet content (each line is a row, cells are written as COLUMN=value):
+
+{excel_text}
+
+Return ONLY a valid JSON object with exactly these keys: {keys}
+All values must be strings.
+Do not add explanations.
+Do not add text outside the JSON.
+    """
+
+    @staticmethod
+    def _describe_field(field: dict[str, Any]) -> str:
+        description = f"- {field['name']}: {field['label']}"
+        if field.get("help_text"):
+            description += f". {field['help_text']}"
+        if field.get("type"):
+            description += f" (type: {field['type']})"
+        if field.get("choices"):
+            options = "; ".join(f"{key} = {label}" for key, label in field["choices"])
+            description += f". Allowed options (key = label): {options}"
+        return description
