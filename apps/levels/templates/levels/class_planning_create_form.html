@@ -26,6 +26,8 @@
         <form method="post" data-ai-loading="Generando la planeación de clase con IA...">
             {% csrf_token %}
 
+            {% include "components/aviso_datos.html" %}
+
             {% if form.non_field_errors %}
                 <div class="alert alert-danger py-2">
                     {{ form.non_field_errors }}

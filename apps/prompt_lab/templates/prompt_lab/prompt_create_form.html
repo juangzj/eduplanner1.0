@@ -75,6 +75,8 @@
         <form method="post" data-ai-loading="Evaluando tu prompt con IA...">
             {% csrf_token %}
 
+            {% include "components/aviso_datos.html" %}
+
             {% if missing_fields %}
                 <div class="alert alert-danger py-2">
                     Campos obligatorios faltantes: {{ missing_fields|join:", " }}

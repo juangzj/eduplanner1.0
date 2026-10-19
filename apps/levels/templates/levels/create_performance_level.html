@@ -12,6 +12,8 @@
         <form method="POST">
             {% csrf_token %}
 
+            {% include "components/aviso_datos.html" %}
+
             {% if form.non_field_errors %}
                 <div class="alert alert-danger">
                     {{ form.non_field_errors }}

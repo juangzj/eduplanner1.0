@@ -7,6 +7,8 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="refine">
 
+            {% include "components/aviso_datos.html" %}
+
             {% if missing_fields %}
                 <div class="alert alert-danger py-2">
                     Campos obligatorios faltantes: {{ missing_fields|join:", " }}

@@ -1,0 +1,10 @@
+<div class="alert alert-warning py-2 d-flex align-items-start" role="alert">
+    <i class="bi bi-shield-lock me-2 mt-1"></i>
+    <span>
+        {% if tipo == "excel" %}
+            <strong>Importante:</strong> antes de subir el archivo, verifique que no contenga nombres ni datos personales de estudiantes. El contenido del Excel se procesa con un servicio externo de inteligencia artificial.
+        {% else %}
+            <strong>Importante:</strong> no incluya nombres ni datos personales de sus estudiantes. La información que escribe aquí se procesa con un servicio externo de inteligencia artificial.
+        {% endif %}
+    </span>
+</div>
