@@ -28,7 +28,7 @@
                         La IA leerá el Excel e identificará qué información corresponde a cada campo. Los datos se cargarán en el formulario del prompt para que los revise y edite antes de generarlo.
                     </div>
 
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" data-ai-loading="La IA está leyendo el Excel y llenando el formulario...">
                         {% csrf_token %}
 
                         <div class="mb-3">

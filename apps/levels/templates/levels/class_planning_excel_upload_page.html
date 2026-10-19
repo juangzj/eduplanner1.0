@@ -28,7 +28,7 @@
                         La IA leerá el Excel e identificará qué información corresponde a cada campo. Los datos se cargarán en el formulario de planeación para que la revise y edite antes de generarla con IA.
                     </div>
 
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" data-ai-loading="La IA está leyendo el Excel y llenando el formulario...">
                         {% csrf_token %}
                         <input type="hidden" name="template" value="{{ template_id }}">
 
