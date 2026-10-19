@@ -16,7 +16,7 @@ class TeacherRegisterForm(forms.ModelForm):
         model = TeacherUser
         fields = [
             'gmail', 'first_name', 'middle_name', 'last_name', 
-            'second_last_name', 'birth_date', 'nickname'
+            'second_last_name', 'nickname'
         ]
         labels = {
             'gmail': 'Correo Electrónico (Gmail)',
@@ -24,12 +24,7 @@ class TeacherRegisterForm(forms.ModelForm):
             'middle_name': 'Segundo Nombre',
             'last_name': 'Primer Apellido',
             'second_last_name': 'Segundo Apellido',
-            'birth_date': 'Fecha de Nacimiento',
             'nickname': 'Apodo (Opcional)',
-        }
-        widgets = {
-            # HTML5 date input para que aparezca el calendario nativo
-            'birth_date': forms.DateInput(attrs={'type': 'date'}),
         }
 
     def __init__(self, *args, **kwargs):

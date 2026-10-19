@@ -40,22 +40,16 @@
                             {% if form.middle_name.errors %}<div class="text-danger small">{{ form.middle_name.errors.0 }}</div>{% endif %}
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-4">
                             <label class="form-label fw-semibold small text-secondary">{{ form.last_name.label }}</label>
                             {{ form.last_name }}
                             {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors.0 }}</div>{% endif %}
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-4">
                             <label class="form-label fw-semibold small text-secondary">{{ form.second_last_name.label }}</label>
                             {{ form.second_last_name }}
                             {% if form.second_last_name.errors %}<div class="text-danger small">{{ form.second_last_name.errors.0 }}</div>{% endif %}
-                        </div>
-
-                        <div class="col-md-6 mb-4">
-                            <label class="form-label fw-semibold small text-secondary">{{ form.birth_date.label }}</label>
-                            {{ form.birth_date }}
-                            {% if form.birth_date.errors %}<div class="text-danger small">{{ form.birth_date.errors.0 }}</div>{% endif %}
                         </div>
                     </div>
 

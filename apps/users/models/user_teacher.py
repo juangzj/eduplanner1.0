@@ -56,7 +56,7 @@ class TeacherUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=100, verbose_name="Primer Apellido")
     second_last_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Segundo Apellido")
     nickname = models.CharField(max_length=50, blank=True, null=True, verbose_name="Apodo")
-    birth_date = models.DateField(verbose_name="Fecha de Nacimiento")
+    birth_date = models.DateField(null=True, blank=True, verbose_name="Fecha de Nacimiento")
 
     # Correo electrónico (único)
     gmail = models.EmailField(unique=True, verbose_name="Correo Electrónico (Gmail)")
@@ -72,7 +72,7 @@ class TeacherUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "gmail"
 
     # Campos obligatorios al crear por consola (createsuperuser)
-    REQUIRED_FIELDS = ["first_name", "last_name", "birth_date"]
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
         verbose_name = "Usuario Docente"

@@ -56,18 +56,12 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small text-secondary">{{ form.birth_date.label }}</label>
-                                {{ form.birth_date }}
-                                {% if form.birth_date.errors %}<div class="text-danger small">{{ form.birth_date.errors.0 }}</div>{% endif %}
-                            </div>
-
-                            <div class="col-md-6">
                                 <label class="form-label fw-semibold small text-secondary">{{ form.nickname.label }}</label>
                                 {{ form.nickname }}
                                 {% if form.nickname.errors %}<div class="text-danger small">{{ form.nickname.errors.0 }}</div>{% endif %}
                             </div>
 
-                            <div class="col-12">
+                            <div class="col-md-6">
                                 <label class="form-label fw-semibold small text-secondary">{{ form.gmail.label }}</label>
                                 {{ form.gmail }}
                                 {% if form.gmail.errors %}<div class="text-danger small">{{ form.gmail.errors.0 }}</div>{% endif %}

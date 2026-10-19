@@ -12,7 +12,6 @@ class TeacherProfileForm(forms.ModelForm):
             "middle_name",
             "last_name",
             "second_last_name",
-            "birth_date",
             "nickname",
         ]
         labels = {
@@ -21,11 +20,7 @@ class TeacherProfileForm(forms.ModelForm):
             "middle_name": "Segundo Nombre",
             "last_name": "Primer Apellido",
             "second_last_name": "Segundo Apellido",
-            "birth_date": "Fecha de Nacimiento",
             "nickname": "Apodo o Alias",
-        }
-        widgets = {
-            "birth_date": forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +33,3 @@ class TeacherProfileForm(forms.ModelForm):
                 if self.errors.get(name):
                     current_class = field.widget.attrs.get("class", "")
                     field.widget.attrs.update({"class": f"{current_class} is-invalid"})
-
-        # Keep the existing saved birth date visible in the profile settings form.
-        if self.instance and self.instance.birth_date:
-            self.initial["birth_date"] = self.instance.birth_date.strftime("%Y-%m-%d")
