@@ -81,7 +81,10 @@ class ExcelUploadService:
         No crea ningún registro.
         """
         form = PerformanceLevelTemplateCreateForm()
-        data = ExcelUploadService._extract_data_with_ai(excel_file, form, form.fields.keys())
+        data = ExcelUploadService.extract_fields_with_ai(
+            excel_file=excel_file,
+            fields_schema=ExcelUploadService._build_fields_schema(form, form.fields.keys()),
+        )
 
         if not any(data.values()):
             raise ExcelUploadError("No se encontró información de la plantilla en el archivo.")
@@ -95,8 +98,11 @@ class ExcelUploadService:
         CLASS_PLANNING_EXCEL_FIELDS para precargar el formulario de
         planeación de clase. No crea ningún registro.
         """
-        data = ExcelUploadService._extract_data_with_ai(
-            excel_file, ClassPlanningCreateForm(), CLASS_PLANNING_EXCEL_FIELDS
+        data = ExcelUploadService.extract_fields_with_ai(
+            excel_file=excel_file,
+            fields_schema=ExcelUploadService._build_fields_schema(
+                ClassPlanningCreateForm(), CLASS_PLANNING_EXCEL_FIELDS
+            ),
         )
 
         if not any(data.values()):
@@ -109,16 +115,14 @@ class ExcelUploadService:
         return data
 
     @staticmethod
-    def _extract_data_with_ai(excel_file, form, field_names) -> dict[str, str]:
+    def extract_fields_with_ai(*, excel_file, fields_schema: list[dict[str, Any]]) -> dict[str, str]:
         """
         Envía el contenido del Excel a la IA junto con la descripción de los
-        campos del formulario y devuelve {campo: valor}.
+        campos (name, label, help_text, type y choices opcionales) y devuelve {campo: valor}.
         """
         excel_text = ExcelUploadService._read_workbook_as_text(excel_file)
         if not excel_text:
             raise ExcelUploadError("El archivo Excel está vacío.")
-
-        fields_schema = ExcelUploadService._build_fields_schema(form, field_names)
 
         try:
             return get_ai_client().extract_form_fields_from_excel(excel_text, fields_schema)
@@ -178,26 +182,6 @@ class ExcelUploadService:
                 field_schema["choices"] = [(str(key), str(label)) for key, label in field.choices if key != ""]
             schema.append(field_schema)
         return schema
-
-    @staticmethod
-    def _extract_data(excel_file, cell_mapping) -> dict[str, Any]:
-        """
-        Lee las celdas fijas definidas en cell_mapping (usado por Prompt Lab).
-        """
-        try:
-            workbook = load_workbook(excel_file, read_only=True, data_only=True)
-        except (InvalidFileException, BadZipFile, KeyError, OSError, ValueError) as exc:
-            raise ExcelUploadError("No se pudo leer el archivo. Verifique que sea un Excel válido.") from exc
-
-        try:
-            sheet = workbook.active
-            data = {}
-            for cell, field in cell_mapping.items():
-                value = sheet[cell].value
-                data[field] = "" if value is None else str(value).strip()
-            return data
-        finally:
-            workbook.close()
 
     @staticmethod
     def _normalize_choices(data: dict[str, Any]) -> dict[str, Any]:
