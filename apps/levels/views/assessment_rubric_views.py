@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -12,6 +14,9 @@ from ..services.assessment_rubric_services import (
     AssessmentRubricCreateService,
     AssessmentRubricUpdateService,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(never_cache, name="dispatch")
@@ -39,8 +44,9 @@ class AssessmentRubricCreateView(LoginRequiredMixin, CreateView):
                 form=form,
                 user=self.request.user,
             )
-        except Exception as exc:
-            form.add_error(None, f"No fue posible generar la rúbrica con IA: {exc}")
+        except Exception:
+            logger.exception("Error al generar la rúbrica (usuario %s)", self.request.user.pk)
+            form.add_error(None, "No fue posible generar la rúbrica con IA. Intente de nuevo.")
             messages.error(self.request, "Ocurrió un error al generar la rúbrica con IA.")
             return self.form_invalid(form)
 
@@ -75,8 +81,9 @@ class AssessmentRubricUpdateView(LoginRequiredMixin, UpdateView):
                 assessment_rubric=self.get_object(),
                 user=self.request.user,
             )
-        except Exception as exc:
-            form.add_error(None, f"No fue posible actualizar la rúbrica: {exc}")
+        except Exception:
+            logger.exception("Error al actualizar la rúbrica %s", self.kwargs.get("pk"))
+            form.add_error(None, "No fue posible actualizar la rúbrica. Intente de nuevo.")
             messages.error(self.request, "Ocurrió un error al editar la rúbrica.")
             return self.form_invalid(form)
 

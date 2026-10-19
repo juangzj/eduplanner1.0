@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -12,6 +14,9 @@ from ..services.generated_levels_services import (
     GeneratedLevelsCreateService,
     GeneratedLevelsUpdateService,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(never_cache, name="dispatch")
@@ -40,9 +45,10 @@ class GeneratedLevelsCreateView(LoginRequiredMixin, CreateView):
                 form=form,
                 user=self.request.user,
             )
-        except Exception as exc:
-            form.add_error(None, f"No fue posible generar los niveles con IA: {exc}")
-            messages.error(self.request, "Ocurrio un error al generar niveles con IA.")
+        except Exception:
+            logger.exception("Error al generar los niveles (usuario %s)", self.request.user.pk)
+            form.add_error(None, "No fue posible generar los niveles con IA. Intente de nuevo.")
+            messages.error(self.request, "Ocurrió un error al generar niveles con IA.")
             return self.form_invalid(form)
 
         messages.success(self.request, "Los niveles fueron generados y guardados correctamente.")
@@ -75,8 +81,9 @@ class GeneratedLevelsUpdateView(LoginRequiredMixin, UpdateView):
                 generated_levels=self.get_object(),
                 user=self.request.user,
             )
-        except Exception as exc:
-            form.add_error(None, f"No fue posible actualizar los niveles: {exc}")
+        except Exception:
+            logger.exception("Error al actualizar los niveles %s", self.kwargs.get("pk"))
+            form.add_error(None, "No fue posible actualizar los niveles. Intente de nuevo.")
             messages.error(self.request, "Ocurrió un error al editar los niveles.")
             return self.form_invalid(form)
 

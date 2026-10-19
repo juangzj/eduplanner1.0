@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,6 +13,9 @@ from ..forms import PerformanceLevelFilterForm, PerformanceLevelTemplateCreateFo
 from ..models import PerformanceLevelTemplate
 from ..services import create_performance_level_service, soft_delete_performance_level_service
 from .excel_upload_views import PERFORMANCE_LEVEL_EXCEL_SESSION_KEY
+
+
+logger = logging.getLogger(__name__)
 
 
 @login_required(login_url="/users/login/")
@@ -32,8 +37,9 @@ def performance_level_create_view(request):
                 messages.success(request, "Nivel de desempeño creado exitosamente.")
                 return redirect('users:dashboard')
 
-            except Exception as e:
-                form.add_error(None, f"Error al procesar la solicitud: {str(e)}")
+            except Exception:
+                logger.exception("Error al crear el nivel de desempeño (usuario %s)", request.user.pk)
+                form.add_error(None, "No fue posible crear el nivel de desempeño. Intente de nuevo.")
 
         else:
             messages.error(request, "Error en los datos suministrados. Verifique el formulario.")

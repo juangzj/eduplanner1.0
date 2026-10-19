@@ -17,7 +17,7 @@ def register_teacher_view(request):
                 # El servicio procesa la lógica y guarda en la base de datos
                 register_teacher_service(form.cleaned_data)
                 
-                messages.success(request, "¡Registro exitoso! Ya puedes iniciar sesión.")
+                messages.success(request, "¡Registro exitoso! Ya puede iniciar sesión.")
                 return redirect('users:login')
                 
             except ValueError as e:
@@ -29,7 +29,7 @@ def register_teacher_view(request):
                 messages.error(request, "Ocurrió un error inesperado al procesar su registro. Por favor, intente más tarde.")
         else:
             # Si el formulario no pasa la validación (campos vacíos, formato inválido, etc.)
-            messages.error(request, "Por favor corrija los errores marcados en el formulario.")
+            messages.error(request, "Por favor, corrija los errores marcados en el formulario.")
             
     else:
         form = TeacherRegisterForm()
@@ -46,15 +46,15 @@ def profile_settings_view(request):
         if form.is_valid():
             try:
                 update_teacher_profile_service(user=request.user, form=form)
-                messages.success(request, 'Tu perfil fue actualizado correctamente.')
+                messages.success(request, 'Su perfil fue actualizado correctamente.')
                 return redirect('users:profile-settings')
 
             except ValueError as e:
                 messages.error(request, str(e))
             except Exception:
-                messages.error(request, 'Ocurrió un error inesperado al actualizar tu perfil.')
+                messages.error(request, 'Ocurrió un error inesperado al actualizar su perfil.')
         else:
-            messages.error(request, 'Por favor corrige los errores del formulario.')
+            messages.error(request, 'Por favor, corrija los errores del formulario.')
 
     else:
         form = TeacherProfileForm(instance=request.user)

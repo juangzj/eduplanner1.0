@@ -1,5 +1,10 @@
+import logging
+
 from django.db import IntegrityError, DatabaseError
 from ..models import TeacherUser
+
+logger = logging.getLogger(__name__)
+
 
 def register_teacher_service(data):
     """Lógica de negocio para registrar un docente con manejo de errores."""
@@ -28,7 +33,8 @@ def register_teacher_service(data):
 
     except TypeError as e:
         # Este error ocurre si envías un campo que NO existe en el modelo TeacherUser
-        raise ValueError(f"Error en los campos enviados: {str(e)}")
+        logger.exception("Campos no válidos al registrar un docente")
+        raise ValueError("No fue posible procesar los datos del registro. Intente de nuevo.") from e
 
     except DatabaseError as e:
         # Error de conexión o problema físico con la base de datos

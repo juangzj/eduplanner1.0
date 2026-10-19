@@ -76,7 +76,7 @@ def create_refinement_service(user, source_prompt, data):
     max_refinements, _ = get_refinement_limits()
 
     if latest.refinement_number >= max_refinements:
-        raise ValueError("Se alcanzo el numero maximo de refinamientos permitidos.")
+        raise ValueError("Se alcanzó el número máximo de refinamientos permitidos.")
 
     full_prompt = build_prompt(data)
     score, feedback = evaluate_prompt(full_prompt, data=data)
@@ -107,7 +107,7 @@ def generate_quality_prompt_service(user, source_prompt):
     _, generation_min_refinements = get_refinement_limits()
 
     if latest.refinement_number < generation_min_refinements:
-        raise ValueError("Aun no se alcanza el minimo de refinamientos para generar prompt final.")
+        raise ValueError("Aún no se alcanza el mínimo de refinamientos para generar el prompt final.")
 
     thread_feedback = [item.feedback for item in get_thread_prompts(source_prompt) if item.feedback]
     feedback_items = []
@@ -126,7 +126,7 @@ def generate_quality_prompt_service(user, source_prompt):
 
     improved_data = generate_quality_prompt(latest_data, feedback_history=feedback_items)
     full_prompt = improved_data.get("full_prompt") or build_prompt(improved_data)
-    score, feedback = evaluate_prompt(full_prompt, data=improved_data, ai_generated=True)
+    score, feedback = evaluate_prompt(full_prompt, data=improved_data)
     feedback_text = "\n".join(f"- {item}" for item in feedback) if feedback else ""
 
     return Prompt.objects.create(

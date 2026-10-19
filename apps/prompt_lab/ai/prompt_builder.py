@@ -113,8 +113,18 @@ PROMPT_CANVAS_RUBRIC = {
     ],
 }
 
+# Nombres y niveles que ve el docente en la retroalimentacion (con ortografia correcta).
+# PROMPT_CANVAS_RUBRIC se conserva tal cual porque es el texto que se envia a la IA.
 RUBRIC_DIMENSION_NAMES = {
-    item["id"]: item["name"] for item in PROMPT_CANVAS_RUBRIC["dimensions"]
+    "persona_rol": "Persona / Rol",
+    "task_intent": "Task / Intent",
+    "contexto": "Contexto",
+    "output": "Formato de Salida",
+    "audiencia": "Audiencia",
+    "steps": "Paso a Paso",
+    "referencias": "Referencias",
+    "tonalidad": "Tonalidad",
+    "tecnicas": "Técnicas de Prompting",
 }
 
 RUBRIC_MAX_LEVELS = {
@@ -127,12 +137,61 @@ RUBRIC_WEIGHTS = {
 }
 
 RUBRIC_LEVEL_DESCRIPTIONS = {
-    item["id"]: {criterion["level"]: criterion["description"] for criterion in item["criteria"]}
-    for item in PROMPT_CANVAS_RUBRIC["dimensions"]
+    "persona_rol": {
+        0: "No define rol o persona",
+        1: "Define un rol básico sin detalle",
+        2: "Rol claro pero sin alineación pedagógica",
+        3: "Rol claro, específico y alineado al contexto educativo",
+    },
+    "task_intent": {
+        0: "No hay tarea definida",
+        1: "Tarea ambigua o muy general",
+        2: "Tarea clara pero sin objetivo pedagógico",
+        3: "Tarea clara con objetivo definido",
+        4: "Tarea precisa, con objetivo y verbo de acción claro",
+    },
+    "contexto": {
+        0: "No hay contexto",
+        1: "Contexto mínimo o irrelevante",
+        2: "Contexto básico (nivel, tema o situación)",
+        3: "Contexto adecuado y comprensible",
+        4: "Contexto detallado (nivel educativo, área, situación, objetivos)",
+    },
+    "output": {
+        0: "No especifica salida",
+        1: "Salida muy general (ej.: 'explica')",
+        2: "Salida definida pero sin estructura",
+        3: "Salida estructurada (ej.: lista, párrafos)",
+        4: "Salida claramente definida con formato (tabla, markdown, pasos, etc.)",
+    },
+    "audiencia": {
+        0: "No define audiencia",
+        1: "Audiencia muy general",
+        2: "Audiencia definida (ej.: estudiantes)",
+        3: "Audiencia específica (edad, grado o características)",
+    },
+    "steps": {
+        0: "No hay pasos",
+        1: "Pasos implícitos o poco claros",
+        2: "Pasos definidos pero incompletos",
+        3: "Secuencia clara y lógica",
+    },
+    "referencias": {
+        0: "No usa referencias",
+        1: "Referencias vagas",
+        2: "Referencias útiles o ejemplos concretos",
+    },
+    "tonalidad": {
+        0: "No define tono",
+        1: "Tono genérico",
+        2: "Tono adecuado al contexto educativo",
+    },
+    "tecnicas": {
+        0: "No usa técnicas",
+        1: "Uso básico (ej.: instrucciones simples)",
+        2: "Uso de técnicas como step by step o delimitadores",
+    },
 }
-
-# Lineas de retroalimentacion que se muestran en los prompts generados por la IA
-AI_GENERATED_FEEDBACK_PREFIXES = ("Estado de calidad:", "Puntaje total:", "Retroalimentacion general:")
 
 
 def build_prompt(data):
@@ -149,13 +208,7 @@ def build_prompt(data):
     return "\n\n".join(f"{title}:\n{value}" for title, value in sections.items())
 
 
-# Rango de puntaje para prompts generados por la IA: ya incorporan la
-# retroalimentacion de los refinamientos anteriores.
-AI_GENERATED_MIN_SCORE = 90.0
-AI_GENERATED_MAX_SCORE = 100.0
-
-
-def evaluate_prompt(prompt, data=None, ai_generated=False):
+def evaluate_prompt(prompt, data=None):
     normalized_data = _normalize_input_data(data, prompt)
     ai_result = _evaluate_prompt_with_ai(normalized_data)
 
@@ -164,43 +217,45 @@ def evaluate_prompt(prompt, data=None, ai_generated=False):
         ai_score = max(0.0, min(100.0, float(ai_result.get("score", 0))))
         fallback_score, _ = _evaluate_prompt_with_rubric_rules(normalized_data)
         consistency_guard = min(ai_score, fallback_score + 10)
-        final_score = _apply_soft_quality_caps(consistency_guard, ai_result.get("dimension_scores") or {})
-        if ai_generated:
-            final_score = _scale_ai_generated_score(final_score)
+        adjustment_reason = None
+        if consistency_guard < ai_score:
+            adjustment_reason = (
+                "la evaluación con IA supera en más de 10 puntos a la evaluación "
+                f"por reglas internas ({round(fallback_score, 1):g})"
+            )
+        final_score, cap_reason = _apply_soft_quality_caps(consistency_guard, ai_result.get("dimension_scores") or {})
+        adjustment_reason = cap_reason or adjustment_reason
         ai_result["score"] = final_score
         detailed_feedback = _build_rubric_feedback(ai_result)
-        if ai_generated:
-            detailed_feedback = _keep_summary_feedback(detailed_feedback)
+        if adjustment_reason and round(final_score, 1) < round(ai_score, 1):
+            detailed_feedback = _add_adjustment_line(detailed_feedback, ai_score, final_score, adjustment_reason)
         return round(final_score, 1), detailed_feedback
 
     fallback_score, fallback_feedback = _evaluate_prompt_with_rubric_rules(normalized_data)
-    if ai_generated:
-        fallback_score = _scale_ai_generated_score(fallback_score)
-        fallback_feedback = _keep_summary_feedback(_replace_score_summary(fallback_feedback, fallback_score))
     return round(fallback_score, 1), fallback_feedback
 
 
-def _scale_ai_generated_score(score):
+def _add_adjustment_line(feedback, summed_score, final_score, reason):
     """
-    Lleva el puntaje de 0-100 al rango 90-100 conservando el orden relativo
-    (ej. 50 -> 95, 80 -> 98).
+    Explica por que el puntaje total es menor que la suma de los criterios.
+    Ej: "Ajuste de puntaje: Puntaje ajustado a 74 de 85 porque el rol no está bien definido."
     """
-    score = max(0.0, min(100.0, float(score)))
-    span = AI_GENERATED_MAX_SCORE - AI_GENERATED_MIN_SCORE
-    return round(AI_GENERATED_MIN_SCORE + score * span / 100.0, 1)
-
-
-def _keep_summary_feedback(feedback):
-    """
-    En los prompts generados por la IA solo se muestra el resumen: el detalle
-    por criterio no suma el puntaje ajustado y ya no hay refinamientos que guiar.
-    """
-    return [item for item in feedback if item.startswith(AI_GENERATED_FEEDBACK_PREFIXES)]
+    line = (
+        f"Ajuste de puntaje: Puntaje ajustado a {round(final_score, 1):g} "
+        f"de {round(summed_score, 1):g} porque {reason}."
+    )
+    updated = list(feedback)
+    total_index = next(
+        (index for index, item in enumerate(updated) if item.startswith("Puntaje total:")),
+        len(updated) - 1,
+    )
+    updated.insert(total_index + 1, line)
+    return updated
 
 
 def _format_dimension_line(dimension_id, level, weighted_score, note=""):
     """
-    Ej: "Contexto: 10 de 20 puntos. Contexto basico (nivel, tema o situacion)."
+    Ej: "Contexto: 10 de 20 puntos. Contexto básico (nivel, tema o situación)."
     """
     points = f"{weighted_score:g}"
     description = RUBRIC_LEVEL_DESCRIPTIONS[dimension_id].get(level, "")
@@ -210,25 +265,6 @@ def _format_dimension_line(dimension_id, level, weighted_score, note=""):
     if note:
         line = f"{line} {note}"
     return line
-
-
-def _replace_score_summary(feedback, score):
-    """
-    Actualiza las lineas de estado y puntaje total para que coincidan con el puntaje final.
-    """
-    status = (
-        "Estado de calidad: El prompt ya tiene calidad para uso docente."
-        if score >= 85
-        else "Estado de calidad: El prompt aun no alcanza nivel de calidad. Revisa las recomendaciones."
-    )
-    updated = []
-    for item in feedback:
-        if item.startswith("Estado de calidad:"):
-            item = status
-        elif item.startswith("Puntaje total:"):
-            item = f"Puntaje total: {round(score, 1)}/100"
-        updated.append(item)
-    return updated
 
 
 def _normalize_input_data(data, prompt):
@@ -263,7 +299,9 @@ def _evaluate_prompt_with_ai(data):
     system_message = (
         "You are an expert in pedagogical prompt engineering for secondary education. "
         "Evaluate prompts using a weighted rubric and return only valid JSON. "
-        "All feedback visible to teachers must be in Spanish and actionable."
+        "All feedback visible to teachers must be in Spanish and actionable. "
+        "Write all feedback, notes and recommendations addressed to the teacher in Spanish, "
+        "using the formal \"usted\" form (never \"tú\")."
     )
 
     rubric_json = json.dumps(PROMPT_CANVAS_RUBRIC, ensure_ascii=False)
@@ -534,7 +572,7 @@ def _evaluate_prompt_with_rubric_rules(data):
     if total_score >= 85:
         feedback.insert(0, "Estado de calidad: El prompt ya tiene calidad para uso docente.")
     else:
-        feedback.insert(0, "Estado de calidad: El prompt aun no alcanza nivel de calidad. Revisa las recomendaciones.")
+        feedback.insert(0, "Estado de calidad: El prompt aún no alcanza nivel de calidad. Revise las recomendaciones.")
 
     feedback.extend(_build_rule_recommendations(data, dimensions))
     return total_score, _deduplicate_feedback(feedback)
@@ -550,12 +588,12 @@ def _build_rubric_feedback(ai_result):
     if total_score >= 85:
         feedback.append("Estado de calidad: El prompt ya tiene calidad para uso docente.")
     else:
-        feedback.append("Estado de calidad: El prompt aun no alcanza nivel de calidad. Revisa las recomendaciones.")
+        feedback.append("Estado de calidad: El prompt aún no alcanza nivel de calidad. Revise las recomendaciones.")
 
     feedback.append(f"Puntaje total: {total_score}/100")
 
     if overall_feedback:
-        feedback.append(f"Retroalimentacion general: {overall_feedback}")
+        feedback.append(f"Retroalimentación general: {overall_feedback}")
 
     for dimension_id in RUBRIC_DIMENSION_NAMES.keys():
         detail = dimension_scores.get(dimension_id) or {}
@@ -604,18 +642,25 @@ def _apply_soft_quality_caps(score, dimension_scores):
     output_level = _to_int((dimension_scores.get("output") or {}).get("level", 0), min_value=0, max_value=4)
 
     # Soft caps only for clearly weak pedagogical structure to avoid overly punitive scoring.
+    caps = []
     if role_level == 0:
-        final_score = min(final_score, 68.0)
+        caps.append((68.0, "no se definió un rol"))
     elif role_level == 1:
-        final_score = min(final_score, 80.0)
+        caps.append((80.0, "el rol no está bien definido"))
     if task_level <= 1:
-        final_score = min(final_score, 72.0)
+        caps.append((72.0, "la tarea es ambigua o muy general"))
     if context_level <= 1:
-        final_score = min(final_score, 74.0)
+        caps.append((74.0, "el contexto es insuficiente"))
     if output_level <= 1:
-        final_score = min(final_score, 76.0)
+        caps.append((76.0, "el formato de salida no está bien definido"))
 
-    return round(final_score, 1)
+    # Se devuelve el motivo del tope que determino el puntaje final (el mas bajo aplicado)
+    reason = None
+    for cap, cap_reason in caps:
+        if cap < final_score:
+            final_score, reason = cap, cap_reason
+
+    return round(final_score, 1), reason
 
 
 def _enforce_strict_role_scoring(ai_result, data):
@@ -654,20 +699,20 @@ def _enforce_strict_role_scoring(ai_result, data):
 def _build_role_feedback_message(level):
     if level <= 0:
         return (
-            "No se definio un rol docente claro. Indica un rol especifico, por ejemplo: "
-            "docente de matematicas de grado 10 con enfoque en didactica."
+            "No se definió un rol docente claro. Indique un rol específico, por ejemplo: "
+            "docente de matemáticas de grado 10 con enfoque en didáctica."
         )
     if level == 1:
         return (
-            "El rol es generico. Para mejorarlo, agrega area disciplinar, nivel educativo "
-            "y un enfoque pedagogico concreto."
+            "El rol es genérico. Para mejorarlo, agregue área disciplinar, nivel educativo "
+            "y un enfoque pedagógico concreto."
         )
     if level == 2:
         return (
-            "El rol incluye area, pero aun puede fortalecerse. Agrega nivel educativo "
-            "y enfoque pedagogico para mayor precision."
+            "El rol incluye área, pero aún puede fortalecerse. Agregue nivel educativo "
+            "y enfoque pedagógico para mayor precisión."
         )
-    return "El rol esta bien definido y alineado al contexto educativo."
+    return "El rol está bien definido y alineado al contexto educativo."
 
 
 def _score_persona_role(data):
@@ -921,37 +966,37 @@ def _build_rule_recommendations(data, dimensions):
 
     if dimensions.get("persona_rol", 0) < 3:
         recommendations.append(
-            "Recomendaciones: Define un rol docente especifico y alineado al area (por ejemplo, tutor de ciencias con enfoque en evaluacion formativa)."
+            "Recomendaciones: Defina un rol docente específico y alineado al área (por ejemplo, tutor de ciencias con enfoque en evaluación formativa)."
         )
 
     if dimensions.get("task_intent", 0) < 4:
         recommendations.append(
-            "Recomendaciones: Formula la tarea con un verbo de accion y objetivo pedagogico explicito (que se espera lograr y como se evidenciara)."
+            "Recomendaciones: Formule la tarea con un verbo de acción y un objetivo pedagógico explícito (qué se espera lograr y cómo se evidenciará)."
         )
 
     if dimensions.get("contexto", 0) < 4:
         recommendations.append(
-            "Recomendaciones: Agrega contexto educativo completo: grado, asignatura, tema, tiempo disponible y necesidad del grupo."
+            "Recomendaciones: Agregue contexto educativo completo: grado, asignatura, tema, tiempo disponible y necesidad del grupo."
         )
 
     if dimensions.get("output", 0) < 4:
         recommendations.append(
-            "Recomendaciones: Especifica un formato de salida concreto, por ejemplo tabla en markdown con columnas y orden de secciones."
+            "Recomendaciones: Especifique un formato de salida concreto, por ejemplo, una tabla en markdown con columnas y orden de secciones."
         )
 
     if dimensions.get("steps", 0) < 3:
         recommendations.append(
-            "Recomendaciones: Incluye una secuencia paso a paso con fases claras para guiar la respuesta del modelo."
+            "Recomendaciones: Incluya una secuencia paso a paso con fases claras para guiar la respuesta del modelo."
         )
 
     if dimensions.get("tecnicas", 0) < 2:
         recommendations.append(
-            "Recomendaciones: Integra tecnicas de prompting (paso a paso, delimitadores o criterios explicitos de evaluacion)."
+            "Recomendaciones: Integre técnicas de prompting (paso a paso, delimitadores o criterios explícitos de evaluación)."
         )
 
     if not recommendations:
         recommendations.append(
-            "Recomendaciones: El prompt esta bien logrado; fortalece aun mas con ejemplos de entrada/salida y criterios de calidad medibles."
+            "Recomendaciones: El prompt está bien logrado; fortalézcalo aún más con ejemplos de entrada/salida y criterios de calidad medibles."
         )
 
     return recommendations[:7]

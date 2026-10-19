@@ -38,7 +38,7 @@ PROMPT_MARKDOWN_SECTIONS = [
 FEEDBACK_SECTION_TITLES = {
     "status": "Estado de calidad",
     "score": "Puntaje",
-    "general": "Retroalimentacion general",
+    "general": "Retroalimentación general",
     "persona_rol": "Persona / Rol",
     "task_intent": "Task / Intent",
     "contexto": "Contexto",
@@ -47,14 +47,18 @@ FEEDBACK_SECTION_TITLES = {
     "steps": "Paso a Paso",
     "referencias": "Referencias",
     "tonalidad": "Tonalidad",
-    "tecnicas": "Tecnicas de Prompting",
+    "tecnicas": "Técnicas de Prompting",
     "recommendations": "Recomendaciones",
     "other": "Recomendaciones adicionales",
 }
 
+# Se aceptan los prefijos con y sin tildes: los prompts guardados antes usan la version sin tildes
 FEEDBACK_KEY_BY_PREFIX = {
+    "Estado de calidad": "status",
+    "Retroalimentación general": "general",
     "Retroalimentacion general": "general",
     "Puntaje total": "score",
+    "Ajuste de puntaje": "score",
     "Persona / Rol": "persona_rol",
     "Task / Intent": "task_intent",
     "Contexto": "contexto",
@@ -63,6 +67,7 @@ FEEDBACK_KEY_BY_PREFIX = {
     "Paso a Paso": "steps",
     "Referencias": "referencias",
     "Tonalidad": "tonalidad",
+    "Técnicas de Prompting": "tecnicas",
     "Tecnicas de Prompting": "tecnicas",
     "Recomendaciones": "recommendations",
 }
@@ -88,7 +93,7 @@ def prompt_create_view(request):
         if missing_fields:
             messages.error(
                 request,
-                "Completa todos los campos obligatorios antes de generar el prompt.",
+                "Complete todos los campos obligatorios antes de generar el prompt.",
             )
             return render(
                 request,
@@ -120,7 +125,7 @@ def prompt_excel_upload_view(request):
                 data = extract_prompt_data_from_excel_service(form.cleaned_data["excel_file"])
                 request.session[PROMPT_EXCEL_SESSION_KEY] = data
 
-                messages.success(request, "Datos cargados desde el Excel. Revisalos y genera el prompt.")
+                messages.success(request, "Datos cargados desde el Excel. Revíselos y genere el prompt.")
                 return redirect("prompt_lab:prompt-create")
 
             except ExcelUploadError as e:
@@ -137,7 +142,7 @@ def prompt_detail_view(request, prompt_id):
     prompt = get_prompt_by_id(prompt_id)
 
     if prompt.teacher_id != request.user.id:
-        messages.error(request, "No tienes permiso para ver este prompt.")
+        messages.error(request, "No tiene permiso para ver este prompt.")
         return redirect("prompt_lab:prompt-create")
 
     root_prompt = get_root_prompt(prompt)
@@ -150,7 +155,7 @@ def prompt_detail_view(request, prompt_id):
             payload = _build_payload_from_request(request)
             missing_fields = [field for field in REQUIRED_FIELDS if not payload[field].strip()]
             if missing_fields:
-                messages.error(request, "Completa todos los campos obligatorios para continuar refinando.")
+                messages.error(request, "Complete todos los campos obligatorios para continuar refinando.")
                 return _render_prompt_detail(
                     request,
                     root_prompt,
@@ -175,7 +180,7 @@ def prompt_detail_view(request, prompt_id):
                 messages.error(request, str(exc))
                 return redirect("prompt_lab:prompt-detail", prompt_id=latest_prompt.id)
 
-            messages.success(request, "Prompt final generado con base en el ultimo refinamiento.")
+            messages.success(request, "Prompt final generado con base en el último refinamiento.")
             return redirect("prompt_lab:prompt-detail", prompt_id=generated_prompt.id)
 
     show_refine_form = request.GET.get("refine") == "1"
@@ -208,7 +213,7 @@ def prompt_delete_view(request, prompt_id):
     try:
         deleted = soft_delete_prompt_service(request.user, prompt)
     except PermissionError:
-        messages.error(request, "No tienes permiso para eliminar este prompt.")
+        messages.error(request, "No tiene permiso para eliminar este prompt.")
         return redirect("prompt_lab:prompt-list")
 
     if deleted:
@@ -275,7 +280,7 @@ def _feedback_to_blocks(feedback_items):
     for item in feedback_items:
         normalized = item.strip()
 
-        if normalized.startswith("El prompt ya tiene calidad") or normalized.startswith("El prompt aun no alcanza"):
+        if normalized.startswith(("El prompt ya tiene calidad", "El prompt aún no alcanza", "El prompt aun no alcanza")):
             grouped["status"].append(normalized)
             continue
 

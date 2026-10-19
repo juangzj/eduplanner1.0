@@ -8,7 +8,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <h2 class="fw-bold mb-1">Bienvenido, {{ teacher_display_name }}</h2>
-        <p class="text-secondary">Este es el resumen de tu actividad en Eduplanner.</p>
+        <p class="text-secondary">Este es el resumen de su actividad en Eduplanner.</p>
     </div>
 </div>
 
@@ -51,7 +51,7 @@
                         <i class="bi bi-check2-square text-warning fs-3"></i>
                     </div>
                     <h6 class="fw-bold mb-1 text-dark">Rúbricas</h6>
-                    <p class="text-muted small mb-2">Rúbricas asociadas a tus niveles.</p>
+                    <p class="text-muted small mb-2">Rúbricas asociadas a sus niveles.</p>
                     <span class="badge text-bg-warning">{{ stats.rubric_count }}</span>
                 </div>
             </div>
@@ -102,7 +102,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    <p class="text-muted mb-0">Todavía no tienes actividad reciente registrada.</p>
+                    <p class="text-muted mb-0">Todavía no tiene actividad reciente registrada.</p>
                 {% endif %}
             </div>
         </div>
@@ -128,7 +128,7 @@
 
                 <div class="d-grid gap-3 mt-auto">
                     <a href="{% url 'levels:class-plans' %}" class="btn btn-primary fw-semibold py-2">
-                        <i class="bi bi-plus-lg me-2"></i> Nueva planeacion
+                        <i class="bi bi-plus-lg me-2"></i> Nueva planeación
                     </a>
 
                     <a href="{% url 'prompt_lab:prompt-create' %}" class="btn btn-outline-light py-2">
@@ -136,7 +136,7 @@
                     </a>
 
                     <a href="{% url 'levels:levels' %}" class="btn btn-outline-light py-2">
-                        <i class="bi bi-check2-square me-2"></i> Crear niveles y rubricas
+                        <i class="bi bi-check2-square me-2"></i> Crear niveles y rúbricas
                     </a>
 
                     <hr class="my-3 opacity-25">

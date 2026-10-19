@@ -9,9 +9,9 @@
                     <thead class="table-light">
                         <tr>
                             <th scope="col">Fecha</th>
-                            <th scope="col">Proposito</th>
+                            <th scope="col">Propósito</th>
                             <th scope="col">Puntaje</th>
-                            <th scope="col" class="text-end">Accion</th>
+                            <th scope="col" class="text-end">Acción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,7 +34,7 @@
                                     <button
                                         type="button"
                                         class="btn btn-outline-danger btn-sm"
-                                        onclick="openConfirmModal('¿Eliminar prompt?', 'Se realizara un borrado logico del prompt y de sus refinamientos. ¿Deseas continuar?', 'delete-prompt-form-{{ prompt.id }}', 'btn-danger')"
+                                        onclick="openConfirmModal('¿Eliminar prompt?', 'Se realizará un borrado lógico del prompt y de sus refinamientos. ¿Desea continuar?', 'delete-prompt-form-{{ prompt.id }}', 'btn-danger')"
                                     >
                                         Eliminar
                                     </button>
@@ -46,7 +46,7 @@
             </div>
         {% else %}
             <div class="p-4 text-center text-muted">
-                Aun no has creado prompts. Empieza creando el primero.
+                Aún no ha creado prompts. Empiece creando el primero.
             </div>
         {% endif %}
     </div>

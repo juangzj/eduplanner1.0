@@ -117,7 +117,7 @@
         <div class="col-12">
             <h3 class="fw-bold">Planeaciones de clase</h3>
             <p class="text-muted mb-0">
-                Aquí puedes consultar todas tus planeaciones con su información completa y el contenido generado por IA.
+                Aquí puede consultar todas sus planeaciones con su información completa y el contenido generado por IA.
             </p>
         </div>
     </div>
@@ -149,14 +149,14 @@
                                         aria-expanded="false"
                                         aria-controls="plan-body-{{ class_planning.id }}"
                                     >
-                                        <i class="bi bi-eye"></i> <span class="js-toggle-label">Ver mas</span>
+                                        <i class="bi bi-eye"></i> <span class="js-toggle-label">Ver más</span>
                                     </button>
                                     <form method="post" action="{% url 'levels:class-planning-delete' class_planning.id %}" class="m-0" id="delete-class-planning-form-{{ class_planning.id }}">
                                         {% csrf_token %}
                                         <button
                                             type="button"
                                             class="btn btn-sm btn-outline-danger"
-                                            onclick="openConfirmModal('Eliminar planeación', 'Esta acción eliminará de forma lógica toda la planeación y su contenido generado. ¿Deseas continuar?', 'delete-class-planning-form-{{ class_planning.id }}', 'btn-danger')"
+                                            onclick="openConfirmModal('Eliminar planeación', 'Esta acción eliminará de forma lógica toda la planeación y su contenido generado. ¿Desea continuar?', 'delete-class-planning-form-{{ class_planning.id }}', 'btn-danger')"
                                         >
                                             <i class="bi bi-trash"></i> Eliminar planeación
                                         </button>
@@ -285,7 +285,7 @@
                                                         <button
                                                             type="button"
                                                             class="btn btn-sm btn-outline-danger"
-                                                            onclick="openConfirmModal('Eliminar clase generada', '¿Seguro que deseas eliminar esta clase generada?', 'delete-generated-class-plan-form-{{ generated.id }}', 'btn-danger')"
+                                                            onclick="openConfirmModal('Eliminar clase generada', '¿Seguro que desea eliminar esta clase generada?', 'delete-generated-class-plan-form-{{ generated.id }}', 'btn-danger')"
                                                         >
                                                             <i class="bi bi-trash"></i> Eliminar
                                                         </button>
@@ -310,7 +310,7 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            Aún no tienes planeaciones creadas.
+            Aún no tiene planeaciones creadas.
         </div>
     {% endif %}
 </div>
@@ -336,7 +336,7 @@
             }
 
             const setLabel = function (isExpanded) {
-                label.textContent = isExpanded ? "Ver menos" : "Ver mas";
+                label.textContent = isExpanded ? "Ver menos" : "Ver más";
             };
 
             setLabel(collapseElement.classList.contains("show"));

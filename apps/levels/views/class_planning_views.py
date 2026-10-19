@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +17,9 @@ from ..forms import ClassPlanningCreateForm
 from ..models import ClassPlanning, GeneratedClassPlan, PerformanceLevelTemplate
 from ..services.class_planning_services import ClassPlanningCreateService, ClassPlanningDeleteService
 from .excel_upload_views import CLASS_PLANNING_EXCEL_SESSION_KEY
+
+
+logger = logging.getLogger(__name__)
 
 
 @never_cache
@@ -96,8 +101,9 @@ class ClassPlanningCreateView(LoginRequiredMixin, CreateView):
 				form=form,
 				user=self.request.user,
 			)
-		except Exception as exc:
-			form.add_error(None, f"No fue posible generar la planeación con IA: {exc}")
+		except Exception:
+			logger.exception("Error al generar la planeación de clase (usuario %s)", self.request.user.pk)
+			form.add_error(None, "No fue posible generar la planeación con IA. Intente de nuevo.")
 			messages.error(self.request, "Ocurrió un error al generar la planeación de clase.")
 			return self.form_invalid(form)
 
@@ -133,8 +139,9 @@ class ClassPlanningDeleteView(LoginRequiredMixin, SingleObjectMixin, View):
 				class_planning=self.object,
 				user=request.user,
 			)
-		except Exception as exc:
-			messages.error(request, f"No fue posible eliminar la planeación de clase: {exc}")
+		except Exception:
+			logger.exception("Error al eliminar la planeación de clase %s", self.object.pk)
+			messages.error(request, "No fue posible eliminar la planeación de clase. Intente de nuevo.")
 			return HttpResponseRedirect(self.get_success_url())
 
 		if was_deleted:

@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -14,6 +16,9 @@ from ..services.generated_class_plan_services import (
     GeneratedClassPlanDeleteService,
     GeneratedClassPlanUpdateService,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(never_cache, name="dispatch")
@@ -38,8 +43,9 @@ class GeneratedClassPlanUpdateView(LoginRequiredMixin, UpdateView):
                 generated_class_plan=self.get_object(),
                 user=self.request.user,
             )
-        except Exception as exc:
-            form.add_error(None, f"No fue posible actualizar la clase generada: {exc}")
+        except Exception:
+            logger.exception("Error al actualizar la clase generada %s", self.kwargs.get("pk"))
+            form.add_error(None, "No fue posible actualizar la clase generada. Intente de nuevo.")
             messages.error(self.request, "Ocurrió un error al editar el contenido generado.")
             return self.form_invalid(form)
 
@@ -76,8 +82,9 @@ class GeneratedClassPlanDeleteView(LoginRequiredMixin, SingleObjectMixin, View):
                 generated_class_plan=self.object,
                 user=request.user,
             )
-        except Exception as exc:
-            messages.error(request, f"No fue posible eliminar la clase generada: {exc}")
+        except Exception:
+            logger.exception("Error al eliminar la clase generada %s", self.object.pk)
+            messages.error(request, "No fue posible eliminar la clase generada. Intente de nuevo.")
             return HttpResponseRedirect(self.get_success_url())
 
         if was_deleted:

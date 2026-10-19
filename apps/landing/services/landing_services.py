@@ -44,7 +44,7 @@ def get_landing_data():
             },
             {
                 "titulo": "Configuración docente",
-                "descripcion": "Actualiza tus datos básicos y mantén tu perfil académico al día.",
+                "descripcion": "Actualice sus datos básicos y mantenga su perfil académico al día.",
                 "icono": "bi-gear",
                 "color": "danger",
                 "url": "/users/settings/"
@@ -53,17 +53,17 @@ def get_landing_data():
         ,
         "beneficios": [
             {
-                "titulo": "Ahorra tiempo de preparación",
-                "descripcion": "Reduce trabajo repetitivo y organiza tus recursos en una sola plataforma.",
+                "titulo": "Ahorre tiempo de preparación",
+                "descripcion": "Reduzca el trabajo repetitivo y organice sus recursos en una sola plataforma.",
                 "icono": "bi-clock-history"
             },
             {
-                "titulo": "Mejora la calidad pedagógica",
-                "descripcion": "La IA te ayuda a afinar contexto, tarea, formato y retroalimentación.",
+                "titulo": "Mejore la calidad pedagógica",
+                "descripcion": "La IA le ayuda a afinar contexto, tarea, formato y retroalimentación.",
                 "icono": "bi-mortarboard"
             },
             {
-                "titulo": "Refina por intentos",
+                "titulo": "Refine por intentos",
                 "descripcion": "Cada intento recibe retroalimentación para llevar el contenido a un nivel más sólido.",
                 "icono": "bi-arrow-repeat"
             }
@@ -71,18 +71,18 @@ def get_landing_data():
         "proceso": [
             {
                 "paso": "01",
-                "titulo": "Define el contexto",
-                "descripcion": "Selecciona grado, área, competencia y evidencia de aprendizaje."
+                "titulo": "Defina el contexto",
+                "descripcion": "Seleccione grado, área, competencia y evidencia de aprendizaje."
             },
             {
                 "paso": "02",
-                "titulo": "Construye con IA",
-                "descripcion": "Genera niveles, rúbricas o prompts con una base pedagógica clara."
+                "titulo": "Construya con IA",
+                "descripcion": "Genere niveles, rúbricas o prompts con una base pedagógica clara."
             },
             {
                 "paso": "03",
-                "titulo": "Refina y guarda",
-                "descripcion": "Recibe sugerencias, mejora cada intento y conserva tu trabajo."
+                "titulo": "Refine y guarde",
+                "descripcion": "Reciba sugerencias, mejore cada intento y conserve su trabajo."
             }
         ],
         "metricas": [

@@ -103,7 +103,7 @@
                                                 data-bs-target="#performance-detail-{{ performance.id }}"
                                                 aria-expanded="false"
                                                 aria-controls="performance-detail-{{ performance.id }}">
-                                            <i class="bi bi-eye"></i> <span class="js-toggle-label">Ver mas</span>
+                                            <i class="bi bi-eye"></i> <span class="js-toggle-label">Ver más</span>
                                         </button>
 
                                         <form id="delete-template-form-{{ performance.id }}"
@@ -112,7 +112,7 @@
                                             {% csrf_token %}
                                             <button type="button"
                                                     class="btn btn-sm btn-outline-danger"
-                                                    onclick="openConfirmModal('Eliminar plantilla', 'Esta accion eliminara la plantilla de forma logica. ¿Deseas continuar?', 'delete-template-form-{{ performance.id }}', 'btn-danger')">
+                                                    onclick="openConfirmModal('Eliminar plantilla', 'Esta acción eliminará la plantilla de forma lógica. ¿Desea continuar?', 'delete-template-form-{{ performance.id }}', 'btn-danger')">
                                                 <i class="bi bi-trash"></i> Eliminar
                                             </button>
                                         </form>
@@ -376,7 +376,7 @@
             }
 
             const setLabel = function (isExpanded) {
-                label.textContent = isExpanded ? "Ver menos" : "Ver mas";
+                label.textContent = isExpanded ? "Ver menos" : "Ver más";
             };
 
             setLabel(collapseElement.classList.contains("show"));
